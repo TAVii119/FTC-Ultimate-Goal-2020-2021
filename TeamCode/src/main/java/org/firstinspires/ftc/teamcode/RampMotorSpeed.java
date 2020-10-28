@@ -4,6 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+/*
+This class was created by Botosan Octavian on October 28, 2020.
+The purpose of this class is to ramp up the motor speed from 0% up to 100%.
+This helps us visualize the time it takes to speed up and improve our PID tuning.
+ */
+
 @TeleOp(name = "Concept: Ramp Motor Speed", group = "Concept")
 //@Disabled
 public class RampMotorSpeed extends LinearOpMode {
