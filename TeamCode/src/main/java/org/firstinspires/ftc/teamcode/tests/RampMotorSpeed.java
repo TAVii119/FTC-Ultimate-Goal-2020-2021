@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -10,7 +10,7 @@ The purpose of this class is to ramp up the motor speed from 0% up to 100%.
 This helps us visualize the time it takes to speed up and improve our PID tuning.
  */
 
-@TeleOp(name = "Concept: Ramp Motor Speed", group = "Concept")
+@TeleOp(name = "Ramp Motor Speed", group = "Tests")
 //@Disabled
 public class RampMotorSpeed extends LinearOpMode {
 
