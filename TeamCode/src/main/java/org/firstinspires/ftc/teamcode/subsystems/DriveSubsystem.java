@@ -6,6 +6,12 @@ import com.arcrobotics.ftclib.hardware.motors.Motor.Encoder;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+/*
+This class was created by Botosan Octavian on October 28, 2020.
+This is a subsystem for the Mecanum drivetrain that we use.
+Mecanum drivetrains are holonomic (they can move in any direction and also rotate in place).
+
+ */
 public class DriveSubsystem extends SubsystemBase {
 
     private final MecanumDrive m_drive;

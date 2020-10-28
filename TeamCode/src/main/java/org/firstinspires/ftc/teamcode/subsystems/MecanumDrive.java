@@ -4,6 +4,12 @@ import com.arcrobotics.ftclib.command.CommandBase;
 
 import java.util.function.DoubleSupplier;
 
+/*
+This class was created by Botosan Octavian on October 28, 2020.
+This class is used to control the DriveSubsystem.java class.
+We take input from our Playstation DualShock 4 controller and translate in into instructions
+for the robot.
+ */
 public class MecanumDrive extends CommandBase {
     private final DriveSubsystem m_drive;
     private final DoubleSupplier m_forward;
