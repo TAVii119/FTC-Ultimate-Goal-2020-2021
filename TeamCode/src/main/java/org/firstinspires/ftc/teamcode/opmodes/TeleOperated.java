@@ -6,7 +6,7 @@ import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.MecanumDrive;
+import org.firstinspires.ftc.teamcode.commands.MecanumDrive;
 
 /*
 This class was created by Botosan Octavian on October 28, 2020.
@@ -33,7 +33,7 @@ public class TeleOperated extends CommandOpMode {
 
         m_drive = new DriveSubsystem(m_flMotor, m_frMotor, m_blMotor, m_brMotor, WHEEL_DIAMETER);
         m_driverOp = new GamepadEx(gamepad1);
-        m_driveCommand = new MecanumDrive(m_drive, ()->m_driverOp.getLeftY(), ()->m_driverOp.getLeftX(), ()->m_driverOp.getRightX());
+        m_driveCommand = new MecanumDrive(m_drive, ()->m_driverOp.getLeftY(), ()->m_driverOp.getRightX(), ()->m_driverOp.getLeftX());
         m_drive.setDefaultCommand(m_driveCommand);
         register(m_drive);
     }

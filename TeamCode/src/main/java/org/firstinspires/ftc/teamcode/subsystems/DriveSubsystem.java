@@ -3,15 +3,15 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.hardware.motors.Motor.Encoder;
-import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 /*
 This class was created by Botosan Octavian on October 28, 2020.
 This is a subsystem for the Mecanum drivetrain that we use.
 Mecanum drivetrains are holonomic (they can move in any direction and also rotate in place).
-
  */
+
 public class DriveSubsystem extends SubsystemBase {
 
     private final MecanumDrive m_drive;
@@ -24,7 +24,7 @@ public class DriveSubsystem extends SubsystemBase {
      * Creates a new DriveSubsystem
      */
 
-    public DriveSubsystem(MotorEx flMotor, MotorEx frMotor, MotorEx blMotor, MotorEx brMotor, final double diameter) {
+    public DriveSubsystem(Motor flMotor, Motor frMotor, Motor blMotor, Motor brMotor, final double diameter) {
         m_left = flMotor.encoder;
         m_right = frMotor.encoder;
         m_strafe = blMotor.encoder;
@@ -38,11 +38,13 @@ public class DriveSubsystem extends SubsystemBase {
      * Creates a new DriveSubsystem with the hardware map and configuration names.
      */
     public DriveSubsystem(HardwareMap hMap, final String flMotorName, String frMotorName, String blMotorName, String brMotorName, final double diameter) {
-        this(new MotorEx(hMap, flMotorName), new MotorEx(hMap, frMotorName), new MotorEx(hMap, blMotorName), new MotorEx(hMap, brMotorName), diameter);
+        this(new Motor(hMap, flMotorName, Motor.GoBILDA.RPM_435), new Motor(hMap, frMotorName, Motor.GoBILDA.RPM_435),
+                new Motor(hMap, blMotorName, Motor.GoBILDA.RPM_435), new Motor(hMap, brMotorName ,Motor.GoBILDA.RPM_435), diameter);
     }
 
     public void drive(double fwd, double rot, double strf) {
         m_drive.driveRobotCentric(strf, fwd, rot);
+
     }
 
     public double getLeftEncoderVal() {
