@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 /**
  * HardwareTest for team Delta Force
- * Created on 21.11.2020 by Tavi
+ * Created on 21.11.2020 by Botosan Octavian
  */
 
 public class HardwareTest {
