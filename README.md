@@ -5,4 +5,4 @@ The main code written by our team cand be found in TeamCode.
 
 ## Welcome!
 
-This repository was built by Botosan Octavian (lead programmer), Fedus Robert and Kirichner Erwin.
+This repository was built by Botosan Octavian (lead programmer), Fedus Robert.
