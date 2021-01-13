@@ -44,24 +44,33 @@ public class DriveSubsystem extends SubsystemBase {
 
     public void drive(double fwd, double rot, double strf) {
         m_drive.driveRobotCentric(strf, fwd, rot);
-
     }
 
     public double getLeftEncoderVal() {
         return m_left.getPosition();
     }
 
+    public double getLeftEncoderDistance() { return m_left.getRevolutions() * WHEEL_DIAMETER * Math.PI; }
+
     public double getRightEncoderVal() {
         return m_right.getPosition();
     }
+
+    public double getRightEncoderDistance() { return m_right.getRevolutions() * WHEEL_DIAMETER * Math.PI; }
 
     public double getStrafeEncoderVal() {
         return m_strafe.getPosition();
     }
 
+    public double getStrafeEncoderDistance() { return m_strafe.getRevolutions() * WHEEL_DIAMETER * Math.PI; }
+
     public void resetEncoders() {
         m_left.reset();
         m_right.reset();
         m_strafe.reset();
+    }
+
+    public double getAverageEncoderDistance() {
+        return (getLeftEncoderDistance() + getRightEncoderDistance() + getStrafeEncoderDistance()) / 3.0;
     }
 }

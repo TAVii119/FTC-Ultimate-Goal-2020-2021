@@ -13,7 +13,7 @@ We take input from our Playstation DualShock 4 controller and translate in into 
 for the robot.
  */
 
-public class MecanumDrive extends CommandBase {
+public class Drivetrain extends CommandBase {
     private final DriveSubsystem m_drive;
     private final DoubleSupplier m_forward;
     private final DoubleSupplier m_rotation;
@@ -28,7 +28,7 @@ public class MecanumDrive extends CommandBase {
      * @param strafe The control input for strafing
      */
 
-    public MecanumDrive(DriveSubsystem subsystem, DoubleSupplier forward, DoubleSupplier rotation, DoubleSupplier strafe) {
+    public Drivetrain(DriveSubsystem subsystem, DoubleSupplier forward, DoubleSupplier rotation, DoubleSupplier strafe) {
         m_drive = subsystem;
         m_forward = forward;
         m_rotation = rotation;
