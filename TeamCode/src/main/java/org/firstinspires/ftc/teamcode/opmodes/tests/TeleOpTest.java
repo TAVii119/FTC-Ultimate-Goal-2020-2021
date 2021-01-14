@@ -79,7 +79,9 @@ public class TeleOpTest extends LinearOpMode {
 
             telemetry.addData("Shooter Speed: ", map.shooterFrontMotor.getPower());
             telemetry.addData("Shooter Servo Position: ", map.shooterServo.getPosition());
-            telemetry.addData("Loader Servo Position: ", map.loaderFrontServo.getPosition());
+            telemetry.addData("Odometry Left: ", map.flMotor.getCurrentPosition());
+            telemetry.addData("Odometry Right: ", map.frMotor.getCurrentPosition());
+            telemetry.addData("Odometry Strafe: ", map.blMotor.getCurrentPosition());
             telemetry.update();
         }
     }
