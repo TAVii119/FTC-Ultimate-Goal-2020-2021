@@ -4,7 +4,11 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.hardware.motors.Motor.Encoder;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import java.util.function.DoubleBinaryOperator;
+import java.util.function.DoubleSupplier;
 
 /*
 This class was created by Botosan Octavian on October 28, 2020.
@@ -14,63 +18,39 @@ Mecanum drivetrains are holonomic (they can move in any direction and also rotat
 
 public class DriveSubsystem extends SubsystemBase {
 
-    private final MecanumDrive m_drive;
+    private final Motor flMotor, frMotor, blMotor, brMotor;
+    private boolean isLimited = false;
+    private double driveLimiter;
 
-    private final Encoder m_left, m_right, m_strafe;
+    public DriveSubsystem(final HardwareMap hMap, final String name) {
+        flMotor = new MotorEx(hMap, "flMotor", MotorEx.GoBILDA.RPM_435);
+        frMotor = new MotorEx(hMap, "frMotor", MotorEx.GoBILDA.RPM_435);
+        blMotor = new MotorEx(hMap, "blMotor", MotorEx.GoBILDA.RPM_435);
+        brMotor = new MotorEx(hMap, "brMotor", MotorEx.GoBILDA.RPM_435);
 
-    private final double WHEEL_DIAMETER;
-
-    /**
-     * Creates a new DriveSubsystem
-     */
-
-    public DriveSubsystem(Motor flMotor, Motor frMotor, Motor blMotor, Motor brMotor, final double diameter) {
-        m_left = flMotor.encoder;
-        m_right = frMotor.encoder;
-        m_strafe = blMotor.encoder;
-
-        WHEEL_DIAMETER = diameter;
-
-        m_drive = new MecanumDrive(flMotor, frMotor, blMotor, brMotor);
+        frMotor.setInverted(true);
+        brMotor.setInverted(true);
     }
 
     /**
-     * Creates a new DriveSubsystem with the hardware map and configuration names.
+     * Drive chassis.
      */
-    public DriveSubsystem(HardwareMap hMap, final String flMotorName, String frMotorName, String blMotorName, String brMotorName, final double diameter) {
-        this(new Motor(hMap, flMotorName, Motor.GoBILDA.RPM_435), new Motor(hMap, frMotorName, Motor.GoBILDA.RPM_435),
-                new Motor(hMap, blMotorName, Motor.GoBILDA.RPM_435), new Motor(hMap, brMotorName ,Motor.GoBILDA.RPM_435), diameter);
+
+    public void drive(double forward, double rotation, double strafe) {
+        flMotor.set(forward * getlimiter());
+        frMotor.set(forward * getlimiter());
+        blMotor.set(forward * getlimiter());
+        brMotor.set(forward * getlimiter());
     }
 
-    public void drive(double fwd, double rot, double strf) {
-        m_drive.driveRobotCentric(strf, fwd, rot);
-    }
-
-    public double getLeftEncoderVal() {
-        return m_left.getPosition();
-    }
-
-    public double getLeftEncoderDistance() { return m_left.getRevolutions() * WHEEL_DIAMETER * Math.PI; }
-
-    public double getRightEncoderVal() {
-        return m_right.getPosition();
-    }
-
-    public double getRightEncoderDistance() { return m_right.getRevolutions() * WHEEL_DIAMETER * Math.PI; }
-
-    public double getStrafeEncoderVal() {
-        return m_strafe.getPosition();
-    }
-
-    public double getStrafeEncoderDistance() { return m_strafe.getRevolutions() * WHEEL_DIAMETER * Math.PI; }
-
-    public void resetEncoders() {
-        m_left.reset();
-        m_right.reset();
-        m_strafe.reset();
-    }
-
-    public double getAverageEncoderDistance() {
-        return (getLeftEncoderDistance() + getRightEncoderDistance() + getStrafeEncoderDistance()) / 3.0;
+    public double getlimiter() {
+        if (isLimited = false) {
+            isLimited = true;
+            driveLimiter = 0.1;
+        }else if (isLimited = true) {
+            isLimited = false;
+            driveLimiter = 1.0;
+        }
+        return driveLimiter;
     }
 }

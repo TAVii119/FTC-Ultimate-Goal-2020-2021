@@ -1,16 +1,12 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.arcrobotics.ftclib.command.CommandOpMode;
-import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
-import org.firstinspires.ftc.teamcode.commands.Drivetrain;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RingHolderSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RingPusherSubsystem;
@@ -29,37 +25,27 @@ public class TeleOperated extends CommandOpMode {
 
     private GamepadEx driverOp = new GamepadEx(gamepad1);
     private GamepadEx intakeOp = new GamepadEx(gamepad1);
-    private GamepadEx ringholderOp = new GamepadEx(gamepad1);
+    private GamepadEx ringholderOp = new GamepadEx(gamepad2);
     private GamepadEx ringpusherOp = new GamepadEx(gamepad1);
     private GamepadEx shooterOp = new GamepadEx(gamepad2);
 
-    private MotorEx flMotor, frMotor, blMotor, brMotor;
-    private DriveSubsystem drive;
-    private Drivetrain driveCommand;
+    private DriveSubsystem driver = new DriveSubsystem(hardwareMap, "drive");
 
     private IntakeSubsystem intake = new IntakeSubsystem(hardwareMap, "intakeMotor");
     private GamepadButton intakeRingButton = new GamepadButton(intakeOp, GamepadKeys.Button.A);
-    private GamepadButton releaseRingButton = new GamepadButton(intakeOp, GamepadKeys.Button.B);
+    private GamepadButton releaseRingButton = new GamepadButton(intakeOp, GamepadKeys.Button.B); //g1
 
     private RingHolderSubsystem ringholder = new RingHolderSubsystem(hardwareMap, "ringHolderServo");
-    private GamepadButton moveRingHolderButton = new GamepadButton(ringholderOp, GamepadKeys.Button.X);
+    private GamepadButton moveRingHolderButton = new GamepadButton(ringholderOp, GamepadKeys.Button.A); //g2
 
     private RingPusherSubsystem ringpusher = new RingPusherSubsystem(hardwareMap, "ringPusherServo");
-    private GamepadButton pushRingButton = new GamepadButton(ringpusherOp, GamepadKeys.Button.Y);
+    private GamepadButton pushRingButton = new GamepadButton(ringpusherOp, GamepadKeys.Button.X); //g1
 
     private ShooterSubsystem shooter = new ShooterSubsystem(hardwareMap, "shooterMotor");
-    private GamepadButton shooterButton = new GamepadButton(shooterOp, GamepadKeys.Button.A);
+    private GamepadButton shooterButton = new GamepadButton(shooterOp, GamepadKeys.Button.A); // g2
 
     @Override
     public void initialize() {
-        flMotor = new MotorEx(hardwareMap, "flMotor");
-        frMotor = new MotorEx(hardwareMap, "frMotor");
-        blMotor = new MotorEx(hardwareMap, "blMotor");
-        brMotor = new MotorEx(hardwareMap, "brMotor");
-
-        drive = new DriveSubsystem(flMotor, frMotor, blMotor, brMotor, WHEEL_DIAMETER);
-        driveCommand = new Drivetrain(drive, ()->driverOp.getLeftY(), ()->driverOp.getRightX(), ()->driverOp.getLeftX());
-
         /*intakeRingButton.whenPressed(new InstantCommand(intake::intake, intake));
         releaseRingButton.whenPressed(new InstantCommand(intake::release, intake));
         */
@@ -73,7 +59,6 @@ public class TeleOperated extends CommandOpMode {
 
         shooterButton.whenPressed(shooter::startShooter);
 
-        register(drive, intake, ringholder, ringpusher, shooter);
-        drive.setDefaultCommand(driveCommand);
+        register(intake, ringholder, ringpusher, shooter);
     }
 }

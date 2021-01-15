@@ -6,9 +6,7 @@ import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.commands.Drivetrain;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 
@@ -34,15 +32,17 @@ public class SimpleTeleOp extends CommandOpMode {
     private GamepadEx driverOp = new GamepadEx(gamepad1);
     private GamepadEx intakeOp = new GamepadEx(gamepad1);
     private MotorEx flMotor, frMotor, blMotor, brMotor;
+    /*
     private DriveSubsystem drive = new DriveSubsystem(flMotor, frMotor, blMotor, brMotor, WHEEL_DIAMETER);
     private Drivetrain driveCommand = new Drivetrain(drive, ()->driverOp.getLeftY(), ()->driverOp.getRightX(), ()->driverOp.getLeftX());
+     */
     private GamepadButton intakeRingButton = new GamepadButton(intakeOp, GamepadKeys.Button.A);
     private GamepadButton releaseRingButton = new GamepadButton(intakeOp, GamepadKeys.Button.B);
     private IntakeSubsystem intake = new IntakeSubsystem(hardwareMap, "intake");
 
     @Override
     public void initialize() {
-        register(drive, intake);
+        register(intake);
 
         // using InstantCommand here is not the greatest idea because the servos move in nonzero time
         // alternatives are adding WaitUntilCommands or making these commands.
@@ -50,6 +50,6 @@ public class SimpleTeleOp extends CommandOpMode {
         intakeRingButton.whenPressed(new InstantCommand(intake::intakeRing, intake));
         releaseRingButton.whenPressed(new InstantCommand(intake::releaseRing, intake));
 
-        drive.setDefaultCommand(driveCommand);
+        //drive.setDefaultCommand(driveCommand);
     }
 }
