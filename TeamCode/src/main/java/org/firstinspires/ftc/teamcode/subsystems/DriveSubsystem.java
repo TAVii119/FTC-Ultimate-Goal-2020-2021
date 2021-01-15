@@ -18,39 +18,23 @@ Mecanum drivetrains are holonomic (they can move in any direction and also rotat
 
 public class DriveSubsystem extends SubsystemBase {
 
-    private final Motor flMotor, frMotor, blMotor, brMotor;
-    private boolean isLimited = false;
-    private double driveLimiter;
+    private MecanumDrive drive;
+    private Motor fL, bL, fR, bR;
 
-    public DriveSubsystem(final HardwareMap hMap, final String name) {
-        flMotor = new MotorEx(hMap, "flMotor", MotorEx.GoBILDA.RPM_435);
-        frMotor = new MotorEx(hMap, "frMotor", MotorEx.GoBILDA.RPM_435);
-        blMotor = new MotorEx(hMap, "blMotor", MotorEx.GoBILDA.RPM_435);
-        brMotor = new MotorEx(hMap, "brMotor", MotorEx.GoBILDA.RPM_435);
-
-        frMotor.setInverted(true);
-        brMotor.setInverted(true);
+    public DriveSubsystem(Motor frontL, Motor frontR, Motor backL, Motor backR) {
+        fL = frontL;
+        fR = frontR;
+        bL = backL;
+        bR = backR;
+        drive = new MecanumDrive(fL, fR, bL, bR);
     }
 
-    /**
-     * Drive chassis.
-     */
-
-    public void drive(double forward, double rotation, double strafe) {
-        flMotor.set(forward * getlimiter());
-        frMotor.set(forward * getlimiter());
-        blMotor.set(forward * getlimiter());
-        brMotor.set(forward * getlimiter());
+    //Strafe Speed, Forward Speed, and Turn Speed
+    public void drive(double strfSpd, double fSpd, double trnSpd) {
+        drive.driveRobotCentric(-strfSpd, -fSpd, -trnSpd*0.85, true);
     }
 
-    public double getlimiter() {
-        if (isLimited = false) {
-            isLimited = true;
-            driveLimiter = 0.1;
-        }else if (isLimited = true) {
-            isLimited = false;
-            driveLimiter = 1.0;
-        }
-        return driveLimiter;
+    public void halt() {
+        drive.stop();
     }
 }

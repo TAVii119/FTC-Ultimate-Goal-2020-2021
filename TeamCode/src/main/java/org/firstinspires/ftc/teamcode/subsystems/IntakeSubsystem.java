@@ -5,6 +5,8 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 /*
 This class was created by Botosan Octavian on January 14, 2021.
 This is a subsystem for the ring intake that we use.
@@ -12,29 +14,21 @@ This is a subsystem for the ring intake that we use.
 
 public class IntakeSubsystem extends SubsystemBase {
 
-    private final Motor intakeMotor;
+    private Motor intakeMotor;
+    private Telemetry telemetry;
 
-    public IntakeSubsystem(final HardwareMap hMap, final String name) {
-        intakeMotor = hMap.get(Motor.class, name);
+    public IntakeSubsystem(Motor IntakeMotor) {
+        intakeMotor = IntakeMotor;
     }
 
-    /**
-     * Start ring intake.
-     */
-    public void intakeRing() {
-        if (intakeMotor.get() != 1.0)
-            intakeMotor.set(1.0);
-        else if (intakeMotor.get() == 1.0)
-            intakeMotor.set(0);
+    public void suck() {
+        intakeMotor.set(-0.9);
+    }
+    public void down(){
+        intakeMotor.set(0.9);
+    }
+    public void stop() {
+        intakeMotor.stopMotor();
     }
 
-    /**
-     * Releases rings from intake.
-     */
-    public void releaseRing() {
-        if (intakeMotor.get() != -1.0)
-            intakeMotor.set(-1.0);
-        else if (intakeMotor.get() == -1.0)
-            intakeMotor.set(0);
-    }
 }

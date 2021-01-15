@@ -2,8 +2,10 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+import java.util.function.DoubleSupplier;
 
 /*
 This class was created by Botosan Octavian on January 14, 2021.
@@ -12,34 +14,37 @@ This is a subsystem for the ring intake that we use.
 
 public class ShooterSubsystem extends SubsystemBase {
 
-    private final Motor shooterMotorFront;
-    private final Motor shooterMotorBack;
-    private boolean shooterMoving = false;
-    ElapsedTime timer = new ElapsedTime();
+    private Motor shooterFrontMotor;
+    private Motor shooterBackMotor;
+    private Telemetry telemetry;
+    private DoubleSupplier power;
+    private boolean shooterActive;
 
-    public ShooterSubsystem(final HardwareMap hMap, final String name) {
-        shooterMotorFront = hMap.get(Motor.class, name);
-        shooterMotorBack = hMap.get(Motor.class, name);
-        shooterMotorBack.setInverted(true);
+    public ShooterSubsystem(Motor shooterFront, Motor shooterBack, Telemetry telemetryIn, DoubleSupplier getPower) {
+        shooterFrontMotor = shooterFront;
+        shooterBackMotor = shooterBack;
+        telemetry = telemetryIn;
+        power = getPower;
+        shooterActive = true;
+
     }
 
-    /**
-     * Start shooter.
-     */
+    public void shoot() {
+        shooterFrontMotor.set(power.getAsDouble());
+        shooterBackMotor.set(power.getAsDouble());
+        shooterActive = true;
+    }
 
-    public void startShooter() {
-        if (timer.milliseconds() >= 100 && !shooterMoving) {
-            shooterMotorFront.set(1.0);
-            shooterMotorBack.set(1.0);
-            shooterMoving = true;
-            timer.reset();
-        }
+    public void stop() {
+        shooterFrontMotor.stopMotor();
+        shooterBackMotor.stopMotor();
+        shooterActive = false;
+    }
 
-        if (timer.milliseconds() >= 100 && shooterMoving) {
-            shooterMotorFront.set(0.0);
-            shooterMotorBack.set(0.0);
-            shooterMoving = false;
-            timer.reset();
-        }
+    @Override
+    public void periodic() {
+        telemetry.addData("Shooter power", power.getAsDouble());
+        telemetry.addData("Shooter active", shooterActive);
+        telemetry.update();
     }
 }
