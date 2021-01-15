@@ -6,21 +6,29 @@ import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 
 public class ShootCommand extends CommandBase {
 
-    private final ShooterSubsystem shooterSystem;
+    private ShooterSubsystem shooterSubsystem;
 
-    public ShootCommand(ShooterSubsystem subby) {
-        shooterSystem = subby;
-        addRequirements(subby);
+    public ShootCommand(ShooterSubsystem subsystem){
+        shooterSubsystem = subsystem;
+        addRequirements(shooterSubsystem);
     }
 
     @Override
-    public void execute() {
-        shooterSystem.shoot();
+    public void initialize(){
+        shooterSubsystem.flickReset();
     }
 
     @Override
-    public void cancel() {
-        shooterSystem.stop();
-        CommandScheduler.getInstance().cancel(this);
+    public void execute(){
+        shooterSubsystem.flickReset();
+        shooterSubsystem.flick();
+    }
+
+    public void stopShooter(){
+        shooterSubsystem.stop();
+    }
+
+    public void returnHome(){
+        shooterSubsystem.homePos();
     }
 }

@@ -1,50 +1,67 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.util.TimedAction;
 
 import java.util.function.DoubleSupplier;
 
 /*
 This class was created by Botosan Octavian on January 14, 2021.
-This is a subsystem for the ring intake that we use.
+This is a subsystem for the shooter we use.
  */
 
 public class ShooterSubsystem extends SubsystemBase {
 
-    private Motor shooterFrontMotor;
-    private Motor shooterBackMotor;
+    private MotorGroup flywheel;
+    private SimpleServo flicker;
+    private TimedAction timedAction;
     private Telemetry telemetry;
-    private DoubleSupplier power;
-    private boolean shooterActive;
 
-    public ShooterSubsystem(Motor shooterFront, Motor shooterBack, Telemetry telemetryIn, DoubleSupplier getPower) {
-        shooterFrontMotor = shooterFront;
-        shooterBackMotor = shooterBack;
-        telemetry = telemetryIn;
-        power = getPower;
-        shooterActive = true;
+    public ShooterSubsystem(MotorGroup flywheel, SimpleServo flicker, TimedAction timedAction, Telemetry telemetry){
+        this.flywheel = flywheel;
 
+        this.flywheel.setRunMode(Motor.RunMode.VelocityControl);
+        this.flywheel.setVeloCoefficients(1.2, 0, 0.07);
+        this.flywheel.setFeedforwardCoefficients(0, 1.1);
+
+        this.flicker = flicker;
+        this.timedAction = timedAction;
+        this.telemetry = telemetry;
     }
 
     public void shoot() {
-        shooterFrontMotor.set(power.getAsDouble());
-        shooterBackMotor.set(power.getAsDouble());
-        shooterActive = true;
+        flywheel.set(1.0);
     }
 
     public void stop() {
-        shooterFrontMotor.stopMotor();
-        shooterBackMotor.stopMotor();
-        shooterActive = false;
+        flywheel.stopMotor();
+    }
+
+    public void flick() {
+        timedAction.run();
+    }
+
+    public void flickerInit() {
+        flicker.setPosition(0.5);
+    }
+
+    public void flickReset() {
+        if (!timedAction.running())
+            timedAction.reset();
+    }
+
+    public void homePos() {
+        flicker.setPosition(0.0);
     }
 
     @Override
-    public void periodic() {
-        telemetry.addData("Shooter power", power.getAsDouble());
-        telemetry.addData("Shooter active", shooterActive);
+    public void periodic(){
+        telemetry.addData("Shooter Velocity:", flywheel.getCorrectedVelocity());
         telemetry.update();
     }
 }

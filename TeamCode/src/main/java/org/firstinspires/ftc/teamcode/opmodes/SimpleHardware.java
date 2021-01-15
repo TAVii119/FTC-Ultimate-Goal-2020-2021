@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.tests;
+package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Created on 21.11.2020 by Botosan Octavian
  */
 
-public class HardwareTest {
+public class SimpleHardware {
     // INSTANTIATE MOTORS
     public DcMotor flMotor = null; // FRONT LEFT MOTOR
     public DcMotor frMotor = null; // FRONT RIGHT MOTOR
@@ -98,7 +98,7 @@ public class HardwareTest {
         loaderBackServo.setDirection(Servo.Direction.REVERSE);
         feederServo.setDirection(Servo.Direction.FORWARD);
         intakeServo.setDirection(Servo.Direction.FORWARD);
-        shooterServo.setDirection(Servo.Direction.FORWARD);
+        shooterServo.setDirection(Servo.Direction.REVERSE);
 
         // SET SERVO POSITION
         wobbleGrabberServo.setPosition(0.0);

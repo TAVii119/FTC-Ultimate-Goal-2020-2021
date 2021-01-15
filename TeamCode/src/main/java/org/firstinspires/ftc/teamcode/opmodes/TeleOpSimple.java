@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.tests;
+package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -12,29 +12,30 @@ import java.util.concurrent.TimeUnit;
  * Created on 21.11.2020 by Botosan Octavian
  */
 
-@TeleOp(name="TeleOpTest", group="Test")
+@TeleOp(name="TeleOpSimple")
 
-public class TeleOpTest extends LinearOpMode {
+public class TeleOpSimple extends LinearOpMode {
 
     // DEFINE ROBOT HARDWARE
-    HardwareTest map = new HardwareTest();
+    SimpleHardware map = new SimpleHardware();
 
     //INSTANTIATE AND DEFINE VARIABLES
     double flPower, frPower, blPower, brPower = 0;
     public final static int GAMEPAD_LOCKOUT = 200; // PRESS DELAY IN MS
-    public double intakeLatch = 0.5, intakeUnlatch = 0.0;;
+    public double intakeLatch = 0.0, intakeUnlatch = 0.5;
     public double feederPosLoad = 0.0, feederPosMid = 0.5, feederPosShoot = 0.7;
+    public double flickerInit = 0.0, flickerPush = 0.5;
     public double wobbleGrabberGrab = 0.5, wobbleGrabberUngrab = 0.0;
     public double shooterServoPos = 0.0;
     public double chassisLimiter = 1.0;
     boolean activeIntake = false;
     Deadline gamepadRateLimit;
 
-
     @Override
     public void runOpMode() {
         map.init(hardwareMap);
         gamepadRateLimit = new Deadline(GAMEPAD_LOCKOUT, TimeUnit.MILLISECONDS);
+        resetServoPosition();
 
         // Wait for the game to start
         waitForStart();
@@ -67,10 +68,13 @@ public class TeleOpTest extends LinearOpMode {
 
             // Handle Wobble Mechanism
             map.wobbleMotor.setPower(gamepad2.right_trigger * 0.1 - gamepad2.left_trigger * 0.1);
-            if (gamepad2.a) {
-                map.wobbleGrabberServo.setPosition(wobbleGrabberGrab);
-            } else if (gamepad2.b) {
-                map.wobbleGrabberServo.setPosition(wobbleGrabberUngrab);
+
+            // Push rings into shooter
+            if (gamepad2.b) {
+                map.feederServo.setPosition(flickerPush);
+                sleep(50);
+                map.feederServo.setPosition(flickerInit);
+                sleep(50);
             }
 
             //-//-------------------\\-\\
@@ -79,6 +83,8 @@ public class TeleOpTest extends LinearOpMode {
 
             telemetry.addData("Shooter Speed: ", map.shooterFrontMotor.getPower());
             telemetry.addData("Shooter Servo Position: ", map.shooterServo.getPosition());
+            telemetry.addData("Ring Lift Servo Position: ", map.loaderFrontServo.getPosition());
+            telemetry.addData("Wobble Motor Position: ", map.wobbleMotor.getCurrentPosition());
             telemetry.addData("Odometry Left: ", map.flMotor.getCurrentPosition());
             telemetry.addData("Odometry Right: ", map.frMotor.getCurrentPosition());
             telemetry.addData("Odometry Strafe: ", map.blMotor.getCurrentPosition());
@@ -90,7 +96,7 @@ public class TeleOpTest extends LinearOpMode {
      * handleGamepad
      *
      * Responds to a gamepad button press.  Demonstrates rate limiting for
-     * button presses.  If loop() is called every 10ms and and you don't rate
+     * button presses.  If loop() is called every 10ms and you don't rate
      * limit, then any given button press may register as multiple button presses,
      * which in this application is problematic.
      */
@@ -100,7 +106,7 @@ public class TeleOpTest extends LinearOpMode {
             return;
         }
 
-        if (gamepad1.a && !activeIntake) {
+        if (gamepad1.a && !activeIntake) { // INTAKE
             map.intakeMotor.setPower(1);
             activeIntake = true;
             gamepadRateLimit.reset();
@@ -118,34 +124,47 @@ public class TeleOpTest extends LinearOpMode {
             gamepadRateLimit.reset();
         }
 
-        if (gamepad1.dpad_up) {
-            shooterServoPos += 0.25;
+        if (gamepad1.dpad_up) { // SHOOTER SERVO POSITION
+            shooterServoPos += 0.1;
             gamepadRateLimit.reset();
-        } else if (gamepad1.dpad_down && shooterServoPos >= 0.25) {
-            shooterServoPos -= 0.25;
+        } else if (gamepad1.dpad_down && shooterServoPos >= 0.1) {
+            shooterServoPos -= 0.1;
             gamepadRateLimit.reset();
         }
 
-        if (gamepad1.x && map.loaderFrontServo.getPosition() == feederPosLoad) {
-            map.loaderFrontServo.setPosition(feederPosMid);
-            map.loaderBackServo.setPosition(feederPosMid);
-            gamepadRateLimit.reset();
-        } else if (gamepad1.x && map.loaderFrontServo.getPosition() == feederPosMid) {
-            map.loaderFrontServo.setPosition(feederPosShoot);
-            map.loaderBackServo.setPosition(feederPosShoot);
-            gamepadRateLimit.reset();
-        } else if (gamepad1.x && map.loaderFrontServo.getPosition() == feederPosShoot) {
+        if (gamepad1.x && map.loaderFrontServo.getPosition() != feederPosLoad) { // RING LOADER
             map.loaderFrontServo.setPosition(feederPosLoad);
             map.loaderBackServo.setPosition(feederPosLoad);
             gamepadRateLimit.reset();
+        } else if (gamepad1.x && map.loaderFrontServo.getPosition() != feederPosShoot) {
+            map.loaderFrontServo.setPosition(feederPosShoot);
+            map.loaderBackServo.setPosition(feederPosShoot);
+            gamepadRateLimit.reset();
         }
 
-        if (gamepad1.y && chassisLimiter == 1) {
+        if (gamepad1.y && chassisLimiter == 1) { // CHASSIS LIMITER
             chassisLimiter = 0.1;
             gamepadRateLimit.reset();
         } else if (gamepad1.y && chassisLimiter == 0.1) {
             chassisLimiter = 1.0;
             gamepadRateLimit.reset();
         }
+
+        if (gamepad2.a && map.wobbleGrabberServo.getPosition() != wobbleGrabberGrab) { // WOBBLE GRABBER
+            map.wobbleGrabberServo.setPosition(wobbleGrabberGrab);
+            gamepadRateLimit.reset();
+        } else if (gamepad2.a && map.wobbleGrabberServo.getPosition() != wobbleGrabberUngrab) {
+            map.wobbleGrabberServo.setPosition(wobbleGrabberUngrab);
+            gamepadRateLimit.reset();
+        }
+    }
+
+    public void resetServoPosition() {
+        map.wobbleGrabberServo.setPosition(0.0);
+        map.loaderFrontServo.setPosition(0.0);
+        map.loaderBackServo.setPosition(0.0);
+        map.feederServo.setPosition(0.0);
+        map.intakeServo.setPosition(0.0);
+        map.shooterServo.setPosition(0.0);
     }
 }

@@ -5,18 +5,20 @@ import com.arcrobotics.ftclib.command.CommandScheduler;
 
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 
-public class OuttakeStartCommand extends CommandBase {
+public class OuttakeCommand extends CommandBase {
 
     private final IntakeSubsystem intakeSystem;
 
-    public OuttakeStartCommand(IntakeSubsystem subby){
+    public OuttakeCommand(IntakeSubsystem subby) {
         intakeSystem = subby;
         addRequirements(intakeSystem);
     }
+
     @Override
-    public void execute(){
+    public void execute() {
         intakeSystem.suck();
     }
+
     @Override
     public void cancel() {
         intakeSystem.stop();
