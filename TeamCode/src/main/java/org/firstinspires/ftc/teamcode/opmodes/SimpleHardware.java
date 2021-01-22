@@ -21,7 +21,7 @@ public class SimpleHardware {
     public DcMotor wobbleMotor = null; // WOBBLE GOAL MECHANSIM MOTOR
 
     // INSTANTIATE SERVOS
-    public Servo wobbleGrabberServo = null;
+    public Servo wobbleServo = null;
     public Servo loaderFrontServo = null;
     public Servo loaderBackServo = null;
     public Servo feederServo = null;
@@ -49,8 +49,8 @@ public class SimpleHardware {
         frMotor.setDirection(DcMotor.Direction.REVERSE);
         blMotor.setDirection(DcMotor.Direction.FORWARD);
         brMotor.setDirection(DcMotor.Direction.REVERSE);
-        shooterFrontMotor.setDirection(DcMotor.Direction.FORWARD);
-        shooterBackMotor.setDirection(DcMotor.Direction.FORWARD);
+        shooterFrontMotor.setDirection(DcMotor.Direction.REVERSE);
+        shooterBackMotor.setDirection(DcMotor.Direction.REVERSE);
         intakeMotor.setDirection(DcMotor.Direction.FORWARD);
         wobbleMotor.setDirection(DcMotor.Direction.FORWARD);
 
@@ -85,7 +85,7 @@ public class SimpleHardware {
         wobbleMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // DEFINE SERVOS
-        wobbleGrabberServo = robotMap.get(Servo.class, "wobbleGrabberServo");
+        wobbleServo = robotMap.get(Servo.class, "wobbleServo");
         loaderFrontServo = robotMap.get(Servo.class, "loaderFrontServo");
         loaderBackServo = robotMap.get(Servo.class, "loaderBackServo");
         feederServo = robotMap.get(Servo.class, "feederServo");
@@ -93,7 +93,7 @@ public class SimpleHardware {
         shooterServo = robotMap.get(Servo.class, "shooterServo");
 
         // SET SERVO DIRECTION
-        wobbleGrabberServo.setDirection(Servo.Direction.FORWARD);
+        wobbleServo.setDirection(Servo.Direction.FORWARD);
         loaderFrontServo.setDirection(Servo.Direction.FORWARD);
         loaderBackServo.setDirection(Servo.Direction.REVERSE);
         feederServo.setDirection(Servo.Direction.FORWARD);
@@ -101,7 +101,7 @@ public class SimpleHardware {
         shooterServo.setDirection(Servo.Direction.REVERSE);
 
         // SET SERVO POSITION
-        wobbleGrabberServo.setPosition(0.0);
+        wobbleServo.setPosition(0.0);
         loaderFrontServo.setPosition(0.0);
         loaderBackServo.setPosition(0.0);
         feederServo.setPosition(0.0);

@@ -23,19 +23,23 @@ public class ServoTester extends LinearOpMode {
     public void runOpMode() {
 
         // Get hardware from hub.
-        servo1 = hardwareMap.get(Servo.class, "loaderFrontServo");
+        servo1 = hardwareMap.get(Servo.class, "shooterServo");
         servo2 = hardwareMap.get(Servo.class, "loaderBackServo");
         servo2.setDirection(Servo.Direction.REVERSE);
+        servo1.setDirection(Servo.Direction.REVERSE);
 
         // Wait for the start button.
         telemetry.addData(">", "Press Start to run servos.");
         telemetry.update();
+
+        servo1.setPosition(0.0);
+        servo2.setPosition(0.0);
         waitForStart();
 
         // Ramp motor speeds till stop pressed.
         while (opModeIsActive()) {
             servo1.setPosition(-gamepad1.left_stick_y);
-            servo2.setPosition(-gamepad1.left_stick_y);
+            //servo2.setPosition(-gamepad1.left_stick_y);
 
 
             // Display the current value

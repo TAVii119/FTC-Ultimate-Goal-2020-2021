@@ -18,19 +18,15 @@ This is a subsystem for the shooter we use.
 public class ShooterSubsystem extends SubsystemBase {
 
     private MotorGroup flywheel;
-    private SimpleServo flicker;
-    private TimedAction timedAction;
     private Telemetry telemetry;
 
-    public ShooterSubsystem(MotorGroup flywheel, SimpleServo flicker, TimedAction timedAction, Telemetry telemetry){
+    public ShooterSubsystem(MotorGroup flywheel, Telemetry telemetry){
         this.flywheel = flywheel;
 
         this.flywheel.setRunMode(Motor.RunMode.VelocityControl);
         this.flywheel.setVeloCoefficients(1.2, 0, 0.07);
         this.flywheel.setFeedforwardCoefficients(0, 1.1);
 
-        this.flicker = flicker;
-        this.timedAction = timedAction;
         this.telemetry = telemetry;
     }
 
@@ -40,23 +36,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public void stop() {
         flywheel.stopMotor();
-    }
-
-    public void flick() {
-        timedAction.run();
-    }
-
-    public void flickerInit() {
-        flicker.setPosition(0.5);
-    }
-
-    public void flickReset() {
-        if (!timedAction.running())
-            timedAction.reset();
-    }
-
-    public void homePos() {
-        flicker.setPosition(0.0);
     }
 
     @Override

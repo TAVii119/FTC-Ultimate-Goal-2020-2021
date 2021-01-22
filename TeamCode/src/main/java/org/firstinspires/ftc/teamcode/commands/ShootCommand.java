@@ -14,21 +14,7 @@ public class ShootCommand extends CommandBase {
     }
 
     @Override
-    public void initialize(){
-        shooterSubsystem.flickReset();
-    }
-
-    @Override
-    public void execute(){
-        shooterSubsystem.flickReset();
-        shooterSubsystem.flick();
-    }
-
-    public void stopShooter(){
-        shooterSubsystem.stop();
-    }
-
-    public void returnHome(){
-        shooterSubsystem.homePos();
+    public void execute() {
+        shooterSubsystem.shoot();
     }
 }

@@ -3,12 +3,10 @@ package org.firstinspires.ftc.teamcode.opmodes;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
-import com.arcrobotics.ftclib.command.WaitCommand;
 import com.arcrobotics.ftclib.command.button.Button;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -18,13 +16,14 @@ import org.firstinspires.ftc.teamcode.commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.commands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.commands.OuttakeCommand;
 import org.firstinspires.ftc.teamcode.commands.RingLiftCommand;
-import org.firstinspires.ftc.teamcode.commands.SequentialShooter;
 import org.firstinspires.ftc.teamcode.commands.ShootCommand;
+import org.firstinspires.ftc.teamcode.commands.WobbleMotorCommand;
+import org.firstinspires.ftc.teamcode.commands.WobbleServoCommand;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RingLiftSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
-import org.firstinspires.ftc.teamcode.util.TimedAction;
+import org.firstinspires.ftc.teamcode.subsystems.WobbleSubsystem;
 
 /*
 This class was created by Botosan Octavian on October 28, 2020.
@@ -37,31 +36,32 @@ public class TeleOperated extends CommandOpMode {
 
     // Servos and Motors
     private Motor fL, fR, bL, bR;
-    private Motor shooterFront, shooterBack, intake;
+    private Motor shooterFront, shooterBack, intake, wobbleMotor;
     private MotorGroup flywheel;
-    private SimpleServo flicker;
-    private Servo loaderFront, loaderBack;
+    private Servo loaderFront, loaderBack, wobbleServo;
 
     // Subsystems
     private DriveSubsystem driveSystem;
     private ShooterSubsystem shooterSystem;
     private IntakeSubsystem intakeSystem;
     private RingLiftSubsystem ringLiftSystem;
+    private WobbleSubsystem wobbleSystem;
 
     // Commands
     private DriveCommand driveCommand;
-    private ShootCommand shooterCommand;
+    private ShootCommand shootCommand;
     private IntakeCommand intakeCommand;
     private OuttakeCommand outtakeCommand;
-    private SequentialShooter shootCommandGroup;
     private InstantCommand runFlyWheelCommand;
     private RingLiftCommand ringLiftCommand;
+    private WobbleMotorCommand wobbleMotorCommand;
+    private WobbleServoCommand wobbleServoCommand;
 
     // Extra
     private GamepadEx driverOp, driver2;
-    private Button intakeButton, outtakeButton, shootCommandGroupButton, slowDriveButton, ringLiftButton;
+    private Button intakeButton, outtakeButton, shootCommandGroupButton, slowDriveButton, ringLiftButton, wobbleServoButton,
+    shootButton, stopShootButton;
     private FtcDashboard dashboard;
-    private TimedAction flickerAction;
     public double mult = 1.0;
 
     @Override
@@ -77,31 +77,25 @@ public class TeleOperated extends CommandOpMode {
                 new Motor(hardwareMap, "shooterBackMotor", Motor.GoBILDA.BARE)
         );
 
+        wobbleMotor = new Motor(hardwareMap, "wobbleMotor", Motor.GoBILDA.RPM_312);
+
         loaderFront = hardwareMap.get(Servo.class, "loaderFrontServo");
         loaderBack = hardwareMap.get(Servo.class, "loaderBackServo");
         loaderBack.setDirection(Servo.Direction.REVERSE);
+
+        wobbleServo = hardwareMap.get(Servo.class, "wobbleServo");
 
         // Controller
         driverOp = new GamepadEx(gamepad1);
         driver2 = new GamepadEx(gamepad2);
         dashboard = FtcDashboard.getInstance();
 
-        //FlickerAction
-        flickerAction = new TimedAction(
-                ()-> flicker.setPosition(0.5),
-                ()-> flicker.setPosition(0.27),
-                600,
-                true
-        );
-
         //Subsystems and Commands
         driveSystem = new DriveSubsystem(fL, fR, bL, bR);
         driveCommand = new DriveCommand(driveSystem, driverOp::getLeftX, driverOp::getLeftY, driverOp::getRightX, () -> mult);
 
-        shooterSystem = new ShooterSubsystem(flywheel, flicker, flickerAction, telemetry);
-        shooterCommand = new ShootCommand(shooterSystem);
-        runFlyWheelCommand = new InstantCommand(shooterSystem::shoot, shooterSystem);
-        shootCommandGroup = new SequentialShooter(runFlyWheelCommand, new WaitCommand(1500), shooterCommand);
+        shooterSystem = new ShooterSubsystem(flywheel, telemetry);
+        shootCommand = new ShootCommand(shooterSystem);
 
         intakeSystem = new IntakeSubsystem(intake);
         intakeCommand = new IntakeCommand(intakeSystem);
@@ -110,6 +104,10 @@ public class TeleOperated extends CommandOpMode {
         ringLiftSystem = new RingLiftSubsystem(loaderFront, loaderBack);
         ringLiftCommand = new RingLiftCommand(ringLiftSystem);
 
+        wobbleSystem = new WobbleSubsystem(wobbleServo, wobbleMotor, telemetry);
+        wobbleMotorCommand = new WobbleMotorCommand(wobbleSystem, gamepad2.left_stick_y);
+        wobbleServoCommand = new WobbleServoCommand(wobbleSystem);
+
         /*m_driverOp.getGamepadButton(GamepadKeys.Button.Y).toggleWhenPressed(()->mult = 0.5, ()->mult = 1.0);
         m_driverOp.getGamepadButton(GamepadKeys.Button.A).whenHeld(shootCommandGroup);
 
@@ -117,12 +115,13 @@ public class TeleOperated extends CommandOpMode {
         m_driverOp.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whenHeld(outtakeCommand);
          */
 
-        shootCommandGroupButton = new GamepadButton(driverOp, GamepadKeys.Button.A).whenHeld(shootCommandGroup);
         intakeButton = new GamepadButton(driverOp, GamepadKeys.Button.RIGHT_BUMPER).whenHeld(intakeCommand);
         outtakeButton = new GamepadButton(driverOp, GamepadKeys.Button.LEFT_BUMPER).whenHeld(outtakeCommand);
-        ringLiftButton = new GamepadButton(driver2, GamepadKeys.Button.A).whenPressed(ringLiftCommand);
 
-        register(driveSystem, intakeSystem, shooterSystem, ringLiftSystem);
+        ringLiftButton = new GamepadButton(driver2, GamepadKeys.Button.A).whenPressed(ringLiftCommand);
+        wobbleServoButton = new GamepadButton(driver2, GamepadKeys.Button.B).whenPressed(wobbleServoCommand);
+
+        register(driveSystem, intakeSystem, shooterSystem, ringLiftSystem, wobbleSystem);
         driveSystem.setDefaultCommand(driveCommand);
     }
 }
