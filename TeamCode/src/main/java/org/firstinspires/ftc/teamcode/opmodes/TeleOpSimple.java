@@ -24,10 +24,11 @@ public class TeleOpSimple extends LinearOpMode {
     public final static int GAMEPAD_LOCKOUT = 200; // PRESS DELAY IN MS
     public double intakeLatch = 0.0, intakeUnlatch = 0.3;
     public double loaderPosLoad = 0.0, feederPosMid = 0.18, loaderPosShoot = 0.23;
-    public double flickerInit = 0.0, flickerPush = 0.3;
+    public double feederInit = 0.0, feederPush = 0.3;
     public double wobbleGrabberGrab = 0.0, wobbleGrabberUngrab = 0.2;
     public double shooterServoPos = 0.0;
     public double chassisLimiter = 1.0;
+    public double wobbleLimiter = 0.2;
     boolean activeIntake = false;
     Deadline gamepadRateLimit;
 
@@ -67,13 +68,19 @@ public class TeleOpSimple extends LinearOpMode {
             //-//-----------\\-\\
 
             // Handle Wobble Mechanism
-            map.wobbleMotor.setPower(gamepad2.right_trigger * 0.2 - gamepad2.left_trigger * 0.2); // limita e 500
+            map.wobbleMotor.setPower(gamepad2.right_trigger * wobbleLimiter - gamepad2.left_trigger * wobbleLimiter); // limita e 500
+
+            if (map.wobbleMotor.getCurrentPosition() < 500)
+                map.wobbleMotor.setPower(gamepad2.right_trigger * wobbleLimiter);
+            else if (map.wobbleMotor.getCurrentPosition() > 0)
+                map.wobbleMotor.setPower(-gamepad2.left_trigger * wobbleLimiter);
+            else map.wobbleMotor.setPower(0);
 
             // Push rings into shooter
             if (gamepad2.b) {
-                map.feederServo.setPosition(flickerPush);
+                map.feederServo.setPosition(feederPush);
                 sleep(200);
-                map.feederServo.setPosition(flickerInit);
+                map.feederServo.setPosition(feederInit);
                 sleep(200);
             }
 
@@ -88,9 +95,11 @@ public class TeleOpSimple extends LinearOpMode {
             telemetry.addData("Shooter Servo Actual Position: ", map.shooterServo.getPosition());
             telemetry.addData("Ring Lift Servo Position: ", map.loaderFrontServo.getPosition());
             telemetry.addData("Wobble Motor Position: ", map.wobbleMotor.getCurrentPosition());
+            /*
             telemetry.addData("Odometry Left: ", map.flMotor.getCurrentPosition());
             telemetry.addData("Odometry Right: ", map.frMotor.getCurrentPosition());
             telemetry.addData("Odometry Strafe: ", map.blMotor.getCurrentPosition());
+            */
             telemetry.update();
         }
     }
