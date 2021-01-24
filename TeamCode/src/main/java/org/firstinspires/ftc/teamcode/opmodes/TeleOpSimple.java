@@ -23,7 +23,7 @@ public class TeleOpSimple extends LinearOpMode {
     double flPower, frPower, blPower, brPower = 0;
     public final static int GAMEPAD_LOCKOUT = 200; // PRESS DELAY IN MS
     public double intakeLatch = 0.0, intakeUnlatch = 0.3;
-    public double loaderPosLoad = 0.0, feederPosMid = 0.18, loaderPosShoot = 0.2;
+    public double loaderPosLoad = 0.0, feederPosMid = 0.18, loaderPosShoot = 0.23;
     public double flickerInit = 0.0, flickerPush = 0.3;
     public double wobbleGrabberGrab = 0.0, wobbleGrabberUngrab = 0.2;
     public double shooterServoPos = 0.0;
@@ -67,22 +67,25 @@ public class TeleOpSimple extends LinearOpMode {
             //-//-----------\\-\\
 
             // Handle Wobble Mechanism
-            map.wobbleMotor.setPower(gamepad2.right_trigger * 0.1 - gamepad2.left_trigger * 0.1);
+            map.wobbleMotor.setPower(gamepad2.right_trigger * 0.2 - gamepad2.left_trigger * 0.2); // limita e 500
 
             // Push rings into shooter
             if (gamepad2.b) {
                 map.feederServo.setPosition(flickerPush);
-                sleep(50);
+                sleep(200);
                 map.feederServo.setPosition(flickerInit);
-                sleep(50);
+                sleep(200);
             }
+
+            map.shooterServo.setPosition(shooterServoPos);
 
             //-//-------------------\\-\\
             //-// TELEMETRY & OTHER \\-\\
             //-//-------------------\\-\\
 
             telemetry.addData("Shooter Speed: ", map.shooterFrontMotor.getPower());
-            telemetry.addData("Shooter Servo Position: ", map.shooterServo.getPosition());
+            telemetry.addData("Shooter Servo Position: ", shooterServoPos);
+            telemetry.addData("Shooter Servo Actual Position: ", map.shooterServo.getPosition());
             telemetry.addData("Ring Lift Servo Position: ", map.loaderFrontServo.getPosition());
             telemetry.addData("Wobble Motor Position: ", map.wobbleMotor.getCurrentPosition());
             telemetry.addData("Odometry Left: ", map.flMotor.getCurrentPosition());
@@ -143,9 +146,9 @@ public class TeleOpSimple extends LinearOpMode {
         }
 
         if (gamepad1.y && chassisLimiter == 1) { // CHASSIS LIMITER
-            chassisLimiter = 0.1;
+            chassisLimiter = 0.3;
             gamepadRateLimit.reset();
-        } else if (gamepad1.y && chassisLimiter == 0.1) {
+        } else if (gamepad1.y && chassisLimiter == 0.3) {
             chassisLimiter = 1.0;
             gamepadRateLimit.reset();
         }

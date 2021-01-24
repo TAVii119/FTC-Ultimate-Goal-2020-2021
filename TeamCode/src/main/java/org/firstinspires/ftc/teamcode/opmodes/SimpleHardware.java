@@ -11,13 +11,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class SimpleHardware {
     // INSTANTIATE MOTORS
-    public DcMotor flMotor = null; // FRONT LEFT MOTOR
-    public DcMotor frMotor = null; // FRONT RIGHT MOTOR
-    public DcMotor blMotor = null; // BACK LEFT MOTOR
-    public DcMotor brMotor = null; // BACK RIGHT MOTOR
-    public DcMotor shooterFrontMotor = null;
-    public DcMotor shooterBackMotor = null;
-    public DcMotor intakeMotor = null;
+    public DcMotor flMotor = null; // FRONT LEFT CHASSIS MOTOR
+    public DcMotor frMotor = null; // FRONT RIGHT CHASSIS MOTOR
+    public DcMotor blMotor = null; // BACK LEFT CHASSIS MOTOR
+    public DcMotor brMotor = null; // BACK RIGHT CHASSI MOTOR
+    public DcMotor shooterFrontMotor = null; // SHOOTER FRONT MOTOR
+    public DcMotor shooterBackMotor = null; // SHOOTER BACK MOTOR
+    public DcMotor intakeMotor = null; // INTAKE MOTOR
     public DcMotor wobbleMotor = null; // WOBBLE GOAL MECHANSIM MOTOR
 
     // INSTANTIATE SERVOS
@@ -51,7 +51,7 @@ public class SimpleHardware {
         brMotor.setDirection(DcMotor.Direction.REVERSE);
         shooterFrontMotor.setDirection(DcMotor.Direction.REVERSE);
         shooterBackMotor.setDirection(DcMotor.Direction.REVERSE);
-        intakeMotor.setDirection(DcMotor.Direction.FORWARD);
+        intakeMotor.setDirection(DcMotor.Direction.REVERSE);
         wobbleMotor.setDirection(DcMotor.Direction.FORWARD);
 
         // SET MOTOR POWER
