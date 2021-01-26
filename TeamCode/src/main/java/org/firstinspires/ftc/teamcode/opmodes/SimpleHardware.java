@@ -65,14 +65,14 @@ public class SimpleHardware {
         wobbleMotor.setPower(0);
 
         // SET MOTOR MODE
-        flMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        blMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        brMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        blMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        brMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shooterFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shooterBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        wobbleMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooterBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // ODOMETRY RIGHT
+        intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // ODOMETRY LEFT
+        wobbleMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // ODOMETRY STRAFE
 
         // SET MOTOR ZeroPowerBehavior
         flMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

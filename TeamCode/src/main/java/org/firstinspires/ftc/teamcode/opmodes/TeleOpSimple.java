@@ -28,7 +28,7 @@ public class TeleOpSimple extends LinearOpMode {
     public double wobbleGrabberGrab = 0.0, wobbleGrabberUngrab = 0.2;
     public double shooterServoPos = 0.0;
     public double chassisLimiter = 1.0;
-    public double wobbleLimiter = 0.2;
+    public double wobbleLimiter = 0.5;
     boolean activeIntake = false;
     Deadline gamepadRateLimit;
 
@@ -59,22 +59,12 @@ public class TeleOpSimple extends LinearOpMode {
             map.blMotor.setPower(blPower * chassisLimiter);
             map.brMotor.setPower(brPower * chassisLimiter);
 
-            // Shooter Power
-            map.shooterFrontMotor.setPower(gamepad1.right_trigger);
-            map.shooterBackMotor.setPower(gamepad1.right_trigger);
-
             //-//-----------\\-\\
             //-// GAMEPAD 2 \\-\\
             //-//-----------\\-\\
 
             // Handle Wobble Mechanism
-            map.wobbleMotor.setPower(gamepad2.right_trigger * wobbleLimiter - gamepad2.left_trigger * wobbleLimiter); // limita e 500
-
-            if (map.wobbleMotor.getCurrentPosition() < 500)
-                map.wobbleMotor.setPower(gamepad2.right_trigger * wobbleLimiter);
-            else if (map.wobbleMotor.getCurrentPosition() > 0)
-                map.wobbleMotor.setPower(-gamepad2.left_trigger * wobbleLimiter);
-            else map.wobbleMotor.setPower(0);
+            map.wobbleMotor.setPower(gamepad2.right_trigger * wobbleLimiter - gamepad2.left_trigger * wobbleLimiter);
 
             // Push rings into shooter
             if (gamepad2.b) {
@@ -90,16 +80,9 @@ public class TeleOpSimple extends LinearOpMode {
             //-// TELEMETRY & OTHER \\-\\
             //-//-------------------\\-\\
 
+            telemetry.addData("Intake Speed: ", map.intakeMotor.getPower());
             telemetry.addData("Shooter Speed: ", map.shooterFrontMotor.getPower());
             telemetry.addData("Shooter Servo Position: ", shooterServoPos);
-            telemetry.addData("Shooter Servo Actual Position: ", map.shooterServo.getPosition());
-            telemetry.addData("Ring Lift Servo Position: ", map.loaderFrontServo.getPosition());
-            telemetry.addData("Wobble Motor Position: ", map.wobbleMotor.getCurrentPosition());
-            /*
-            telemetry.addData("Odometry Left: ", map.flMotor.getCurrentPosition());
-            telemetry.addData("Odometry Right: ", map.frMotor.getCurrentPosition());
-            telemetry.addData("Odometry Strafe: ", map.blMotor.getCurrentPosition());
-            */
             telemetry.update();
         }
     }
@@ -116,6 +99,16 @@ public class TeleOpSimple extends LinearOpMode {
     public void handleGamepad() {
         if (!gamepadRateLimit.hasExpired()) {
             return;
+        }
+
+        if (gamepad2.y && map.shooterFrontMotor.getPower() == 0) {
+            map.shooterFrontMotor.setPower(1);
+            map.shooterBackMotor.setPower(1);
+            gamepadRateLimit.reset();
+        }else if (gamepad2.y && map.shooterFrontMotor.getPower() == 1) {
+            map.shooterFrontMotor.setPower(0);
+            map.shooterBackMotor.setPower(0);
+            gamepadRateLimit.reset();
         }
 
         if (gamepad1.a && !activeIntake) { // INTAKE
@@ -151,13 +144,15 @@ public class TeleOpSimple extends LinearOpMode {
         } else if (gamepad2.x && map.loaderFrontServo.getPosition() != loaderPosShoot) {
             map.loaderFrontServo.setPosition(loaderPosShoot);
             map.loaderBackServo.setPosition(loaderPosShoot);
+            map.shooterFrontMotor.setPower(0);
+            map.shooterBackMotor.setPower(0);
             gamepadRateLimit.reset();
         }
 
-        if (gamepad1.y && chassisLimiter == 1) { // CHASSIS LIMITER
+        if (gamepad1.x && chassisLimiter == 1) { // CHASSIS LIMITER
             chassisLimiter = 0.3;
             gamepadRateLimit.reset();
-        } else if (gamepad1.y && chassisLimiter == 0.3) {
+        } else if (gamepad1.x && chassisLimiter == 0.3) {
             chassisLimiter = 1.0;
             gamepadRateLimit.reset();
         }
