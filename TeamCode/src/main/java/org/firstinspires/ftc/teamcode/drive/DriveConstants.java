@@ -55,9 +55,10 @@ public class DriveConstants {
      * motor encoders or have elected not to use them for velocity control, these values should be
      * empirically tuned.
      */
-    public static double kV = 1.0 / rpmToVelocity(MAX_RPM);
-    public static double kA = 0;
-    public static double kStatic = 0;
+//    public static double kV = 1.0 / rpmToVelocity(MAX_RPM);
+    public static double kV = 0.01785;
+    public static double kA = 0.00002;
+    public static double kStatic = 0.08376;
 
     /*
      * These values are used to generate the trajectories for you robot. To ensure proper operation,
@@ -69,7 +70,7 @@ public class DriveConstants {
     /*
      * Note from LearnRoadRunner.com:
      * The velocity and acceleration constraints were calculated based on the following equation:
-     * ((MAX_RPM / 60) * GEAR_RATIO * WHEEL_RADIUS * 2 * Math.PI) * 0.85
+     * ((MAX_RPM / 60) * GEAR_RATIO * WHEEL_RADIUS * 2 * Math.PI) * 0.85 = 52.4829181881
      * Resulting in 73.17330064499293 in/s.
      * This is only 85% of the theoretical maximum velocity of the bot, following the recommendation above.
      * This is capped at 85% because there are a number of variables that will prevent your bot from actually
@@ -87,8 +88,10 @@ public class DriveConstants {
      * You are free to raise this on your own if you would like. It is best determined through experimentation.
      
      */
-    public static double MAX_VEL = 73.17330064499293;
-    public static double MAX_ACCEL = 73.17330064499293;
+//    public static double MAX_VEL = 73.17330064499293;
+//    public static double MAX_ACCEL = 73.17330064499293;
+    public static double MAX_VEL = 52.4829181881;
+    public static double MAX_ACCEL = 52.4829181881;
     public static double MAX_ANG_VEL = Math.toRadians(276.55153693931396);
     public static double MAX_ANG_ACCEL = Math.toRadians(276.55153693931396);
 

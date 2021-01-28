@@ -66,10 +66,10 @@ public class TeleOpSimple extends LinearOpMode {
             // Handle Wobble Mechanism
             //map.wobbleMotor.setPower(gamepad2.right_trigger * wobbleLimiter - gamepad2.left_trigger * wobbleLimiter);
 
-            if (-gamepad2.left_stick_y > 0 && map.wobbleMotor.getCurrentPosition() < 500)
-                map.wobbleMotor.setPower(0.3);
-            else if (-gamepad2.left_stick_y < 0 && map.wobbleMotor.getCurrentPosition() > 0)
-                map.wobbleMotor.setPower(-0.3);
+            if (-gamepad2.left_stick_y > 0.1 && map.wobbleMotor.getCurrentPosition() < 500)
+                map.wobbleMotor.setPower(-gamepad1.left_stick_y);
+            else if (-gamepad2.left_stick_y < -0.1 && map.wobbleMotor.getCurrentPosition() > 50)
+                map.wobbleMotor.setPower(-gamepad1.left_stick_y);
             else map.wobbleMotor.setPower(0);
 
             // Push rings into shooter
