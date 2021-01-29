@@ -31,11 +31,9 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void shoot() {
+        if (flywheel.getCorrectedVelocity() > 0)
         flywheel.set(1.0);
-    }
-
-    public void stop() {
-        flywheel.stopMotor();
+        else flywheel.set(0.0);
     }
 
     @Override

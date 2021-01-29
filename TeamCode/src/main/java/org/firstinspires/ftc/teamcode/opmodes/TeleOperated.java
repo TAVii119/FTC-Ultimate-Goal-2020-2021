@@ -38,7 +38,7 @@ public class TeleOperated extends CommandOpMode {
 
     // Servos and Motors
     private Motor fL, fR, bL, bR;
-    private Motor shooterFront, shooterBack, intake, wobbleMotor;
+    private Motor intake, wobbleMotor;
     private MotorGroup flywheel;
     private Servo loaderFront, loaderBack, wobbleServo, flickerServo;
 
@@ -55,50 +55,47 @@ public class TeleOperated extends CommandOpMode {
     private ShootCommand shootCommand;
     private IntakeCommand intakeCommand;
     private OuttakeCommand outtakeCommand;
-    private InstantCommand runFlyWheelCommand;
     private RingLiftCommand ringLiftCommand;
     private WobbleMotorCommand wobbleMotorCommand;
     private WobbleServoCommand wobbleServoCommand;
     private FlickerCommand flickerCommand;
 
     // Extra
-    private GamepadEx driverOp, driver2;
-    private Button intakeButton, outtakeButton, shootCommandGroupButton, slowDriveButton, ringLiftButton, wobbleServoButton,
-    shootButton, stopShootButton, flickButton;
+    private GamepadEx driver1, driver2;
+    private Button intakeButton, outtakeButton, ringLiftButton, wobbleServoButton,
+    shootButton, flickButton;
     private FtcDashboard dashboard;
     public double mult = 1.0;
 
     @Override
     public void initialize() {
+        // MOTORS
         fL = new Motor(hardwareMap, "flMotor", Motor.GoBILDA.RPM_312);
         fR = new Motor(hardwareMap, "frMotor", Motor.GoBILDA.RPM_312);
         bL = new Motor(hardwareMap, "blMotor", Motor.GoBILDA.RPM_312);
         bR = new Motor(hardwareMap, "brMotor", Motor.GoBILDA.RPM_312);
-
         intake = new Motor(hardwareMap, "intakeMotor", Motor.GoBILDA.RPM_312);
         flywheel = new MotorGroup(
                 new Motor(hardwareMap, "shooterFrontMotor", Motor.GoBILDA.BARE),
                 new Motor(hardwareMap, "shooterBackMotor", Motor.GoBILDA.BARE)
         );
-
         wobbleMotor = new Motor(hardwareMap, "wobbleMotor", Motor.GoBILDA.RPM_312);
 
+        // SERVOS
         loaderFront = hardwareMap.get(Servo.class, "loaderFrontServo");
         loaderBack = hardwareMap.get(Servo.class, "loaderBackServo");
         loaderBack.setDirection(Servo.Direction.REVERSE);
-
         wobbleServo = hardwareMap.get(Servo.class, "wobbleServo");
-
         flickerServo = hardwareMap.get(Servo.class, "feederServo");
 
         // Controller
-        driverOp = new GamepadEx(gamepad1);
+        driver1 = new GamepadEx(gamepad1);
         driver2 = new GamepadEx(gamepad2);
         dashboard = FtcDashboard.getInstance();
 
         //Subsystems and Commands
         driveSystem = new DriveSubsystem(fL, fR, bL, bR);
-        driveCommand = new DriveCommand(driveSystem, driverOp::getLeftX, driverOp::getLeftY, driverOp::getRightX, () -> mult);
+        driveCommand = new DriveCommand(driveSystem, driver1::getLeftX, driver1::getLeftY, driver1::getRightX, () -> mult);
 
         shooterSystem = new ShooterSubsystem(flywheel, telemetry);
         shootCommand = new ShootCommand(shooterSystem);
@@ -111,14 +108,14 @@ public class TeleOperated extends CommandOpMode {
         ringLiftCommand = new RingLiftCommand(ringLiftSystem);
 
         wobbleSystem = new WobbleSubsystem(wobbleServo, wobbleMotor, telemetry);
-        wobbleMotorCommand = new WobbleMotorCommand(wobbleSystem, gamepad2.left_stick_y);
+        wobbleMotorCommand = new WobbleMotorCommand(wobbleSystem, -gamepad2.left_stick_y);
         wobbleServoCommand = new WobbleServoCommand(wobbleSystem);
 
         flickerSystem = new FlickerSubsystem(flickerServo);
         flickerCommand = new FlickerCommand(flickerSystem);
 
-        intakeButton = new GamepadButton(driverOp, GamepadKeys.Button.RIGHT_BUMPER).whenHeld(intakeCommand);
-        outtakeButton = new GamepadButton(driverOp, GamepadKeys.Button.LEFT_BUMPER).whenHeld(outtakeCommand);
+        intakeButton = new GamepadButton(driver1, GamepadKeys.Button.RIGHT_BUMPER).whenHeld(intakeCommand);
+        outtakeButton = new GamepadButton(driver1, GamepadKeys.Button.LEFT_BUMPER).whenHeld(outtakeCommand);
 
         ringLiftButton = new GamepadButton(driver2, GamepadKeys.Button.X).whenPressed(ringLiftCommand);
         wobbleServoButton = new GamepadButton(driver2, GamepadKeys.Button.B).whenPressed(wobbleServoCommand);
