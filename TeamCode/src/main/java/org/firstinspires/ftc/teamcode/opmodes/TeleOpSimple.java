@@ -146,12 +146,12 @@ public class TeleOpSimple extends LinearOpMode {
         if (gamepad2.x && map.loaderFrontServo.getPosition() != loaderPosLoad) { // RING LOADER
             map.loaderFrontServo.setPosition(loaderPosLoad);
             map.loaderBackServo.setPosition(loaderPosLoad);
+            map.shooterFrontMotor.setPower(0);
+            map.shooterBackMotor.setPower(0);
             gamepadRateLimit.reset();
         } else if (gamepad2.x && map.loaderFrontServo.getPosition() != loaderPosShoot) {
             map.loaderFrontServo.setPosition(loaderPosShoot);
             map.loaderBackServo.setPosition(loaderPosShoot);
-            map.shooterFrontMotor.setPower(0);
-            map.shooterBackMotor.setPower(0);
             gamepadRateLimit.reset();
         }
 

@@ -39,7 +39,7 @@ public class WobbleSubsystem extends SubsystemBase {
         }
 
         if (servo.getPosition() == 0.0)
-            servo.setPosition(0.5);
+            servo.setPosition(0.2);
         else servo.setPosition(0.0);
         gamepadRateLimit.reset();
     }

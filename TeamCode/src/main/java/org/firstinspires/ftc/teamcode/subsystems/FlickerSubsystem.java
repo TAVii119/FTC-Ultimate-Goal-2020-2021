@@ -7,33 +7,30 @@ import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 
 import java.util.concurrent.TimeUnit;
 
-import static org.firstinspires.ftc.teamcode.opmodes.TeleOpSimple.GAMEPAD_LOCKOUT;
+import static java.lang.Thread.sleep;
 
-public class RingLiftSubsystem extends SubsystemBase {
+public class FlickerSubsystem extends SubsystemBase {
 
-    private Servo loaderFrontServo, loaderBackServo;
+    private Servo feederServo;
     private Deadline gamepadRateLimit;
     private final static int GAMEPAD_LOCKOUT = 200;
 
-    public RingLiftSubsystem(Servo servo1, Servo servo2) {
-        servo1 = loaderFrontServo;
-        servo2 = loaderBackServo;
+    public FlickerSubsystem(Servo servo) {
+        servo = feederServo;
     }
 
-    public void moveRingLift() {
+    public void feedRings() {
         gamepadRateLimit = new Deadline(GAMEPAD_LOCKOUT, TimeUnit.MILLISECONDS);
 
         if (!gamepadRateLimit.hasExpired()) {
             return;
         }
 
-        if (loaderFrontServo.getPosition() == 0.0) {
-            loaderFrontServo.setPosition(0.23);
-            loaderBackServo.setPosition(0.23);
+        if (feederServo.getPosition() == 0.0) {
+            feederServo.setPosition(0.3);
             gamepadRateLimit.reset();
         } else {
-            loaderFrontServo.setPosition(0.0);
-            loaderBackServo.setPosition(0.0);
+            feederServo.setPosition(0.0);
             gamepadRateLimit.reset();
         }
     }
