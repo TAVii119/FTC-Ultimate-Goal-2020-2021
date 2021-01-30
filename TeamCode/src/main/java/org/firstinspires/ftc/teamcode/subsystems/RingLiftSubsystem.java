@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
@@ -12,29 +13,26 @@ import static org.firstinspires.ftc.teamcode.opmodes.TeleOpSimple.GAMEPAD_LOCKOU
 public class RingLiftSubsystem extends SubsystemBase {
 
     private Servo loaderFrontServo, loaderBackServo;
-    private Deadline gamepadRateLimit;
-    private final static int GAMEPAD_LOCKOUT = 200;
+    boolean up = false;
 
     public RingLiftSubsystem(Servo servo1, Servo servo2) {
-        servo1 = loaderFrontServo;
-        servo2 = loaderBackServo;
+        loaderFrontServo = servo1;
+        loaderBackServo = servo2;
     }
 
     public void moveRingLift() {
-        gamepadRateLimit = new Deadline(GAMEPAD_LOCKOUT, TimeUnit.MILLISECONDS);
+        loaderFrontServo.setPosition(.23);
+        loaderBackServo.setPosition(.23);
+        up = true;
+    }
 
-        if (!gamepadRateLimit.hasExpired()) {
-            return;
-        }
+    public void returnRingLift() {
+        loaderFrontServo.setPosition(0);
+        loaderBackServo.setPosition(0);
+        up = false;
+    }
 
-        if (loaderFrontServo.getPosition() == 0.0) {
-            loaderFrontServo.setPosition(0.23);
-            loaderBackServo.setPosition(0.23);
-            gamepadRateLimit.reset();
-        } else {
-            loaderFrontServo.setPosition(0.0);
-            loaderBackServo.setPosition(0.0);
-            gamepadRateLimit.reset();
-        }
+    public boolean isLiftUp() {
+        return up;
     }
 }

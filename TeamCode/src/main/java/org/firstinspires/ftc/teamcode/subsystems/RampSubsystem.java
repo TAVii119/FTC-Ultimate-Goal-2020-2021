@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 
 import java.util.concurrent.TimeUnit;
@@ -11,9 +12,11 @@ public class RampSubsystem extends SubsystemBase {
 
     private Servo rampServo;
     private double rampServoPos = 0;
+    Telemetry tele;
 
-    public RampSubsystem(Servo servo) {
+    public RampSubsystem(Servo servo, Telemetry telemetry) {
         servo = rampServo; // shooter servo
+        tele = telemetry;
     }
 
     public void increasePos () {
@@ -22,5 +25,11 @@ public class RampSubsystem extends SubsystemBase {
 
     public void decreasePos () {
         rampServoPos -= 0.01;
+    }
+
+    @Override
+    public void periodic() {
+        tele.addData("Ramp Position: ", rampServoPos);
+        tele.update();
     }
 }

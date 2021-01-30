@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -13,41 +14,44 @@ import static org.firstinspires.ftc.teamcode.opmodes.TeleOpSimple.GAMEPAD_LOCKOU
 
 public class WobbleSubsystem extends SubsystemBase {
 
-    Servo servo;
-    Motor motor;
-    Telemetry tele;
-    private Deadline gamepadRateLimit;
-    private final static int GAMEPAD_LOCKOUT = 200;
+    private Motor arm;
+    private Servo grabber;
+    private boolean grabbing = false;
 
-    public WobbleSubsystem(Servo pickMeUp, Motor wobbleMotor, Telemetry telemetry){
-        servo = pickMeUp;
-        motor = wobbleMotor;
-        tele = telemetry;
+    public WobbleSubsystem(Motor arm, Servo grabber){
+        this.arm = arm;
+        this.grabber = grabber;
 
-        motor.resetEncoder();
+        arm.setRunMode(Motor.RunMode.PositionControl);
     }
 
-    public void moveWobbleMotor(double spd) {
-        motor.set(spd);
+    public void openGrabber(){
+        grabbing = false;
+        grabber.setPosition(0);
     }
 
-    public void moveWobbleServo() {
-        gamepadRateLimit = new Deadline(GAMEPAD_LOCKOUT, TimeUnit.MILLISECONDS);
-
-        if (!gamepadRateLimit.hasExpired()) {
-            return;
-        }
-
-        if (servo.getPosition() == 0.0)
-            servo.setPosition(0.2);
-        else servo.setPosition(0.0);
-        gamepadRateLimit.reset();
+    public void closeGrabber(){
+        grabbing = true;
+        grabber.setPosition(.2);
     }
 
-    @Override
-    public void periodic() {
-        tele.addData("Wobble Motor Position: ", motor.getCurrentPosition());
-        tele.addData("Wobble Servo Position: ", servo.getPosition());
-        tele.update();
+    public boolean isGrabbing(){
+        return grabbing;
+    }
+
+    public Motor getMotor(){
+        return arm;
+    }
+
+    public void stopMotor(){
+        arm.stopMotor();
+    }
+
+    public void armUp(){
+        arm.set(0.3);
+    }
+
+    public void armDown(){
+        arm.set(0.2);
     }
 }

@@ -26,7 +26,9 @@ public class FlickerCommand extends CommandBase {
         runtime.reset();
     }
 
+    /*
     public void end() {
         flickerSubsystem.flickReset();
     }
+     */
 }

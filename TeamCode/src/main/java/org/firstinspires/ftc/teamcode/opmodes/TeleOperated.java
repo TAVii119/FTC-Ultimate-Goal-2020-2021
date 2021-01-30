@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.roadrunner.drive.Drive;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.button.Button;
@@ -11,25 +10,23 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
-import org.firstinspires.ftc.teamcode.commands.FlickReturnCommand;
 import org.firstinspires.ftc.teamcode.commands.FlickerCommand;
+import org.firstinspires.ftc.teamcode.commands.LiftRampCommand;
 import org.firstinspires.ftc.teamcode.commands.IntakeCommand;
+import org.firstinspires.ftc.teamcode.commands.LowerRampCommand;
 import org.firstinspires.ftc.teamcode.commands.OuttakeCommand;
-import org.firstinspires.ftc.teamcode.commands.RingLiftCommand;
 import org.firstinspires.ftc.teamcode.commands.ShootCommand;
-import org.firstinspires.ftc.teamcode.commands.WobbleMotorCommand;
-import org.firstinspires.ftc.teamcode.commands.WobbleServoCommand;
+import org.firstinspires.ftc.teamcode.commands.WobblePickUpCommand;
+import org.firstinspires.ftc.teamcode.commands.WobblePutDownCommand;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.FlickerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.RampSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RingLiftSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.WobbleSubsystem;
-import org.firstinspires.ftc.teamcode.util.TimedAction;
 
 /*
 This class was created by Botosan Octavian on October 28, 2020.
@@ -51,29 +48,34 @@ public class TeleOperated extends CommandOpMode {
     private ShooterSubsystem shooterSystem;
     private IntakeSubsystem intakeSystem;
     private RingLiftSubsystem ringLiftSystem;
-    private WobbleSubsystem wobbleSystem;
     private FlickerSubsystem flickerSystem;
+    private WobbleSubsystem wobbleSystem;
+    private RampSubsystem rampSystem;
 
     // Commands
     private DriveCommand driveCommand;
     private ShootCommand shootCommand;
     private IntakeCommand intakeCommand;
     private OuttakeCommand outtakeCommand;
-    private RingLiftCommand ringLiftCommand;
-    private WobbleMotorCommand wobbleMotorCommand;
-    private WobbleServoCommand wobbleServoCommand;
     private FlickerCommand flickerCommand;
-    private FlickReturnCommand flickReturnCommand;
+    private InstantCommand ringLiftCommand;
+    private WobblePickUpCommand wobblePickUpCommand;
+    private WobblePutDownCommand wobblePutDownCommand;
+    private InstantCommand grabberCommand;
+    private LiftRampCommand liftRampCommand;
+    private LowerRampCommand lowerRampCommand;
 
     // Extra
     private GamepadEx driver1, driver2;
-    private Button intakeButton, outtakeButton, ringLiftButton, wobbleServoButton,
-    shootButton, flickButton, slowDrive;
+    private Button intakeButton, outtakeButton, ringLiftButton, shootButton,
+            flickButton, wobbleGrabberButton, wobblePickUpButton, wobblePutDownButton,
+            liftRampButton, lowerRampButton;
     private FtcDashboard dashboard;
     public double mult = 1.0;
 
     @Override
     public void initialize() {
+
         // MOTORS
         fL = new Motor(hardwareMap, "flMotor", Motor.GoBILDA.RPM_312);
         fL.setInverted(true);
@@ -94,11 +96,7 @@ public class TeleOperated extends CommandOpMode {
         loaderFront = hardwareMap.get(Servo.class, "loaderFrontServo");
         loaderBack = hardwareMap.get(Servo.class, "loaderBackServo");
         wobbleServo = hardwareMap.get(Servo.class, "wobbleServo");
-        //flickerServo = hardwareMap.get(Servo.class, "feederServo");
-        wobbleServo.setDirection(Servo.Direction.FORWARD);
-        loaderFront.setDirection(Servo.Direction.FORWARD);
         loaderBack.setDirection(Servo.Direction.REVERSE);
-        //flickerServo.setDirection(Servo.Direction.FORWARD);
 
         // Controller
         driver1 = new GamepadEx(gamepad1);
@@ -107,7 +105,12 @@ public class TeleOperated extends CommandOpMode {
 
         //Subsystems and Commands
         driveSystem = new DriveSubsystem(fL, fR, bL, bR);
-        driveCommand = new DriveCommand(driveSystem, driver1::getLeftX, driver1::getLeftY, driver1::getRightX);
+        driveCommand = new DriveCommand(driveSystem, driver1::getLeftY, driver1::getRightX, driver1::getLeftX, mult);
+
+        if (gamepad1.left_stick_button)
+            mult = .3;
+        else if (gamepad1.right_stick_button)
+            mult = 1;
 
         shooterSystem = new ShooterSubsystem(flywheel, telemetry);
         shootCommand = new ShootCommand(shooterSystem);
@@ -117,23 +120,36 @@ public class TeleOperated extends CommandOpMode {
         outtakeCommand = new OuttakeCommand(intakeSystem);
 
         ringLiftSystem = new RingLiftSubsystem(loaderFront, loaderBack);
-        ringLiftCommand = new RingLiftCommand(ringLiftSystem);
-
-        wobbleSystem = new WobbleSubsystem(wobbleServo, wobbleMotor, telemetry);
-        wobbleMotorCommand = new WobbleMotorCommand(wobbleSystem, -gamepad2.left_stick_y);
-        wobbleServoCommand = new WobbleServoCommand(wobbleSystem);
+        ringLiftCommand = new InstantCommand(()-> {
+            if (ringLiftSystem.isLiftUp())
+                ringLiftSystem.returnRingLift();
+            else ringLiftSystem.moveRingLift();
+        }, ringLiftSystem);
 
         flickerSystem = new FlickerSubsystem(hardwareMap, "feederServo");
         flickerCommand = new FlickerCommand(flickerSystem);
-        flickReturnCommand = new FlickReturnCommand(flickerSystem);
+
+        wobbleSystem = new WobbleSubsystem(wobbleMotor, wobbleServo);
+        grabberCommand = new InstantCommand(()-> {
+            if (wobbleSystem.isGrabbing())
+                wobbleSystem.openGrabber();
+            else
+                wobbleSystem.closeGrabber();
+        }, wobbleSystem);
+        wobblePickUpCommand = new WobblePickUpCommand(wobbleSystem);
+        wobblePutDownCommand = new WobblePutDownCommand(wobbleSystem);
 
         intakeButton = new GamepadButton(driver1, GamepadKeys.Button.A).whenHeld(intakeCommand);
         outtakeButton = new GamepadButton(driver1, GamepadKeys.Button.B).whenHeld(outtakeCommand);
 
         ringLiftButton = new GamepadButton(driver2, GamepadKeys.Button.X).whenPressed(ringLiftCommand);
-        wobbleServoButton = new GamepadButton(driver2, GamepadKeys.Button.B).whenPressed(wobbleServoCommand);
         flickButton = new GamepadButton(driver2, GamepadKeys.Button.A).whileHeld(flickerCommand);
         shootButton = new GamepadButton(driver2, GamepadKeys.Button.Y).whenPressed(shootCommand);
+        wobbleGrabberButton = new GamepadButton(driver2, GamepadKeys.Button.B).whenPressed(grabberCommand);
+        wobblePickUpButton = new GamepadButton(driver2, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(wobblePickUpCommand);
+        wobblePutDownButton = new GamepadButton(driver2, GamepadKeys.Button.LEFT_BUMPER).whenPressed(wobblePutDownCommand);
+        liftRampButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_UP).whenPressed(liftRampCommand);
+        lowerRampButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_DOWN).whenPressed(lowerRampCommand);
 
         register(driveSystem);
         driveSystem.setDefaultCommand(driveCommand);

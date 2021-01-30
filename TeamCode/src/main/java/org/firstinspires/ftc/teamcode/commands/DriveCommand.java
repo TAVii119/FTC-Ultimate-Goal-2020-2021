@@ -12,22 +12,22 @@ public class DriveCommand extends CommandBase {
 
     private final DriveSubsystem mecDrive;
     private final DoubleSupplier m_strafe, m_forward, m_turn;
-    private final DoubleSupplier multiplier;
+    private double multiplier;
 
-    public DriveCommand(DriveSubsystem subsystem, DoubleSupplier strafe, DoubleSupplier forward, DoubleSupplier turn) {
+    public DriveCommand(DriveSubsystem subsystem, DoubleSupplier forward, DoubleSupplier turn, DoubleSupplier strafe, double mult) {
         mecDrive = subsystem;
-        m_strafe = strafe;
         m_forward = forward;
         m_turn = turn;
-        multiplier = ()-> 1.0;
+        m_strafe = strafe;
+        multiplier = mult;
 
         addRequirements(subsystem);
     }
 
     @Override
     public void execute() {
-        mecDrive.drive(m_strafe.getAsDouble() * multiplier.getAsDouble(),
-                m_forward.getAsDouble() * multiplier.getAsDouble(),
-                m_turn.getAsDouble() * multiplier.getAsDouble());
+        mecDrive.drive(m_forward.getAsDouble() * multiplier,
+                m_turn.getAsDouble() * multiplier,
+                m_strafe.getAsDouble() * multiplier);
     }
 }

@@ -29,12 +29,8 @@ public class DriveSubsystem extends SubsystemBase {
         drive = new MecanumDrive(fL, fR, bL, bR);
     }
 
-    //Strafe Speed, Forward Speed, and Turn Speed
-    public void drive(double strfSpd, double fSpd, double trnSpd) {
-        drive.driveRobotCentric(-strfSpd, -fSpd, -trnSpd, true);
-    }
-
-    public void halt() {
-        drive.stop();
+    //Forward Speed, Turn Speed and Strafe Speed,
+    public void drive(double forwardSpeed, double turnSpeed, double strafeSpeed) {
+        drive.driveRobotCentric(strafeSpeed, forwardSpeed, turnSpeed, true);
     }
 }
