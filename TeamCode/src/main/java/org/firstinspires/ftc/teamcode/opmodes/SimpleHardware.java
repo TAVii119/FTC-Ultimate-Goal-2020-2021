@@ -45,10 +45,10 @@ public class SimpleHardware {
         wobbleMotor = robotMap.get(DcMotor.class, "wobbleMotor");
 
         // SET MOTOR DIRECTION
-        flMotor.setDirection(DcMotor.Direction.FORWARD);
-        frMotor.setDirection(DcMotor.Direction.REVERSE);
-        blMotor.setDirection(DcMotor.Direction.FORWARD);
-        brMotor.setDirection(DcMotor.Direction.REVERSE);
+        flMotor.setDirection(DcMotor.Direction.REVERSE);
+        frMotor.setDirection(DcMotor.Direction.FORWARD);
+        blMotor.setDirection(DcMotor.Direction.REVERSE);
+        brMotor.setDirection(DcMotor.Direction.FORWARD);
         shooterFrontMotor.setDirection(DcMotor.Direction.REVERSE);
         shooterBackMotor.setDirection(DcMotor.Direction.REVERSE);
         intakeMotor.setDirection(DcMotor.Direction.REVERSE);

@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.drive.opmode;
 
-import com.acmerobotics.dashboard.FtcDashboard;
+    import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
@@ -16,10 +16,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Config
 @TeleOp
 public class LinkedMotorTuner extends LinearOpMode {
-    public static PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(0, 0, 0);
+    public static PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(0.00001, 0, 0.002);
 
-    public static double kV = 1 / TuningController.rpmToTicksPerSecond(TuningController.MOTOR_MAX_RPM);
-    public static double kA = 0;
+    public static double kV = 0.00042;
+    public static double kA = 0.00037;
     public static double kStatic = 0;
 
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -33,11 +33,11 @@ public class LinkedMotorTuner extends LinearOpMode {
         DcMotorEx myMotor2 = hardwareMap.get(DcMotorEx.class, "shooterBackMotor");
 
         // Reverse as appropriate
-        // myMotor1.setDirection(DcMotorSimple.Direction.REVERSE);
-        // myMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
+         myMotor1.setDirection(DcMotorEx.Direction.REVERSE);
+         myMotor2.setDirection(DcMotorEx.Direction.REVERSE);
 
-        myMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        myMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+         myMotor1.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+         myMotor2.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
         for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);

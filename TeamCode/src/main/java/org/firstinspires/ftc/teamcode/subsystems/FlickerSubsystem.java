@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
+import org.firstinspires.ftc.teamcode.util.TimedAction;
 
 import java.util.concurrent.TimeUnit;
 
@@ -11,27 +13,18 @@ import static java.lang.Thread.sleep;
 
 public class FlickerSubsystem extends SubsystemBase {
 
-    private Servo feederServo;
-    private Deadline gamepadRateLimit;
-    private final static int GAMEPAD_LOCKOUT = 200;
+    private final Servo flickerServo;
+    private TimedAction flickerAction;
 
-    public FlickerSubsystem(Servo servo) {
-        servo = feederServo;
+    public FlickerSubsystem(final HardwareMap hMap, final String name) {
+        flickerServo = hMap.get(Servo.class, name);
     }
 
-    public void feedRings() {
-        gamepadRateLimit = new Deadline(GAMEPAD_LOCKOUT, TimeUnit.MILLISECONDS);
+    public void flick() {
+        flickerServo.setPosition(0.3);
+    }
 
-        if (!gamepadRateLimit.hasExpired()) {
-            return;
-        }
-
-        if (feederServo.getPosition() == 0.0) {
-            feederServo.setPosition(0.3);
-            gamepadRateLimit.reset();
-        } else {
-            feederServo.setPosition(0.0);
-            gamepadRateLimit.reset();
-        }
+    public void flickReset() {
+        flickerServo.setPosition(0.0);
     }
 }

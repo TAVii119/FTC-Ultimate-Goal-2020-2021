@@ -14,16 +14,6 @@ public class DriveCommand extends CommandBase {
     private final DoubleSupplier m_strafe, m_forward, m_turn;
     private final DoubleSupplier multiplier;
 
-    public DriveCommand(DriveSubsystem subsystem, DoubleSupplier strafe,
-                        DoubleSupplier forward, DoubleSupplier turn, DoubleSupplier mult) {
-        mecDrive = subsystem;
-        m_strafe = strafe;
-        m_forward = forward;
-        m_turn = turn;
-        multiplier = mult;
-
-        addRequirements(subsystem);
-    }
     public DriveCommand(DriveSubsystem subsystem, DoubleSupplier strafe, DoubleSupplier forward, DoubleSupplier turn) {
         mecDrive = subsystem;
         m_strafe = strafe;

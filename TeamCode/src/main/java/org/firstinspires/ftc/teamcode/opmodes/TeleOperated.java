@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.roadrunner.drive.Drive;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.button.Button;
@@ -10,9 +11,11 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
+import org.firstinspires.ftc.teamcode.commands.FlickReturnCommand;
 import org.firstinspires.ftc.teamcode.commands.FlickerCommand;
 import org.firstinspires.ftc.teamcode.commands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.commands.OuttakeCommand;
@@ -26,6 +29,7 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RingLiftSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.WobbleSubsystem;
+import org.firstinspires.ftc.teamcode.util.TimedAction;
 
 /*
 This class was created by Botosan Octavian on October 28, 2020.
@@ -59,11 +63,12 @@ public class TeleOperated extends CommandOpMode {
     private WobbleMotorCommand wobbleMotorCommand;
     private WobbleServoCommand wobbleServoCommand;
     private FlickerCommand flickerCommand;
+    private FlickReturnCommand flickReturnCommand;
 
     // Extra
     private GamepadEx driver1, driver2;
     private Button intakeButton, outtakeButton, ringLiftButton, wobbleServoButton,
-    shootButton, flickButton;
+    shootButton, flickButton, slowDrive;
     private FtcDashboard dashboard;
     public double mult = 1.0;
 
@@ -71,22 +76,29 @@ public class TeleOperated extends CommandOpMode {
     public void initialize() {
         // MOTORS
         fL = new Motor(hardwareMap, "flMotor", Motor.GoBILDA.RPM_312);
+        fL.setInverted(true);
         fR = new Motor(hardwareMap, "frMotor", Motor.GoBILDA.RPM_312);
         bL = new Motor(hardwareMap, "blMotor", Motor.GoBILDA.RPM_312);
+        bL.setInverted(true);
         bR = new Motor(hardwareMap, "brMotor", Motor.GoBILDA.RPM_312);
         intake = new Motor(hardwareMap, "intakeMotor", Motor.GoBILDA.RPM_312);
+        intake.setInverted(true);
         flywheel = new MotorGroup(
                 new Motor(hardwareMap, "shooterFrontMotor", Motor.GoBILDA.BARE),
                 new Motor(hardwareMap, "shooterBackMotor", Motor.GoBILDA.BARE)
         );
+        flywheel.setInverted(true);
         wobbleMotor = new Motor(hardwareMap, "wobbleMotor", Motor.GoBILDA.RPM_312);
 
         // SERVOS
         loaderFront = hardwareMap.get(Servo.class, "loaderFrontServo");
         loaderBack = hardwareMap.get(Servo.class, "loaderBackServo");
-        loaderBack.setDirection(Servo.Direction.REVERSE);
         wobbleServo = hardwareMap.get(Servo.class, "wobbleServo");
-        flickerServo = hardwareMap.get(Servo.class, "feederServo");
+        //flickerServo = hardwareMap.get(Servo.class, "feederServo");
+        wobbleServo.setDirection(Servo.Direction.FORWARD);
+        loaderFront.setDirection(Servo.Direction.FORWARD);
+        loaderBack.setDirection(Servo.Direction.REVERSE);
+        //flickerServo.setDirection(Servo.Direction.FORWARD);
 
         // Controller
         driver1 = new GamepadEx(gamepad1);
@@ -95,7 +107,7 @@ public class TeleOperated extends CommandOpMode {
 
         //Subsystems and Commands
         driveSystem = new DriveSubsystem(fL, fR, bL, bR);
-        driveCommand = new DriveCommand(driveSystem, driver1::getLeftX, driver1::getLeftY, driver1::getRightX, () -> mult);
+        driveCommand = new DriveCommand(driveSystem, driver1::getLeftX, driver1::getLeftY, driver1::getRightX);
 
         shooterSystem = new ShooterSubsystem(flywheel, telemetry);
         shootCommand = new ShootCommand(shooterSystem);
@@ -111,18 +123,19 @@ public class TeleOperated extends CommandOpMode {
         wobbleMotorCommand = new WobbleMotorCommand(wobbleSystem, -gamepad2.left_stick_y);
         wobbleServoCommand = new WobbleServoCommand(wobbleSystem);
 
-        flickerSystem = new FlickerSubsystem(flickerServo);
+        flickerSystem = new FlickerSubsystem(hardwareMap, "feederServo");
         flickerCommand = new FlickerCommand(flickerSystem);
+        flickReturnCommand = new FlickReturnCommand(flickerSystem);
 
-        intakeButton = new GamepadButton(driver1, GamepadKeys.Button.RIGHT_BUMPER).whenHeld(intakeCommand);
-        outtakeButton = new GamepadButton(driver1, GamepadKeys.Button.LEFT_BUMPER).whenHeld(outtakeCommand);
+        intakeButton = new GamepadButton(driver1, GamepadKeys.Button.A).whenHeld(intakeCommand);
+        outtakeButton = new GamepadButton(driver1, GamepadKeys.Button.B).whenHeld(outtakeCommand);
 
         ringLiftButton = new GamepadButton(driver2, GamepadKeys.Button.X).whenPressed(ringLiftCommand);
         wobbleServoButton = new GamepadButton(driver2, GamepadKeys.Button.B).whenPressed(wobbleServoCommand);
-        flickButton = new GamepadButton(driver2, GamepadKeys.Button.A).whenPressed(flickerCommand);
+        flickButton = new GamepadButton(driver2, GamepadKeys.Button.A).whileHeld(flickerCommand);
         shootButton = new GamepadButton(driver2, GamepadKeys.Button.Y).whenPressed(shootCommand);
 
-        register(driveSystem, intakeSystem, shooterSystem, ringLiftSystem, wobbleSystem, flickerSystem);
+        register(driveSystem);
         driveSystem.setDefaultCommand(driveCommand);
     }
 }
