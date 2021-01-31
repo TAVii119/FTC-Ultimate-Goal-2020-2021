@@ -31,6 +31,9 @@ public class DriveSubsystem extends SubsystemBase {
 
     //Forward Speed, Turn Speed and Strafe Speed,
     public void drive(double forwardSpeed, double turnSpeed, double strafeSpeed) {
-        drive.driveRobotCentric(strafeSpeed, forwardSpeed, turnSpeed, true);
+        fL.set(forwardSpeed + turnSpeed + strafeSpeed);
+        fR.set(forwardSpeed - turnSpeed - strafeSpeed);
+        bL.set(forwardSpeed + turnSpeed - strafeSpeed);
+        bR.set(forwardSpeed - turnSpeed + strafeSpeed);
     }
 }

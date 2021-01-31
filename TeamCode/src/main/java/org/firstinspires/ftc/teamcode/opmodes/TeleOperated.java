@@ -13,13 +13,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.commands.FlickerCommand;
+import org.firstinspires.ftc.teamcode.commands.ReturnFlickerCommand;
 import org.firstinspires.ftc.teamcode.commands.LiftRampCommand;
 import org.firstinspires.ftc.teamcode.commands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.commands.LowerRampCommand;
 import org.firstinspires.ftc.teamcode.commands.OuttakeCommand;
-import org.firstinspires.ftc.teamcode.commands.ShootCommand;
-import org.firstinspires.ftc.teamcode.commands.WobblePickUpCommand;
-import org.firstinspires.ftc.teamcode.commands.WobblePutDownCommand;
+import org.firstinspires.ftc.teamcode.commands.WobbleCommand;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.FlickerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
@@ -41,7 +40,7 @@ public class TeleOperated extends CommandOpMode {
     private Motor fL, fR, bL, bR;
     private Motor intake, wobbleMotor;
     private MotorGroup flywheel;
-    private Servo loaderFront, loaderBack, wobbleServo, flickerServo;
+    private Servo loaderFront, loaderBack, wobbleServo, flickerServo, shooterServo;
 
     // Subsystems
     private DriveSubsystem driveSystem;
@@ -54,22 +53,22 @@ public class TeleOperated extends CommandOpMode {
 
     // Commands
     private DriveCommand driveCommand;
-    private ShootCommand shootCommand;
     private IntakeCommand intakeCommand;
     private OuttakeCommand outtakeCommand;
     private FlickerCommand flickerCommand;
+    private ReturnFlickerCommand returnFlickerCommand;
     private InstantCommand ringLiftCommand;
-    private WobblePickUpCommand wobblePickUpCommand;
-    private WobblePutDownCommand wobblePutDownCommand;
+    private WobbleCommand wobbleCommand;
     private InstantCommand grabberCommand;
     private LiftRampCommand liftRampCommand;
     private LowerRampCommand lowerRampCommand;
+    private InstantCommand shootCommand;
 
     // Extra
     private GamepadEx driver1, driver2;
     private Button intakeButton, outtakeButton, ringLiftButton, shootButton,
             flickButton, wobbleGrabberButton, wobblePickUpButton, wobblePutDownButton,
-            liftRampButton, lowerRampButton;
+            liftRampButton, lowerRampButton, resetFlickButton;
     private FtcDashboard dashboard;
     public double mult = 1.0;
 
@@ -96,7 +95,9 @@ public class TeleOperated extends CommandOpMode {
         loaderFront = hardwareMap.get(Servo.class, "loaderFrontServo");
         loaderBack = hardwareMap.get(Servo.class, "loaderBackServo");
         wobbleServo = hardwareMap.get(Servo.class, "wobbleServo");
+        shooterServo = hardwareMap.get(Servo.class, "shooterServo");
         loaderBack.setDirection(Servo.Direction.REVERSE);
+        shooterServo.setDirection(Servo.Direction.REVERSE);
 
         // Controller
         driver1 = new GamepadEx(gamepad1);
@@ -113,7 +114,12 @@ public class TeleOperated extends CommandOpMode {
             mult = 1;
 
         shooterSystem = new ShooterSubsystem(flywheel, telemetry);
-        shootCommand = new ShootCommand(shooterSystem);
+        shootCommand = new InstantCommand(()-> {
+            if (!shooterSystem.isShooting())
+                shooterSystem.shoot();
+            else
+                shooterSystem.stopshoot();
+        }, shooterSystem);
 
         intakeSystem = new IntakeSubsystem(intake);
         intakeCommand = new IntakeCommand(intakeSystem);
@@ -128,30 +134,34 @@ public class TeleOperated extends CommandOpMode {
 
         flickerSystem = new FlickerSubsystem(hardwareMap, "feederServo");
         flickerCommand = new FlickerCommand(flickerSystem);
+        returnFlickerCommand = new ReturnFlickerCommand(flickerSystem);
 
         wobbleSystem = new WobbleSubsystem(wobbleMotor, wobbleServo);
+        wobbleCommand = new WobbleCommand(wobbleSystem, driver2::getRightY);
         grabberCommand = new InstantCommand(()-> {
             if (wobbleSystem.isGrabbing())
                 wobbleSystem.openGrabber();
             else
                 wobbleSystem.closeGrabber();
         }, wobbleSystem);
-        wobblePickUpCommand = new WobblePickUpCommand(wobbleSystem);
-        wobblePutDownCommand = new WobblePutDownCommand(wobbleSystem);
+
+        rampSystem = new RampSubsystem(shooterServo, telemetry);
+        liftRampCommand = new LiftRampCommand(rampSystem);
+        lowerRampCommand = new LowerRampCommand(rampSystem);
 
         intakeButton = new GamepadButton(driver1, GamepadKeys.Button.A).whenHeld(intakeCommand);
         outtakeButton = new GamepadButton(driver1, GamepadKeys.Button.B).whenHeld(outtakeCommand);
 
         ringLiftButton = new GamepadButton(driver2, GamepadKeys.Button.X).whenPressed(ringLiftCommand);
         flickButton = new GamepadButton(driver2, GamepadKeys.Button.A).whileHeld(flickerCommand);
-        shootButton = new GamepadButton(driver2, GamepadKeys.Button.Y).whenPressed(shootCommand);
-        wobbleGrabberButton = new GamepadButton(driver2, GamepadKeys.Button.B).whenPressed(grabberCommand);
-        wobblePickUpButton = new GamepadButton(driver2, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(wobblePickUpCommand);
-        wobblePutDownButton = new GamepadButton(driver2, GamepadKeys.Button.LEFT_BUMPER).whenPressed(wobblePutDownCommand);
+        resetFlickButton = new GamepadButton(driver2, GamepadKeys.Button.A).whenReleased(returnFlickerCommand);
+        shootButton = new GamepadButton(driver2, GamepadKeys.Button.B).whenPressed(shootCommand);
+        wobbleGrabberButton = new GamepadButton(driver2, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(grabberCommand);
         liftRampButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_UP).whenPressed(liftRampCommand);
         lowerRampButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_DOWN).whenPressed(lowerRampCommand);
 
-        register(driveSystem);
+        register(driveSystem, wobbleSystem);
         driveSystem.setDefaultCommand(driveCommand);
+        wobbleSystem.setDefaultCommand(wobbleCommand);
     }
 }

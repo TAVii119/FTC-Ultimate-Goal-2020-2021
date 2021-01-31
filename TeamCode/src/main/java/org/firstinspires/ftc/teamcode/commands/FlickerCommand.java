@@ -20,15 +20,6 @@ public class FlickerCommand extends CommandBase {
 
     @Override
     public void execute() {
-        while (runtime.milliseconds() < 100)
-            flickerSubsystem.flick();
-        flickerSubsystem.flickReset();
-        runtime.reset();
+        flickerSubsystem.flick();
     }
-
-    /*
-    public void end() {
-        flickerSubsystem.flickReset();
-    }
-     */
 }

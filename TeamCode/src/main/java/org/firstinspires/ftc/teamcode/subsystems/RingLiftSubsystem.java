@@ -21,8 +21,8 @@ public class RingLiftSubsystem extends SubsystemBase {
     }
 
     public void moveRingLift() {
-        loaderFrontServo.setPosition(.23);
-        loaderBackServo.setPosition(.23);
+        loaderFrontServo.setPosition(.22);
+        loaderBackServo.setPosition(.22);
         up = true;
     }
 

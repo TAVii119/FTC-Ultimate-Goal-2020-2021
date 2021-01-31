@@ -16,7 +16,7 @@ public class OuttakeCommand extends CommandBase {
 
     @Override
     public void execute() {
-        intakeSystem.suck();
+        intakeSystem.outtake();
     }
 
     @Override

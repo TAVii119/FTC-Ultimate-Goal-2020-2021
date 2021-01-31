@@ -14,9 +14,7 @@ public class IntakeCommand extends CommandBase {
     }
 
     @Override
-    public void execute() {
-        intakeSystem.down();
-    }
+    public void execute() { intakeSystem.intake(); }
 
     @Override
     public void cancel() {

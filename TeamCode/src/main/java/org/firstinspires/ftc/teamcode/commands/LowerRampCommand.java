@@ -14,6 +14,6 @@ public class LowerRampCommand extends CommandBase {
 
     @Override
     public void execute() {
-        rampSubsystem.decreasePos();
+        rampSubsystem.powershotPos();
     }
 }

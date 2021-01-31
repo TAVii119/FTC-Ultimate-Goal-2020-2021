@@ -5,6 +5,7 @@ import com.arcrobotics.ftclib.controller.wpilibcontroller.SimpleMotorFeedforward
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
@@ -26,19 +27,28 @@ public class ShooterSubsystem extends SubsystemBase {
     private MotorGroup flywheel;
     private double power = 0;
     private Telemetry telemetry;
-    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0, 0.00042, 0.00037);
+    boolean isShooting = false;
 
     public ShooterSubsystem(MotorGroup flywheel, Telemetry telemetry){
         this.flywheel = flywheel;
 
         this.flywheel.setRunMode(Motor.RunMode.VelocityControl);
-        this.flywheel.setVeloCoefficients(0.00001, 0, 0.002);
+        this.flywheel.setVeloCoefficients(0.003, 0, 0.0001);
         this.flywheel.setFeedforwardCoefficients(0, 0.00042);
-
         this.telemetry = telemetry;
     }
 
     public void shoot() {
         flywheel.set(1);
+        isShooting = true;
+    }
+
+    public void stopshoot() {
+        flywheel.set(0);
+        isShooting = false;
+    }
+
+    public boolean isShooting() {
+        return isShooting;
     }
 }

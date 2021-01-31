@@ -69,7 +69,7 @@ public class SimpleHardware {
         frMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         blMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         brMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        shooterFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooterFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         shooterBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // ODOMETRY RIGHT
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // ODOMETRY LEFT
         wobbleMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // ODOMETRY STRAFE

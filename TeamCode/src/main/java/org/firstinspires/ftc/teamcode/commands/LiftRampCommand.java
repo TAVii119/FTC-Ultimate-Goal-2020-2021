@@ -14,6 +14,6 @@ public class LiftRampCommand extends CommandBase {
 
     @Override
     public void execute() {
-        rampSubsystem.increasePos();
+        rampSubsystem.topGoalPos();
     }
 }

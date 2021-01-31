@@ -1,6 +1,0 @@
-org.tensorflow.lite.DataType
-org.tensorflow.lite.DataType$1
-org.tensorflow.lite.Interpreter
-org.tensorflow.lite.NativeInterpreterWrapper
-org.tensorflow.lite.Tensor
-org.tensorflow.lite.TensorFlowLite

@@ -10,26 +10,26 @@ import java.util.concurrent.TimeUnit;
 
 public class RampSubsystem extends SubsystemBase {
 
-    private Servo rampServo;
+    private Servo shooterServo;
     private double rampServoPos = 0;
     Telemetry tele;
 
     public RampSubsystem(Servo servo, Telemetry telemetry) {
-        servo = rampServo; // shooter servo
+        shooterServo = servo; // shooter servo
         tele = telemetry;
     }
 
-    public void increasePos () {
-        rampServoPos += 0.01;
+    public void topGoalPos () {
+        shooterServo.setPosition(0.06);
     }
 
-    public void decreasePos () {
-        rampServoPos -= 0.01;
+    public void powershotPos () {
+        shooterServo.setPosition(0.04);
     }
 
     @Override
     public void periodic() {
-        tele.addData("Ramp Position: ", rampServoPos);
+        tele.addData("Ramp Position: ", shooterServo.getPosition());
         tele.update();
     }
 }

@@ -22,7 +22,6 @@ public class WobbleSubsystem extends SubsystemBase {
         this.arm = arm;
         this.grabber = grabber;
 
-        arm.setRunMode(Motor.RunMode.PositionControl);
     }
 
     public void openGrabber(){
@@ -43,15 +42,7 @@ public class WobbleSubsystem extends SubsystemBase {
         return arm;
     }
 
-    public void stopMotor(){
-        arm.stopMotor();
-    }
-
-    public void armUp(){
-        arm.set(0.3);
-    }
-
-    public void armDown(){
-        arm.set(0.2);
+    public void driveWobbleArm(double armSpeed) {
+        arm.set(armSpeed);
     }
 }
