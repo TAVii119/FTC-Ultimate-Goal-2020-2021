@@ -23,7 +23,7 @@ public class TeleOpSimple extends LinearOpMode {
     double flPower, frPower, blPower, brPower = 0;
     public final static int GAMEPAD_LOCKOUT = 200; // PRESS DELAY IN MS
     public double intakeLatch = 0.0, intakeUnlatch = 0.3;
-    public double loaderPosLoad = 0.0, loaderPosShoot = 0.23;
+    public double loaderPosLoad = 0.0, loaderPosShoot = 0.22;
     public double feederInit = 0.0, feederPush = 0.3;
     public double wobbleGrabberGrab = 0.0, wobbleGrabberUngrab = 0.2;
     public double shooterServoPos = 0.0;
