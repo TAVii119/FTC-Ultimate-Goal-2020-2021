@@ -1,11 +1,9 @@
-package org.firstinspires.ftc.teamcode.opmodes.autonomous;
+package org.firstinspires.ftc.teamcode.opmodes.Autonomous;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.path.heading.ConstantInterpolator;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -13,8 +11,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.opmodes.SimpleHardware;
 
-@Autonomous(name = "AutonomieTester", group = "Autonomous")
-public class AutonomieTester extends LinearOpMode {
+@Autonomous(name = "StangaBluePowershot", group = "Blue Auto")
+public class StangaBluePowershot extends LinearOpMode {
     SimpleHardware map = new SimpleHardware();
 
 
@@ -31,54 +29,67 @@ public class AutonomieTester extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                .splineTo(new Vector2d(-10, 61), 0)
+                .splineToLinearHeading(new Pose2d(-9.5, 59.5), 0)
                 .build();
 
-        Trajectory traj2 = drive.trajectoryBuilder(new Pose2d(-10, 61))
-                .splineToLinearHeading(new Pose2d(-2.0, 50.0), 0)
+        Trajectory traj2 = drive.trajectoryBuilder(new Pose2d(-9.5, 59.5))
+                .splineToLinearHeading(new Pose2d(-2.0, 32.0, Math.toRadians(2)), 0)
                 .build();
 
-        Trajectory traj3 = drive.trajectoryBuilder(new Pose2d(-2.0, 50.0))
-                .lineToSplineHeading(new Pose2d(-35, 30, Math.toRadians(170)))
+        Trajectory traj3 = drive.trajectoryBuilder(new Pose2d(-2.0, 32, Math.toRadians(2)))
+                .strafeRight(7)
                 .build();
 
-        Trajectory traj4 = drive.trajectoryBuilder(new Pose2d(-35, 30))
-                .lineToSplineHeading(new Pose2d(-6.5, 54, 0))
+        Trajectory traj4 = drive.trajectoryBuilder(new Pose2d(-2.0, 25, Math.toRadians(2)))
+                .strafeRight(6.5)
                 .build();
 
-        Trajectory traj5 = drive.trajectoryBuilder(new Pose2d(-6.5, 54.0))
-                .lineToSplineHeading(new Pose2d(13, 40, 0))
+        Trajectory traj5 = drive.trajectoryBuilder(new Pose2d(-2, 18.5, Math.toRadians(2)))
+                .lineToSplineHeading(new Pose2d(-33.5, 30, Math.toRadians(170)))
+                .build();
+
+        Trajectory traj6 = drive.trajectoryBuilder(new Pose2d(-33.5, 30, Math.toRadians(170)))
+                .lineToSplineHeading(new Pose2d(-6.5, 54, Math.toRadians(0)))
+                .build();
+
+        Trajectory traj7 = drive.trajectoryBuilder(new Pose2d(-6.5, 54, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(10, 30, Math.toRadians(0)))
                 .build();
 
         resetServos();
         dropIntake();
         drive.followTrajectory(traj1);
-        // Place wobble goal
+        // Lasa wobble goal
         placeWobbleGoal(500, 0.4);
         returnWobbleArm();
-        setShooterPower(1, 0.05);
+        setShooterPower(1, 0.04);
         liftRingHolder();
         drive.followTrajectory(traj2);
-        // Trage inele la tower goal
-        sleep(300);
+        // Trage powershot
+        sleep(500);
+        flicker();
+        drive.followTrajectory(traj3);
+        // Trage powershot
+        sleep(250);
+        flicker();
+        drive.followTrajectory(traj4);
+        // Trage powershot
+        sleep(250);
         flicker();
         flicker();
-        flicker();
-        flicker();
-        setShooterPower(0, 0.06);
+        setShooterPower(0, 0);
         returnRingHolder();
         placeWobbleGoal(400, 0.4);
-        drive.followTrajectory(traj3);
+        drive.followTrajectory(traj5);
         // Ia wobble goal
         pickWobbleGoal(100, 0.5);
         pickWobbleGoal(0, 0.2);
         sleep(300);
-        drive.followTrajectory(traj4);
+        drive.followTrajectory(traj6);
         // Lasa wobble goal
         placeWobbleGoal(500, 0.4);
         returnWobbleArm();
-        drive.followTrajectory(traj5);
-
+        drive.followTrajectory(traj7);
     }
 
     private void placeWobbleGoal(int motorPosition, double motorPower) {
@@ -103,23 +114,23 @@ public class AutonomieTester extends LinearOpMode {
     }
 
     private void pickWobbleGoal(int motorPosition, double motorPower){
-            double wobbleGrabberGrab = 0.0, wobbleGrabberUngrab = 0.2;
-            if (opModeIsActive()) {
-                map.wobbleServo.setPosition(wobbleGrabberGrab);
-                sleep(300);
-                map.wobbleMotor.setTargetPosition(motorPosition);
-                map.wobbleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                map.wobbleMotor.setPower(motorPower);
+        double wobbleGrabberGrab = 0.0, wobbleGrabberUngrab = 0.2;
+        if (opModeIsActive()) {
+            map.wobbleServo.setPosition(wobbleGrabberGrab);
+            sleep(300);
+            map.wobbleMotor.setTargetPosition(motorPosition);
+            map.wobbleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            map.wobbleMotor.setPower(motorPower);
 
-                while (opModeIsActive() && (map.wobbleMotor.isBusy())) {
-                    // Display it for the driver.
-                    telemetry.addData("Moving wobble arm: ", map.wobbleMotor.getTargetPosition());
-                    telemetry.update();
-                }
-
-                map.wobbleMotor.setPower(0);
-                map.wobbleMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            while (opModeIsActive() && (map.wobbleMotor.isBusy())) {
+                // Display it for the driver.
+                telemetry.addData("Moving wobble arm: ", map.wobbleMotor.getTargetPosition());
+                telemetry.update();
             }
+
+            map.wobbleMotor.setPower(0);
+            map.wobbleMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
     }
 
     private void returnWobbleArm() {

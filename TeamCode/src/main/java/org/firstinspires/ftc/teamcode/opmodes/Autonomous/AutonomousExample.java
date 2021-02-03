@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.autonomous;
+package org.firstinspires.ftc.teamcode.opmodes.Autonomous;
 
 public class AutonomousExample {
     //Nothing here yet
