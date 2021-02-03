@@ -29,56 +29,63 @@ public class DreaptaRedTowergoal extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                .splineToLinearHeading(new Pose2d(-9.5, -59.5), 0)
+                .splineToLinearHeading(new Pose2d(-4.5, -59.5), 0)
                 .build();
 
-        Trajectory traj2 = drive.trajectoryBuilder(new Pose2d(-9.5, -59.5))
-                .strafeTo(new Vector2d(-2, -33))
+        Trajectory traj2 = drive.trajectoryBuilder(new Pose2d(-4.5, -59.5))
+                .strafeTo(new Vector2d(-2, -36))
                 .build();
 
-        Trajectory traj3 = drive.trajectoryBuilder(new Pose2d(-2, -33, Math.toRadians(180)))
-                .lineToSplineHeading(new Pose2d(-32, -20, Math.toRadians(180)))
+        Trajectory traj3 = drive.trajectoryBuilder(new Pose2d(-2, -36, Math.toRadians(180)))
+                .lineTo(new Vector2d(-20.5, -19))
                 .build();
 
-        Trajectory traj4 = drive.trajectoryBuilder(new Pose2d(-32, -20, Math.toRadians(180)))
-                .lineToSplineHeading(new Pose2d(-16.5, -58, Math.toRadians(0)))
+        Trajectory traj4 = drive.trajectoryBuilder(new Pose2d(-20.5, -19, Math.toRadians(181)))
+                .lineTo(new Vector2d(-38, -19))
                 .build();
 
-        Trajectory traj5 = drive.trajectoryBuilder(new Pose2d(-16.5, -58, Math.toRadians(0)))
-                .lineToSplineHeading(new Pose2d(11, -13, Math.toRadians(0)))
+        Trajectory traj5 = drive.trajectoryBuilder(new Pose2d(-38, -19, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(-12.5, -59, Math.toRadians(-10)))
+                .build();
+
+        Trajectory traj6 = drive.trajectoryBuilder(new Pose2d(-12.5, -59, Math.toRadians(0)))
+                .strafeLeft(30)
+                .build();
+
+        Trajectory traj7 = drive.trajectoryBuilder(new Pose2d(-16, -29, Math.toRadians(0)))
+                .forward(23)
                 .build();
 
         resetServos();
         dropIntake();
         drive.followTrajectory(traj1);
         // Lasa wobble goal
-        placeWobbleGoal(200, 0.4);
-        placeWobbleGoal(400, 0.3);
+        placeWobbleGoal(450, 0.3);
         returnWobbleArm();
-        setShooterPower(1, 0.035);
+        setShooterPower(1, 0.05);
         liftRingHolder();
         drive.followTrajectory(traj2);
         // Trage la tower goal
-        sleep(1000);
-        flicker();
+        sleep(500);
         flicker();
         flicker();
         flicker();
         flicker();
         setShooterPower(0, 0);
         returnRingHolder();
-        placeWobbleGoal(500, 0.4);
+        placeWobbleGoal(450, 0.3);
         drive.followTrajectory(traj3);
+        drive.followTrajectory(traj4);
         // Ia wobble
         pickWobbleGoal(100, 0.5);
         pickWobbleGoal(0, 0.2);
         sleep(300);
-        drive.followTrajectory(traj4);
-        // Lasa wobble
-        placeWobbleGoal(200, 0.4);
-        placeWobbleGoal(400, 0.3);
-        returnWobbleArm();
         drive.followTrajectory(traj5);
+        // Lasa wobble
+        placeWobbleGoal(450, 0.3);
+        returnWobbleArm();
+        drive.followTrajectory(traj6);
+        drive.followTrajectory(traj7);
         // Parcheaza
     }
 

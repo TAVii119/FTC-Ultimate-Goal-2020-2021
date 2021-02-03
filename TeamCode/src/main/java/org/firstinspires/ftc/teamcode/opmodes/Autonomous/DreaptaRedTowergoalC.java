@@ -18,8 +18,8 @@ import org.firstinspires.ftc.teamcode.opmodes.SimpleHardware;
 
 import java.util.Arrays;
 
-@Autonomous(name = "DreaptaRedTowergoalB", group = "Red Auto")
-public class DreaptaRedTowergoalB extends LinearOpMode {
+@Autonomous(name = "DreaptaRedTowergoalC", group = "Red Auto")
+public class DreaptaRedTowergoalC extends LinearOpMode {
     SimpleHardware map = new SimpleHardware();
 
     @Override
@@ -41,24 +41,24 @@ public class DreaptaRedTowergoalB extends LinearOpMode {
                 .strafeTo(new Vector2d(-2, -36))
                 .build();
 
-        Trajectory traj3 = drive.trajectoryBuilder(new Pose2d(-2, -36))
-                .lineTo(new Vector2d(16, -40))
+        Trajectory traj3 = drive.trajectoryBuilder(new Pose2d(-2, -36, Math.toRadians(-3)))
+                .lineTo(new Vector2d(45, -59))
                 .build();
 
-        Trajectory traj4 = drive.trajectoryBuilder(new Pose2d(16, -40, Math.toRadians(180)))
+        Trajectory traj4 = drive.trajectoryBuilder(new Pose2d(45, -59, Math.toRadians(180)))
                 .lineTo(new Vector2d(-20.5, -19))
                 .build();
 
-        Trajectory traj5 = drive.trajectoryBuilder(new Pose2d(-20.5, -19, Math.toRadians(179)))
-                .lineTo(new Vector2d(-37, -17))
+        Trajectory traj5 = drive.trajectoryBuilder(new Pose2d(-20.5, -19, Math.toRadians(182))) //177
+                .lineTo(new Vector2d(-35.5, -29))
                 .build();
 
-        Trajectory traj6 = drive.trajectoryBuilder(new Pose2d(-37, -17, Math.toRadians(-13)))
-                .lineTo(new Vector2d(12, -50))
+        Trajectory traj6 = drive.trajectoryBuilder(new Pose2d(-35.5, -29, Math.toRadians(-48)))
+                .lineTo(new Vector2d(32, -58))
                 .build();
 
-        Trajectory traj7 = drive.trajectoryBuilder(new Pose2d(12.0, -50))
-                .back(10)
+        Trajectory traj7 = drive.trajectoryBuilder(new Pose2d(32.0, -58))
+                .back(30)
                 .build();
 
         resetServos();
