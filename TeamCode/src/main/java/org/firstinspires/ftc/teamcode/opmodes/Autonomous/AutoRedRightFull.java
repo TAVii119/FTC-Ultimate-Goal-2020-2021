@@ -208,10 +208,10 @@ public class AutoRedRightFull extends LinearOpMode {
                 .build();
 
         Trajectory traj3 = drive.trajectoryBuilder(new Pose2d(-2, -36, Math.toRadians(180)))
-                .lineTo(new Vector2d(-20.5, -19))
+                .lineTo(new Vector2d(-21, -19))
                 .build();
 
-        Trajectory traj4 = drive.trajectoryBuilder(new Pose2d(-20.5, -19, Math.toRadians(181)))
+        Trajectory traj4 = drive.trajectoryBuilder(new Pose2d(-21, -19, Math.toRadians(181)))
                 .lineTo(new Vector2d(-38, -19))
                 .build();
 
