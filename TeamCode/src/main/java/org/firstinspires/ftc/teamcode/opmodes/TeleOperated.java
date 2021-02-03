@@ -63,11 +63,12 @@ public class TeleOperated extends CommandOpMode {
     private LiftRampCommand liftRampCommand;
     private LowerRampCommand lowerRampCommand;
     private InstantCommand shootCommand;
+    private InstantCommand slowShootCommand;
 
     // Extra
     private GamepadEx driver1, driver2;
     private Button intakeButton, outtakeButton, ringLiftButton, shootButton,
-            flickButton, wobbleGrabberButton, wobblePickUpButton, wobblePutDownButton,
+            flickButton, wobbleGrabberButton, slowShootButton,
             liftRampButton, lowerRampButton, resetFlickButton;
     private FtcDashboard dashboard;
     public double mult = 1.0;
@@ -118,7 +119,11 @@ public class TeleOperated extends CommandOpMode {
             if (!shooterSystem.isShooting())
                 shooterSystem.shoot();
             else
-                shooterSystem.stopshoot();
+                shooterSystem.stopShoot();
+        }, shooterSystem);
+
+        slowShootCommand = new InstantCommand(()-> {
+            shooterSystem.slowShoot();
         }, shooterSystem);
 
         intakeSystem = new IntakeSubsystem(intake);
@@ -156,6 +161,7 @@ public class TeleOperated extends CommandOpMode {
         flickButton = new GamepadButton(driver2, GamepadKeys.Button.A).whileHeld(flickerCommand);
         resetFlickButton = new GamepadButton(driver2, GamepadKeys.Button.A).whenReleased(returnFlickerCommand);
         shootButton = new GamepadButton(driver2, GamepadKeys.Button.B).whenPressed(shootCommand);
+        slowShootButton = new GamepadButton(driver2, GamepadKeys.Button.LEFT_BUMPER).whenPressed(slowShootCommand);
         wobbleGrabberButton = new GamepadButton(driver2, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(grabberCommand);
         liftRampButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_UP).whenPressed(liftRampCommand);
         lowerRampButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_DOWN).whenPressed(lowerRampCommand);

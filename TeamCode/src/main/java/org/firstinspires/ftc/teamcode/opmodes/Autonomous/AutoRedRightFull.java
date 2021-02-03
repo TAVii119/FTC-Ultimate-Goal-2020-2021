@@ -233,7 +233,7 @@ public class AutoRedRightFull extends LinearOpMode {
         // Lasa wobble goal
         placeWobbleGoal(450, 0.3);
         returnWobbleArm();
-        setShooterPower(1, 0.06);
+        setShooterPower(1, 0.07);
         liftRingHolder();
         drive.followTrajectory(traj2);
         // Trage la tower goal
@@ -295,7 +295,7 @@ public class AutoRedRightFull extends LinearOpMode {
         dropIntake();
         drive.followTrajectory(traj1);
         // Porneste shooter
-        setShooterPower(1, 0.06);
+        setShooterPower(1, 0.07);
         drive.followTrajectory(traj2);
         // Trage la tower goal
         liftRingHolder();
@@ -304,7 +304,7 @@ public class AutoRedRightFull extends LinearOpMode {
         flicker();
         flicker();
         flicker();
-        setShooterPower(0, 0.06);
+        setShooterPower(0, 0.07);
         returnRingHolder();
         drive.followTrajectory(traj3);
         // Lasa wobble goal
@@ -361,7 +361,7 @@ public class AutoRedRightFull extends LinearOpMode {
         dropIntake();
         drive.followTrajectory(traj1);
         // Porneste shooter
-        setShooterPower(1, 0.06);
+        setShooterPower(1, 0.07);
         drive.followTrajectory(traj2);
         // Trage la tower goal
         liftRingHolder();
@@ -370,7 +370,7 @@ public class AutoRedRightFull extends LinearOpMode {
         flicker();
         flicker();
         flicker();
-        setShooterPower(0, 0.06);
+        setShooterPower(0, 0.07);
         returnRingHolder();
         drive.followTrajectory(traj3);
         // Lasa wobble goal
@@ -397,7 +397,7 @@ public class AutoRedRightFull extends LinearOpMode {
     }
 
     private void placeWobbleGoal(int motorPosition, double motorPower) {
-        double wobbleGrabberGrab = 0.0, wobbleGrabberUngrab = 0.2;
+        double wobbleGrabberGrab = 0.0, wobbleGrabberUngrab = 0.3;
 
         if (opModeIsActive()) {
             map.wobbleMotor.setTargetPosition(motorPosition);
@@ -418,7 +418,7 @@ public class AutoRedRightFull extends LinearOpMode {
     }
 
     private void pickWobbleGoal(int motorPosition, double motorPower){
-        double wobbleGrabberGrab = 0.0, wobbleGrabberUngrab = 0.2;
+        double wobbleGrabberGrab = 0.0, wobbleGrabberUngrab = 0.3;
         if (opModeIsActive()) {
             map.wobbleServo.setPosition(wobbleGrabberGrab);
             sleep(300);
