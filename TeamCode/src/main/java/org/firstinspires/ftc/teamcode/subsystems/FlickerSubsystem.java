@@ -14,17 +14,27 @@ import static java.lang.Thread.sleep;
 public class FlickerSubsystem extends SubsystemBase {
 
     private final Servo flickerServo;
-    private TimedAction flickerAction;
+    private TimedAction timedAction;
 
-    public FlickerSubsystem(final HardwareMap hMap, final String name) {
-        flickerServo = hMap.get(Servo.class, name);
+    public FlickerSubsystem(Servo flickerServo, TimedAction timedAction) {
+        this.flickerServo = flickerServo;
+        this.timedAction = timedAction;
+    }
+
+    public boolean isRunning() {
+        return timedAction.running();
     }
 
     public void flick() {
-        flickerServo.setPosition(0.3);
+        timedAction.run();
     }
 
     public void flickReset() {
-        flickerServo.setPosition(0.0);
+        if(!timedAction.running())
+            timedAction.reset();
+    }
+
+    public void homePos() {
+        flickerServo.setPosition(0);
     }
 }

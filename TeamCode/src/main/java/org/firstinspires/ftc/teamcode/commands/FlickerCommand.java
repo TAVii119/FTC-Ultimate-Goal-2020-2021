@@ -19,7 +19,23 @@ public class FlickerCommand extends CommandBase {
     }
 
     @Override
+    public void initialize() {
+        flickerSubsystem.flickReset();
+    }
+
+    @Override
     public void execute() {
+        flickerSubsystem.flickReset();
         flickerSubsystem.flick();
     }
+
+    @Override
+    public void end(boolean interrupted) {
+        flickerSubsystem.homePos();
+    }
+
+    public void returnHome() {
+        flickerSubsystem.homePos();
+    }
+
 }

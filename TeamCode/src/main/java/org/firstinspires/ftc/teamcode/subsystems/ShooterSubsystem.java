@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
@@ -25,7 +26,6 @@ This is a subsystem for the shooter we use.
 public class ShooterSubsystem extends SubsystemBase {
 
     private MotorGroup flywheel;
-    private double power = 0;
     private Telemetry telemetry;
     boolean isShooting = false;
 
@@ -33,8 +33,8 @@ public class ShooterSubsystem extends SubsystemBase {
         this.flywheel = flywheel;
 
         this.flywheel.setRunMode(Motor.RunMode.VelocityControl);
-        this.flywheel.setVeloCoefficients(0.003, 0, 0.0001);
-        this.flywheel.setFeedforwardCoefficients(0, 0.00042);
+        this.flywheel.setVeloCoefficients(0.0012, 0, 0.00001);
+        this.flywheel.setFeedforwardCoefficients(0, 0.000365);
         this.telemetry = telemetry;
     }
 
@@ -44,12 +44,13 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void slowShoot() {
-        flywheel.set(0.85);
+        flywheel.set(0.8);
         isShooting = true;
     }
 
     public void stopShoot() {
-        flywheel.set(0);
+        flywheel.setRunMode(Motor.RunMode.RawPower);
+        flywheel.stopMotor();
         isShooting = false;
     }
 

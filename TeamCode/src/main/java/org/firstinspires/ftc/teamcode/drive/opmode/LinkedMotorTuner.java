@@ -16,10 +16,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 @Config
 @TeleOp
 public class LinkedMotorTuner extends LinearOpMode {
-    public static PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(0.003, 0, 0.0001);
+    public static PIDCoefficients MOTOR_VELO_PID = new PIDCoefficients(0.0012, 0, 0.00001);
 
-    public static double kV = 0.00042;
-    public static double kA = 0;
+    public static double kV = 0.000365;
+    public static double kA = 0.000153;
     public static double kStatic = 0;
 
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
