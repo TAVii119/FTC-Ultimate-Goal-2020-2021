@@ -44,7 +44,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void slowShoot() {
-        flywheel.set(0.8);
+        flywheel.set(0.83);
         isShooting = true;
     }
 

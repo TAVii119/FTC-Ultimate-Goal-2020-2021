@@ -483,7 +483,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
     }
 
     private void pickWobbleGoal(int motorPosition, double motorPower){
-        double wobbleGrabberGrab = 0.0, wobbleGrabberUngrab = 0.3;
+        double wobbleGrabberGrab = 0, wobbleGrabberUngrab = 0.3;
         if (opModeIsActive()) {
             map.wobbleServo.setPosition(wobbleGrabberGrab);
             sleep(500);
