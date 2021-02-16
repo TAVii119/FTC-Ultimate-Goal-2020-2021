@@ -47,7 +47,10 @@ public class AlignPoint extends LinearOpMode {
 
     // Declare a target vector you'd like your bot to align with
     // Can be any x/y coordinate of your choosing
-    private Vector2d targetPosition = new Vector2d(0, 0);
+    private Vector2d towergoalPosition = new Vector2d(83.0, -36.2);
+    private Vector2d rightPowershotPosition = new Vector2d(75.0, -19.0);
+    private Vector2d centerPowershotPosition = new Vector2d(75.0, -11.0);
+    private Vector2d leftPowershotPosition = new Vector2d(75.0, -2.0);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -60,7 +63,8 @@ public class AlignPoint extends LinearOpMode {
 
         // Retrieve our pose from the PoseStorage.currentPose static field
         // See AutoTransferPose.java for further details
-        drive.getLocalizer().setPoseEstimate(PoseStorage.currentPose);
+//        drive.getLocalizer().setPoseEstimate(PoseStorage.currentPose);
+        drive.getLocalizer().setPoseEstimate(new Pose2d(-63.0, -48.5));
 
         // Set input bounds for the heading controller
         // Automatically handles overflow
@@ -114,7 +118,7 @@ public class AlignPoint extends LinearOpMode {
                     Vector2d robotFrameInput = fieldFrameInput.rotated(-poseEstimate.getHeading());
 
                     // Difference between the target vector and the bot's position
-                    Vector2d difference = targetPosition.minus(poseEstimate.vec());
+                    Vector2d difference = towergoalPosition.minus(poseEstimate.vec());
                     // Obtain the target angle for feedback and derivative for feedforward
                     double theta = difference.angle();
 
@@ -138,14 +142,14 @@ public class AlignPoint extends LinearOpMode {
 
                     // Draw the target on the field
                     fieldOverlay.setStroke("#dd2c00");
-                    fieldOverlay.strokeCircle(targetPosition.getX(), targetPosition.getY(), DRAWING_TARGET_RADIUS);
+                    fieldOverlay.strokeCircle(towergoalPosition.getX(), towergoalPosition.getY(), DRAWING_TARGET_RADIUS);
 
                     // Draw lines to target
                     fieldOverlay.setStroke("#b89eff");
-                    fieldOverlay.strokeLine(targetPosition.getX(), targetPosition.getY(), poseEstimate.getX(), poseEstimate.getY());
+                    fieldOverlay.strokeLine(towergoalPosition.getX(), towergoalPosition.getY(), poseEstimate.getX(), poseEstimate.getY());
                     fieldOverlay.setStroke("#ffce7a");
-                    fieldOverlay.strokeLine(targetPosition.getX(), targetPosition.getY(), targetPosition.getX(), poseEstimate.getY());
-                    fieldOverlay.strokeLine(targetPosition.getX(), poseEstimate.getY(), poseEstimate.getX(), poseEstimate.getY());
+                    fieldOverlay.strokeLine(towergoalPosition.getX(), towergoalPosition.getY(), towergoalPosition.getX(), poseEstimate.getY());
+                    fieldOverlay.strokeLine(towergoalPosition.getX(), poseEstimate.getY(), poseEstimate.getX(), poseEstimate.getY());
                     break;
             }
 
@@ -165,6 +169,7 @@ public class AlignPoint extends LinearOpMode {
             FtcDashboard.getInstance().sendTelemetryPacket(packet);
 
             // Print pose to telemetry
+            telemetry.addData("Distance to Tower Goal", towergoalPosition.getX() - poseEstimate.getX());
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
