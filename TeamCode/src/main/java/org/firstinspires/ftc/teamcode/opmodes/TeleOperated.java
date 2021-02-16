@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.commands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.commands.LowerRampCommand;
 import org.firstinspires.ftc.teamcode.commands.OuttakeCommand;
 import org.firstinspires.ftc.teamcode.commands.WobbleCommand;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.FlickerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
@@ -26,6 +27,7 @@ import org.firstinspires.ftc.teamcode.subsystems.RingLiftSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.WobbleSubsystem;
 import org.firstinspires.ftc.teamcode.util.TimedAction;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 /*
 This class was created by Botosan Octavian on October 28, 2020.
@@ -106,8 +108,9 @@ public class TeleOperated extends CommandOpMode {
         dashboard = FtcDashboard.getInstance();
 
         //Subsystems and Commands
-        driveSystem = new DriveSubsystem(fL, fR, bL, bR);
-        driveCommand = new DriveCommand(driveSystem, driver1::getLeftY, driver1::getRightX, driver1::getLeftX, mult);
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        driveSystem = new DriveSubsystem(drive, false, 0);
+        driveCommand = new DriveCommand(driveSystem, driver1::getLeftY, driver1::getLeftX, driver1::getRightX);
 
         shooterSystem = new ShooterSubsystem(flywheel, telemetry);
         shootCommand = new InstantCommand(()-> {
@@ -135,7 +138,7 @@ public class TeleOperated extends CommandOpMode {
         flickerAction = new TimedAction(
                 ()->flickerServo.setPosition(0.3),
                 ()->flickerServo.setPosition(0),
-                150,
+                250,
                 true
         );
 
@@ -167,7 +170,7 @@ public class TeleOperated extends CommandOpMode {
         liftRampButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_UP).whenPressed(liftRampCommand);
         lowerRampButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_DOWN).whenPressed(lowerRampCommand);
 
-        register(driveSystem, wobbleSystem);
+        register(driveSystem, wobbleSystem, flickerSystem, intakeSystem, rampSystem, ringLiftSystem, shooterSystem);
         driveSystem.setDefaultCommand(driveCommand);
         wobbleSystem.setDefaultCommand(wobbleCommand);
     }
