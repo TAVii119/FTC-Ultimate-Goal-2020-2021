@@ -12,7 +12,6 @@ public class DriveCommand extends CommandBase {
 
     private final DriveSubsystem drive;
     private final DoubleSupplier leftY, leftX, rightX;
-    private Pose2d startPosition = new Pose2d(0, 0);
 
     public DriveCommand(DriveSubsystem drive, DoubleSupplier leftY,
                                DoubleSupplier leftX, DoubleSupplier rightX) {
@@ -29,12 +28,10 @@ public class DriveCommand extends CommandBase {
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // Retrieve our pose from the PoseStorage.currentPose static field
         // See AutoTransferPose.java for further details
-        drive.getLocalizer().setPoseEstimate(startPosition);
     }
 
     @Override
     public void execute() {
         drive.drive(leftY.getAsDouble(), leftX.getAsDouble(), rightX.getAsDouble());
     }
-
 }

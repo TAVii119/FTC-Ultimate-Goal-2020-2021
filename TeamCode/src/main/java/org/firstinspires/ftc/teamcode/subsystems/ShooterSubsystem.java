@@ -26,16 +26,14 @@ This is a subsystem for the shooter we use.
 public class ShooterSubsystem extends SubsystemBase {
 
     private MotorGroup flywheel;
-    private Telemetry telemetry;
     boolean isShooting = false;
 
-    public ShooterSubsystem(MotorGroup flywheel, Telemetry telemetry){
+    public ShooterSubsystem(MotorGroup flywheel){
         this.flywheel = flywheel;
 
         this.flywheel.setRunMode(Motor.RunMode.VelocityControl);
         this.flywheel.setVeloCoefficients(0.0012, 0, 0.00001);
         this.flywheel.setFeedforwardCoefficients(0, 0.000365);
-        this.telemetry = telemetry;
     }
 
     public void shoot() {

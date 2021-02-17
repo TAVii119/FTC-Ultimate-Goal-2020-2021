@@ -15,23 +15,25 @@ import static org.firstinspires.ftc.teamcode.opmodes.TeleOpSimple.GAMEPAD_LOCKOU
 public class WobbleSubsystem extends SubsystemBase {
 
     private Motor arm;
-    private Servo grabber;
+    private Servo grabber, grabber2;
     private boolean grabbing = false;
 
-    public WobbleSubsystem(Motor arm, Servo grabber){
+    public WobbleSubsystem(Motor arm, Servo grabber, Servo grabber2){
         this.arm = arm;
         this.grabber = grabber;
-
+        this.grabber2 = grabber2;
     }
 
     public void openGrabber(){
         grabbing = false;
         grabber.setPosition(0);
+        grabber2.setPosition(0);
     }
 
     public void closeGrabber(){
         grabbing = true;
         grabber.setPosition(.2);
+        grabber2.setPosition(.2);
     }
 
     public boolean isGrabbing(){

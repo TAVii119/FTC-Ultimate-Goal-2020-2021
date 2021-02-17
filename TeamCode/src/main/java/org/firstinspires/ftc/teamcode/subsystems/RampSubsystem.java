@@ -27,9 +27,15 @@ public class RampSubsystem extends SubsystemBase {
         shooterServo.setPosition(0.025);
     }
 
+    public void rampPos (double pos) {
+        shooterServo.setPosition(pos);
+        rampServoPos = pos;
+    }
+
     @Override
     public void periodic() {
         tele.addData("Ramp Position: ", shooterServo.getPosition());
+        tele.addData("Debug position: ", rampServoPos);
         tele.update();
     }
 }

@@ -12,6 +12,7 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
@@ -25,7 +26,10 @@ public class DriveSubsystem extends SubsystemBase {
     // Define 2 states, driver control or alignment control
     enum Mode {
         NORMAL_CONTROL,
-        ALIGN_TO_POINT
+        ALIGN_TO_TOWER,
+        ALIGN_TO_RIGHT_PS,
+        ALIGN_TO_CENTER_PS,
+        ALIGN_TO_LEFT_PS
     }
 
     private Mode currentMode = Mode.NORMAL_CONTROL;
@@ -34,16 +38,42 @@ public class DriveSubsystem extends SubsystemBase {
     // Use the same gains as SampleMecanumDrive's heading controller
     private PIDFController headingController = new PIDFController(SampleMecanumDrive.HEADING_PID);
 
+    private final Pose2d startPosition = new Pose2d(-63.0, -48.5);
     // Declare a target vector you'd like your bot to align with
     // Can be any x/y coordinate of your choosing
-    private Vector2d targetPosition = new Vector2d(0, 0);
-    private Pose2d startPosition = new Pose2d(0, 0);
+    private Vector2d towerPosition = new Vector2d(83.0, -36.2);
+    private Vector2d rightPsPosition = new Vector2d(75.0, -19.0);
+    private Vector2d centerPsPosition = new Vector2d(75.0, -11.0);
+    private Vector2d leftPsPosition = new Vector2d(75.0, -2.0);
+    Telemetry tele;
 
-    public DriveSubsystem(SampleMecanumDrive drive, boolean isFieldCentric, int controlMode) {
+    public double distanceToTowergoal;
+
+    public DriveSubsystem(SampleMecanumDrive drive, boolean isFieldCentric, Telemetry telemetry) {
+        tele = telemetry;
         this.drive = drive;
         fieldCentric = isFieldCentric;
-        this.controlMode = controlMode;
-        headingController.setInputBounds(-Math.PI, Math.PI);
+        drive.getLocalizer().setPoseEstimate(startPosition);
+    }
+
+    public void normalMode() {
+        controlMode = 0;
+    }
+
+    public void alignToTower() {
+        controlMode = 1;
+    }
+
+    public void alignToRightPs() {
+        controlMode = 2;
+    }
+
+    public void alignToCenterPs() {
+        controlMode = 3;
+    }
+
+    public void alignToLeftPs() {
+        controlMode = 4;
     }
 
     public void setMode(DcMotor.RunMode mode) {
@@ -66,6 +96,8 @@ public class DriveSubsystem extends SubsystemBase {
         drive.updatePoseEstimate();
     }
 
+
+
     public void drive(double leftY, double leftX, double rightX) {
         // Set input bounds for the heading controller
         // Automatically handles overflow
@@ -81,14 +113,105 @@ public class DriveSubsystem extends SubsystemBase {
             case NORMAL_CONTROL:
                 // Switch into alignment mode if `a` is pressed
                 if (controlMode == 1) {
-                    currentMode = Mode.ALIGN_TO_POINT;
+                    currentMode = Mode.ALIGN_TO_TOWER;
                 }
+
+                if (controlMode == 2) {
+                    currentMode = Mode.ALIGN_TO_RIGHT_PS;
+                }
+
+                if (controlMode == 3) {
+                    currentMode = Mode.ALIGN_TO_CENTER_PS;
+                }
+
+                if (controlMode == 4) {
+                    currentMode = Mode.ALIGN_TO_LEFT_PS;
+                }
+
 
                 // Standard teleop control
                 // Convert gamepad input into desired pose velocity
                 driveDirection = new Pose2d(leftY, -leftX, -rightX);
                 break;
-            case ALIGN_TO_POINT:
+
+            case ALIGN_TO_LEFT_PS:
+                if (controlMode == 0) {
+                    currentMode = Mode.NORMAL_CONTROL;
+                }
+
+                Vector2d fieldFrameInput = new Vector2d(leftY, -leftX);
+                Vector2d robotFrameInput = fieldFrameInput.rotated(-poseEstimate.getHeading());
+
+                Vector2d difference = leftPsPosition.minus(poseEstimate.vec());
+                double theta = difference.angle();
+
+                double thetaFF = -fieldFrameInput.rotated(-Math.PI / 2).dot(difference) / (difference.norm() * difference.norm());
+
+                headingController.setTargetPosition(theta);
+
+                double headingInput = (headingController.update(poseEstimate.getHeading())
+                        * DriveConstants.kV + thetaFF)
+                        * DriveConstants.TRACK_WIDTH;
+
+                // Combine the field centric x/y velocity with our derived angular velocity
+                driveDirection = new Pose2d(
+                        robotFrameInput,
+                        headingInput
+                );
+                break;
+
+            case ALIGN_TO_CENTER_PS:
+                if (controlMode == 0) {
+                    currentMode = Mode.NORMAL_CONTROL;
+                }
+
+                fieldFrameInput = new Vector2d(leftY, -leftX);
+                robotFrameInput = fieldFrameInput.rotated(-poseEstimate.getHeading());
+
+                difference = centerPsPosition.minus(poseEstimate.vec());
+                theta = difference.angle();
+
+                thetaFF = -fieldFrameInput.rotated(-Math.PI / 2).dot(difference) / (difference.norm() * difference.norm());
+
+                headingController.setTargetPosition(theta);
+
+                headingInput = (headingController.update(poseEstimate.getHeading())
+                        * DriveConstants.kV + thetaFF)
+                        * DriveConstants.TRACK_WIDTH;
+
+                // Combine the field centric x/y velocity with our derived angular velocity
+                driveDirection = new Pose2d(
+                        robotFrameInput,
+                        headingInput
+                );
+                break;
+
+            case ALIGN_TO_RIGHT_PS:
+                if (controlMode == 0) {
+                    currentMode = Mode.NORMAL_CONTROL;
+                }
+                fieldFrameInput = new Vector2d(leftY, -leftX);
+                robotFrameInput = fieldFrameInput.rotated(-poseEstimate.getHeading());
+
+                difference = rightPsPosition.minus(poseEstimate.vec());
+                theta = difference.angle();
+
+                thetaFF = -fieldFrameInput.rotated(-Math.PI / 2).dot(difference) / (difference.norm() * difference.norm());
+
+                headingController.setTargetPosition(theta);
+
+                headingInput = (headingController.update(poseEstimate.getHeading())
+                        * DriveConstants.kV + thetaFF)
+                        * DriveConstants.TRACK_WIDTH;
+
+                // Combine the field centric x/y velocity with our derived angular velocity
+                driveDirection = new Pose2d(
+                        robotFrameInput,
+                        headingInput
+                );
+                break;
+
+            case ALIGN_TO_TOWER:
                 // Switch back into normal driver control mode if `b` is pressed
                 if (controlMode == 0) {
                     currentMode = Mode.NORMAL_CONTROL;
@@ -96,23 +219,23 @@ public class DriveSubsystem extends SubsystemBase {
 
                 // Create a vector from the gamepad x/y inputs which is the field relative movement
                 // Then, rotate that vector by the inverse of that heading for field centric control
-                Vector2d fieldFrameInput = new Vector2d(leftY, -leftX);
-                Vector2d robotFrameInput = fieldFrameInput.rotated(-poseEstimate.getHeading());
+                fieldFrameInput = new Vector2d(leftY, -leftX);
+                robotFrameInput = fieldFrameInput.rotated(-poseEstimate.getHeading());
 
                 // Difference between the target vector and the bot's position
-                Vector2d difference = targetPosition.minus(poseEstimate.vec());
+                difference = towerPosition.minus(poseEstimate.vec());
                 // Obtain the target angle for feedback and derivative for feedforward
-                double theta = difference.angle();
+                theta = difference.angle();
 
                 // Not technically omega because its power. This is the derivative of atan2
-                double thetaFF = -fieldFrameInput.rotated(-Math.PI / 2).dot(difference) / (difference.norm() * difference.norm());
+                thetaFF = -fieldFrameInput.rotated(-Math.PI / 2).dot(difference) / (difference.norm() * difference.norm());
 
                 // Set the target heading for the heading controller to our desired angle
                 headingController.setTargetPosition(theta);
 
                 // Set desired angular velocity to the heading controller output + angular
                 // velocity feedforward
-                double headingInput = (headingController.update(poseEstimate.getHeading())
+                headingInput = (headingController.update(poseEstimate.getHeading())
                         * DriveConstants.kV + thetaFF)
                         * DriveConstants.TRACK_WIDTH;
 
@@ -128,15 +251,21 @@ public class DriveSubsystem extends SubsystemBase {
 
         // Update the heading controller with our current heading
         headingController.update(poseEstimate.getHeading());
+        distanceToTowergoal = towerPosition.getX() - poseEstimate.getX();
 
         // Update he localizer
         drive.getLocalizer().update();
 
-        /*
-        drive.setWeightedDrivePower(
-                new Pose2d(leftY, -leftX, -rightX)
-        );
-         */
+        tele.addData("Distance to Tower Goal", towerPosition.getX() - poseEstimate.getX());
+        tele.addData("x", poseEstimate.getX());
+        tele.addData("y", poseEstimate.getY());
+        tele.addData("heading", poseEstimate.getHeading());
+        tele.update();
+    }
+
+    public double setRampPosition() {
+        double position = distanceToTowergoal / 1.93;
+        return position / 1000;
     }
 
     public void setDrivePower(Pose2d drivePower) {
@@ -187,4 +316,8 @@ public class DriveSubsystem extends SubsystemBase {
         return drive.getLocalizer();
     }
 
+    @Override
+    public void periodic() {
+        drive.update();
+    }
 }
