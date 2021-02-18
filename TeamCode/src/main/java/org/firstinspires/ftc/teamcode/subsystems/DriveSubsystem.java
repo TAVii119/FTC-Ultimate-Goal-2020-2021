@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.acmerobotics.dashboard.canvas.Canvas;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -11,11 +9,9 @@ import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-
 import java.util.List;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -38,9 +34,9 @@ public class DriveSubsystem extends SubsystemBase {
     // Use the same gains as SampleMecanumDrive's heading controller
     private PIDFController headingController = new PIDFController(SampleMecanumDrive.HEADING_PID);
 
+    // The position of the robot at the start of the Tele-Operated period
     private final Pose2d startPosition = new Pose2d(-63.0, -48.5);
-    // Declare a target vector you'd like your bot to align with
-    // Can be any x/y coordinate of your choosing
+    // A target vector we want the bot to align with
     private Vector2d towerPosition = new Vector2d(83.0, -36.2);
     private Vector2d rightPsPosition = new Vector2d(75.0, -19.0);
     private Vector2d centerPsPosition = new Vector2d(75.0, -11.0);

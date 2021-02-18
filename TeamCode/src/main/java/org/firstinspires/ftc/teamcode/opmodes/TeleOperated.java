@@ -6,14 +6,17 @@ import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.button.Button;
 import com.arcrobotics.ftclib.command.button.GamepadButton;
+import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.arcrobotics.ftclib.gamepad.TriggerReader;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.commands.FlickerCommand;
+import org.firstinspires.ftc.teamcode.commands.GamepadButtonB;
 import org.firstinspires.ftc.teamcode.commands.LiftRampCommand;
 import org.firstinspires.ftc.teamcode.commands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.commands.LowerRampCommand;
@@ -80,6 +83,7 @@ public class TeleOperated extends CommandOpMode {
     private Button intakeButton, outtakeButton, resetFlickButton, fastFlickButton, flickButton, ringLiftButton,
     shootButton, slowShootButton, wobbleGrabberButton, liftRampButton, lowerRampButton, normalModeButton, towerAlignButton,
     rightPsAlignButton, centerPsAlignButton, leftPsAlignButton, resetPoseButton;
+    private Trigger towerAlignTrigger;
     private FtcDashboard dashboard;
     public double mult = 1.0;
 
@@ -150,19 +154,23 @@ public class TeleOperated extends CommandOpMode {
 
         setRampPositionCommand = new InstantCommand(()-> {
             rampSystem.rampPos(driveSystem.setRampPosition());
-        }, rampSystem);
+        }, rampSystem, driveSystem);
 
 
         shooterSystem = new ShooterSubsystem(flywheel);
         shootCommand = new InstantCommand(()-> {
-            if (!shooterSystem.isShooting())
+            if (!shooterSystem.isShooting()) {
                 shooterSystem.shoot();
-            else
+                ringLiftSystem.moveRingLift();
+            } else {
                 shooterSystem.stopShoot();
-        }, shooterSystem);
+                ringLiftSystem.returnRingLift();
+            }
+        }, shooterSystem, ringLiftSystem);
 
         slowShootCommand = new InstantCommand(()-> {
             shooterSystem.slowShoot();
+            ringLiftSystem.moveRingLift();
         }, shooterSystem);
 
         intakeSystem = new IntakeSubsystem(intake);
@@ -199,21 +207,20 @@ public class TeleOperated extends CommandOpMode {
         liftRampCommand = new LiftRampCommand(rampSystem);
         lowerRampCommand = new LowerRampCommand(rampSystem);
 
-        flickButton = new GamepadButton(driver1, GamepadKeys.Button.RIGHT_BUMPER).whenHeld(flickerCommand);
         intakeButton = new GamepadButton(driver1, GamepadKeys.Button.A).whenHeld(intakeCommand);
         outtakeButton = new GamepadButton(driver1, GamepadKeys.Button.B).whenHeld(outtakeCommand);
         normalModeButton = new GamepadButton(driver1, GamepadKeys.Button.X).whenPressed(normalModeCommand);
         towerAlignButton = new GamepadButton(driver1, GamepadKeys.Button.LEFT_BUMPER).whenPressed(towerAlignCommand);
         towerAlignButton = new GamepadButton(driver1, GamepadKeys.Button.LEFT_BUMPER).whenPressed(setRampPositionCommand);
-        rightPsAlignButton = new GamepadButton(driver1, GamepadKeys.Button.DPAD_RIGHT).whenPressed(rightPsAlignCommand);
+        flickButton = new GamepadButton(driver1, GamepadKeys.Button.RIGHT_BUMPER).whenHeld(flickerCommand);
+        leftPsAlignButton = new GamepadButton(driver1, GamepadKeys.Button.DPAD_LEFT).whenPressed(leftPsAlignCommand);
         centerPsAlignButton = new GamepadButton(driver1, GamepadKeys.Button.DPAD_UP).whenPressed(centerPsAlignCommand);
-        centerPsAlignButton = new GamepadButton(driver1, GamepadKeys.Button.DPAD_LEFT).whenPressed(leftPsAlignCommand);
-        centerPsAlignButton = new GamepadButton(driver1, GamepadKeys.Button.Y).whenPressed(resetPoseCommand);
+        rightPsAlignButton = new GamepadButton(driver1, GamepadKeys.Button.DPAD_RIGHT).whenPressed(rightPsAlignCommand);
+        resetPoseButton = new GamepadButton(driver1, GamepadKeys.Button.Y).whenPressed(resetPoseCommand);
 
-        flickButton = new GamepadButton(driver2, GamepadKeys.Button.A).whenHeld(flickerCommand);
-        ringLiftButton = new GamepadButton(driver2, GamepadKeys.Button.X).whenPressed(ringLiftCommand);
-        shootButton = new GamepadButton(driver2, GamepadKeys.Button.B).whenPressed(shootCommand);
-        slowShootButton = new GamepadButton(driver2, GamepadKeys.Button.LEFT_BUMPER).whenPressed(slowShootCommand);
+        shootButton = new GamepadButton(driver2, GamepadKeys.Button.A).whenPressed(shootCommand);
+        slowShootButton = new GamepadButton(driver2, GamepadKeys.Button.B).whenPressed(slowShootCommand);
+        flickButton = new GamepadButton(driver2, GamepadKeys.Button.X).whenHeld(flickerCommand);
         wobbleGrabberButton = new GamepadButton(driver2, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(grabberCommand);
         liftRampButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_UP).whenPressed(liftRampCommand);
         lowerRampButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_DOWN).whenPressed(lowerRampCommand);
