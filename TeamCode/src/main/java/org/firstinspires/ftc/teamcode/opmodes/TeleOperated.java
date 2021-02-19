@@ -164,16 +164,18 @@ public class TeleOperated extends CommandOpMode {
             if (!shooterSystem.isShooting()) {
                 shooterSystem.shoot();
                 ringLiftSystem.moveRingLift();
+                rampSystem.topGoalPos();
             } else {
                 shooterSystem.stopShoot();
                 ringLiftSystem.returnRingLift();
             }
-        }, shooterSystem, ringLiftSystem);
+        }, shooterSystem, ringLiftSystem, rampSystem);
 
         slowShootCommand = new InstantCommand(()-> {
             shooterSystem.slowShoot();
             ringLiftSystem.moveRingLift();
-        }, shooterSystem);
+            rampSystem.powershotPos();
+        }, shooterSystem, ringLiftSystem, rampSystem);
 
         intakeSystem = new IntakeSubsystem(intake);
         intakeCommand = new IntakeCommand(intakeSystem);
@@ -212,9 +214,7 @@ public class TeleOperated extends CommandOpMode {
         intakeButton = new GamepadButton(driver1, GamepadKeys.Button.A).whenHeld(intakeCommand);
         outtakeButton = new GamepadButton(driver1, GamepadKeys.Button.B).whenHeld(outtakeCommand);
         normalModeButton = new GamepadButton(driver1, GamepadKeys.Button.X).whenPressed(normalModeCommand);
-        towerAlignButton = new GamepadButton(driver1, GamepadKeys.Button.LEFT_BUMPER).whenPressed(towerAlignCommand);
-        towerAlignButton = new GamepadButton(driver1, GamepadKeys.Button.LEFT_BUMPER).whenPressed(setRampPositionCommand);
-        flickButton = new GamepadButton(driver1, GamepadKeys.Button.RIGHT_BUMPER).whenHeld(flickerCommand);
+        flickButton = new GamepadButton(driver1, GamepadKeys.Button.Y).whenHeld(flickerCommand);
         leftPsAlignButton = new GamepadButton(driver1, GamepadKeys.Button.DPAD_LEFT).whenPressed(leftPsAlignCommand);
         centerPsAlignButton = new GamepadButton(driver1, GamepadKeys.Button.DPAD_UP).whenPressed(centerPsAlignCommand);
         rightPsAlignButton = new GamepadButton(driver1, GamepadKeys.Button.DPAD_RIGHT).whenPressed(rightPsAlignCommand);
