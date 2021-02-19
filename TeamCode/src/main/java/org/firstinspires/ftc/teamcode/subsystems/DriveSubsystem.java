@@ -7,6 +7,7 @@ import com.acmerobotics.roadrunner.localization.Localizer;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.util.LUT;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -38,9 +39,9 @@ public class DriveSubsystem extends SubsystemBase {
     private final Pose2d startPosition = new Pose2d(-63.0, -48.5);
     // A target vector we want the bot to align with
     private Vector2d towerPosition = new Vector2d(83.0, -36.2);
-    private Vector2d rightPsPosition = new Vector2d(75.0, -19.0);
-    private Vector2d centerPsPosition = new Vector2d(75.0, -11.0);
-    private Vector2d leftPsPosition = new Vector2d(75.0, -2.0);
+    private Vector2d rightPsPosition = new Vector2d(75.0, -19.0 + 5.512);
+    private Vector2d centerPsPosition = new Vector2d(75.0, -11.0 + 5.512);
+    private Vector2d leftPsPosition = new Vector2d(75.0, -2.0 + 5.512);
     Telemetry tele;
 
     public double distanceToTowergoal;
@@ -107,7 +108,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         switch (currentMode) {
             case NORMAL_CONTROL:
-                // Switch into alignment mode if `a` is pressed
+                // Switch into alignment mode if a is pressed
                 if (controlMode == 1) {
                     currentMode = Mode.ALIGN_TO_TOWER;
                 }
@@ -208,7 +209,7 @@ public class DriveSubsystem extends SubsystemBase {
                 break;
 
             case ALIGN_TO_TOWER:
-                // Switch back into normal driver control mode if `b` is pressed
+                // Switch back into normal driver control mode if b is pressed
                 if (controlMode == 0) {
                     currentMode = Mode.NORMAL_CONTROL;
                 }
@@ -260,8 +261,23 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public double setRampPosition() {
-        double position = distanceToTowergoal / 1.93;
-        return position / 1000;
+        // Key reprezinta distantele fata de towergoal
+        LUT<Double, Double> positions = new LUT<Double, Double>()
+        {{
+            add(82.0, 0.0425);
+            add(92.449, 0.033);
+            add(101.764, 0.035);
+            add(110.998, 0.0354);
+            add(120.447, 0.0348);
+            add(130.211, 0.0245);
+            add(139.463, 0.027);
+        }};
+        double position = positions.getClosest(distanceToTowergoal);
+
+        return position;
+
+//        double position = distanceToTowergoal / 1.93;
+//        return position / 1000;
     }
 
     public void setDrivePower(Pose2d drivePower) {
