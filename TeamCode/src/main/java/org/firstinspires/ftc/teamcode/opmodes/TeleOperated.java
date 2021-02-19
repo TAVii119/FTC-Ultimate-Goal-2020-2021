@@ -9,14 +9,12 @@ import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.arcrobotics.ftclib.gamepad.TriggerReader;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.commands.FlickerCommand;
-import org.firstinspires.ftc.teamcode.commands.GamepadButtonB;
 import org.firstinspires.ftc.teamcode.commands.LiftRampCommand;
 import org.firstinspires.ftc.teamcode.commands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.commands.LowerRampCommand;
@@ -31,7 +29,6 @@ import org.firstinspires.ftc.teamcode.subsystems.RingLiftSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.WobbleSubsystem;
 import org.firstinspires.ftc.teamcode.util.TimedAction;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 /*
 This class was created by Botosan Octavian on October 28, 2020.
@@ -74,15 +71,16 @@ public class TeleOperated extends CommandOpMode {
     private InstantCommand rightPsAlignCommand;
     private InstantCommand centerPsAlignCommand;
     private InstantCommand leftPsAlignCommand;
-    private InstantCommand resetPoseCommand;
+    private InstantCommand resetRightPoseCommand;
+    private InstantCommand resetLeftPoseCommand;
     private InstantCommand setRampPositionCommand;
     private TimedAction flickerAction;
 
     // Extra
     private GamepadEx driver1, driver2;
     private Button intakeButton, outtakeButton, resetFlickButton, fastFlickButton, flickButton, ringLiftButton,
-    shootButton, slowShootButton, wobbleGrabberButton, liftRampButton, lowerRampButton, normalModeButton, towerAlignButton,
-    rightPsAlignButton, centerPsAlignButton, leftPsAlignButton, resetPoseButton;
+            shootButton, slowShootButton, wobbleGrabberButton, liftRampButton, lowerRampButton, normalModeButton, towerAlignButton,
+            rightPsAlignButton, centerPsAlignButton, leftPsAlignButton, resetRightPoseButton, resetLeftPoseButton;
     private Trigger towerAlignTrigger;
     private FtcDashboard dashboard;
     public double mult = 1.0;
@@ -148,8 +146,12 @@ public class TeleOperated extends CommandOpMode {
             driveSystem.alignToLeftPs();
         }, driveSystem);
 
-        resetPoseCommand = new InstantCommand(()-> {
-            driveSystem.setPoseEstimate(new Pose2d(-9.5, -63.0));
+        resetRightPoseCommand = new InstantCommand(()-> {
+            driveSystem.setPoseEstimate(new Pose2d(-9, -63.0));
+        }, driveSystem);
+
+        resetLeftPoseCommand = new InstantCommand(()-> {
+            driveSystem.setPoseEstimate(new Pose2d(-9, 63.0));
         }, driveSystem);
 
         setRampPositionCommand = new InstantCommand(()-> {
@@ -187,7 +189,7 @@ public class TeleOperated extends CommandOpMode {
         flickerAction = new TimedAction(
                 ()->flickerServo.setPosition(0.3),
                 ()->flickerServo.setPosition(0),
-                250,
+                200,
                 true
         );
 
@@ -216,7 +218,8 @@ public class TeleOperated extends CommandOpMode {
         leftPsAlignButton = new GamepadButton(driver1, GamepadKeys.Button.DPAD_LEFT).whenPressed(leftPsAlignCommand);
         centerPsAlignButton = new GamepadButton(driver1, GamepadKeys.Button.DPAD_UP).whenPressed(centerPsAlignCommand);
         rightPsAlignButton = new GamepadButton(driver1, GamepadKeys.Button.DPAD_RIGHT).whenPressed(rightPsAlignCommand);
-        resetPoseButton = new GamepadButton(driver1, GamepadKeys.Button.Y).whenPressed(resetPoseCommand);
+        resetLeftPoseButton = new GamepadButton(driver1, GamepadKeys.Button.LEFT_STICK_BUTTON).whenPressed(resetLeftPoseCommand);
+        resetRightPoseButton = new GamepadButton(driver1, GamepadKeys.Button.RIGHT_STICK_BUTTON).whenPressed(resetRightPoseCommand);
 
         shootButton = new GamepadButton(driver2, GamepadKeys.Button.A).whenPressed(shootCommand);
         slowShootButton = new GamepadButton(driver2, GamepadKeys.Button.B).whenPressed(slowShootCommand);
