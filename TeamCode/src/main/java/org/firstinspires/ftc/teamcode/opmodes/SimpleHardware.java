@@ -27,6 +27,8 @@ public class SimpleHardware {
     public Servo feederServo = null;
     public Servo intakeServo = null;
     public Servo shooterServo = null;
+    public Servo ringBlockerLeft = null;
+    public Servo ringBlockerRight = null;
 
     // CREATE NEW HardwareMap
     HardwareMap robotMap;
@@ -91,6 +93,8 @@ public class SimpleHardware {
         feederServo = robotMap.get(Servo.class, "feederServo");
         intakeServo = robotMap.get(Servo.class, "intakeServo");
         shooterServo = robotMap.get(Servo.class, "shooterServo");
+        ringBlockerLeft = robotMap.get(Servo.class, "ringBlockerLeft");
+        ringBlockerRight = robotMap.get(Servo.class, "ringBlockerRight");
 
         // SET SERVO DIRECTION
         wobbleServo.setDirection(Servo.Direction.FORWARD);
@@ -99,6 +103,7 @@ public class SimpleHardware {
         feederServo.setDirection(Servo.Direction.FORWARD);
         intakeServo.setDirection(Servo.Direction.FORWARD);
         shooterServo.setDirection(Servo.Direction.REVERSE);
+        ringBlockerRight.setDirection(Servo.Direction.REVERSE);
 
         // SET SERVO POSITION
         wobbleServo.setPosition(0.0);

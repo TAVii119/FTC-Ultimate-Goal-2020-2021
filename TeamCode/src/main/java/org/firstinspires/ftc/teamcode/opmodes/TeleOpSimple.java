@@ -29,6 +29,7 @@ public class TeleOpSimple extends LinearOpMode {
     public double shooterServoPos = 0.0;
     public double chassisLimiter = 1.0;
     public double wobbleLimiter = 0.4;
+    public double ringBlockerPosition = 0.0;
     boolean activeIntake = false;
     Deadline gamepadRateLimit;
 
@@ -180,5 +181,7 @@ public class TeleOpSimple extends LinearOpMode {
         map.feederServo.setPosition(0.0);
         map.intakeServo.setPosition(0.0);
         map.shooterServo.setPosition(0.0);
+        map.ringBlockerLeft.setPosition(0.0);
+        map.ringBlockerRight.setPosition(0.0);
     }
 }

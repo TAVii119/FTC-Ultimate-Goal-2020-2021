@@ -554,7 +554,7 @@ public class AutoRedRightFull extends LinearOpMode {
     }
 
     private void dropIntake() {
-        double intakeLatch = 0.0, intakeUnlatch = 0.3;
+        double intakeLatch = 0.0, intakeUnlatch = 0.12;
         map.intakeServo.setPosition(intakeUnlatch);
     }
 
