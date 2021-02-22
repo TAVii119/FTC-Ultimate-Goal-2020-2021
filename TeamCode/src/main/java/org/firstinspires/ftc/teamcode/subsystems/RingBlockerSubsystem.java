@@ -14,14 +14,14 @@ public class RingBlockerSubsystem extends SubsystemBase {
     }
 
     public void blockRings() {
-        ringBlockerLeft.setPosition(.3);
-        ringBlockerRight.setPosition(.3);
+        ringBlockerLeft.setPosition(.42);
+        ringBlockerRight.setPosition(.38);
         down = true;
     }
 
     public void unBlockRings() {
-        ringBlockerLeft.setPosition(0.01);
-        ringBlockerRight.setPosition(0.01);
+        ringBlockerLeft.setPosition(0.031);
+        ringBlockerRight.setPosition(0.031);
         down = false;
     }
 

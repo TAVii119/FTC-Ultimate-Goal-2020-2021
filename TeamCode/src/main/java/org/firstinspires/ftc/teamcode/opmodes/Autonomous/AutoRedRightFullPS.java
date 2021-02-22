@@ -206,33 +206,33 @@ public class AutoRedRightFullPS extends LinearOpMode {
         }
     }
 
-    Pose2d startPose = new Pose2d(-63, -50, Math.toRadians(0.0));
+    Pose2d startPose = new Pose2d(-63, -19.5, Math.toRadians(0.0));
     private void caseA(SampleMecanumDrive drive) {
         drive.setPoseEstimate(startPose);
 
         Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(-2, -43.5))
+                .lineTo(new Vector2d(-0.5, -18.0))
                 .build();
 
-        Trajectory traj2 = drive.trajectoryBuilder(new Pose2d(-2, -43.5, Math.toRadians(-40)))
-                .lineToSplineHeading(new Pose2d(-3.5, -73.5, Math.toRadians(-50)))
-                .build();
-
-        Trajectory traj3 = drive.trajectoryBuilder(new Pose2d(-1.5, -73.5, Math.toRadians(180)))
-                .lineTo(new Vector2d(-15, -65))
-                .build();
-
-        Trajectory traj4= drive.trajectoryBuilder(new Pose2d(-15, -66.5, Math.toRadians(190)))
-                .lineTo(new Vector2d(-38, -65))
-                .build();
-
-        Trajectory traj5 = drive.trajectoryBuilder(new Pose2d(-38, -65))
-                .lineToSplineHeading(new Pose2d(-7.5, -73, Math.toRadians(-70)))
-                .build();
-
-        Trajectory traj6 = drive.trajectoryBuilder(new Pose2d(-7.5, -73.0))
-                .strafeTo(new Vector2d(12, -50))
-                .build();
+//        Trajectory traj2 = drive.trajectoryBuilder(new Pose2d(-2, -43.5, Math.toRadians(-40)))
+//                .lineToSplineHeading(new Pose2d(-3.5, -73.5, Math.toRadians(-50)))
+//                .build();
+//
+//        Trajectory traj3 = drive.trajectoryBuilder(new Pose2d(-1.5, -73.5, Math.toRadians(180)))
+//                .lineTo(new Vector2d(-15, -65))
+//                .build();
+//
+//        Trajectory traj4= drive.trajectoryBuilder(new Pose2d(-15, -66.5, Math.toRadians(190)))
+//                .lineTo(new Vector2d(-38, -65))
+//                .build();
+//
+//        Trajectory traj5 = drive.trajectoryBuilder(new Pose2d(-38, -65))
+//                .lineToSplineHeading(new Pose2d(-7.5, -73, Math.toRadians(-70)))
+//                .build();
+//
+//        Trajectory traj6 = drive.trajectoryBuilder(new Pose2d(-7.5, -73.0))
+//                .strafeTo(new Vector2d(12, -50))
+//                .build();
 
         setShooterPower(slowShooterSpeed, poweshotRampPos);
         drive.followTrajectory(traj1);
@@ -241,33 +241,33 @@ public class AutoRedRightFullPS extends LinearOpMode {
         sleep(750);
         flicker();
         // Rotatie
-        drive.turn(Math.toRadians(10.5));
+        drive.turn(Math.toRadians(6));
         sleep(300);
         flicker();
         // Rotatie
-        drive.turn(Math.toRadians(9));
+        drive.turn(Math.toRadians(6));
         sleep(300);
         flicker();
         setShooterPower(0, 0);
         drive.turn(Math.toRadians(0));
         returnRingHolder();
-        drive.followTrajectory(traj2);
-        // Lasa wobble goal
-        placeWobbleGoal(450, 0.3);
-        sleep(500);
-        returnWobbleArm();
-        drive.followTrajectory(traj3);
-        placeWobbleGoal(450, 0.3);
-        drive.followTrajectory(traj4);
-        // Ia wobble
-        pickWobbleGoal(100, 0.4);
-        pickWobbleGoal(0, 0.2);
-        sleep(300);
-        drive.followTrajectory(traj5);
-        // Lasa wobble
-        placeWobbleGoal(450, 0.3);
-        returnWobbleArm();
-        drive.followTrajectory(traj6);
+//        drive.followTrajectory(traj2);
+//        // Lasa wobble goal
+//        placeWobbleGoal(450, 0.3);
+//        sleep(500);
+//        returnWobbleArm();
+//        drive.followTrajectory(traj3);
+//        placeWobbleGoal(450, 0.3);
+//        drive.followTrajectory(traj4);
+//        // Ia wobble
+//        pickWobbleGoal(100, 0.4);
+//        pickWobbleGoal(0, 0.2);
+//        sleep(300);
+//        drive.followTrajectory(traj5);
+//        // Lasa wobble
+//        placeWobbleGoal(450, 0.3);
+//        returnWobbleArm();
+//        drive.followTrajectory(traj6);
         // Parcheaza
     }
 
@@ -483,9 +483,11 @@ public class AutoRedRightFullPS extends LinearOpMode {
     }
 
     private void pickWobbleGoal(int motorPosition, double motorPower){
-        double wobbleGrabberGrab = 0, wobbleGrabberUngrab = 0.3;
+        double wobbleGrabberGrab = 0.4, wobbleGrabberUngrab = 0.3;
         if (opModeIsActive()) {
             map.wobbleServo.setPosition(wobbleGrabberGrab);
+            map.wobbleServo2.setPosition(wobbleGrabberGrab);
+
             sleep(500);
             map.wobbleMotor.setTargetPosition(motorPosition);
             map.wobbleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -551,12 +553,15 @@ public class AutoRedRightFullPS extends LinearOpMode {
     }
 
     private void resetServos() {
-        map.wobbleServo.setPosition(0.0);
+        map.wobbleServo.setPosition(0.4);
+        map.wobbleServo2.setPosition(0.4);
         map.loaderFrontServo.setPosition(0.0);
         map.loaderBackServo.setPosition(0.0);
         map.feederServo.setPosition(0.0);
         map.intakeServo.setPosition(0.0);
         map.shooterServo.setPosition(0.0);
         map.wobbleMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        map.ringBlockerLeft.setPosition(0.031);
+        map.ringBlockerRight.setPosition(0.031);
     }
 }

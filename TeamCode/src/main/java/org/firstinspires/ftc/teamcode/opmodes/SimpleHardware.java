@@ -22,6 +22,7 @@ public class SimpleHardware {
 
     // INSTANTIATE SERVOS
     public Servo wobbleServo = null;
+    public Servo wobbleServo2 = null;
     public Servo loaderFrontServo = null;
     public Servo loaderBackServo = null;
     public Servo feederServo = null;
@@ -88,6 +89,7 @@ public class SimpleHardware {
 
         // DEFINE SERVOS
         wobbleServo = robotMap.get(Servo.class, "wobbleServo");
+        wobbleServo2 = robotMap.get(Servo.class, "wobbleServo2");
         loaderFrontServo = robotMap.get(Servo.class, "loaderFrontServo");
         loaderBackServo = robotMap.get(Servo.class, "loaderBackServo");
         feederServo = robotMap.get(Servo.class, "feederServo");
@@ -98,6 +100,7 @@ public class SimpleHardware {
 
         // SET SERVO DIRECTION
         wobbleServo.setDirection(Servo.Direction.FORWARD);
+        wobbleServo2.setDirection(Servo.Direction.REVERSE);
         loaderFrontServo.setDirection(Servo.Direction.FORWARD);
         loaderBackServo.setDirection(Servo.Direction.REVERSE);
         feederServo.setDirection(Servo.Direction.FORWARD);
@@ -107,6 +110,7 @@ public class SimpleHardware {
 
         // SET SERVO POSITION
         wobbleServo.setPosition(0.0);
+        wobbleServo2.setPosition(0.0);
         loaderFrontServo.setPosition(0.0);
         loaderBackServo.setPosition(0.0);
         feederServo.setPosition(0.0);
