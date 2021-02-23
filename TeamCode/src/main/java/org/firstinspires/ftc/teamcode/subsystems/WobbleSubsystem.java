@@ -26,14 +26,14 @@ public class WobbleSubsystem extends SubsystemBase {
 
     public void openGrabber(){
         grabbing = false;
-        grabber.setPosition(0);
-        grabber2.setPosition(0);
+        grabber.setPosition(0.3);
+        grabber2.setPosition(0.3);
     }
 
     public void closeGrabber(){
         grabbing = true;
-        grabber.setPosition(.2);
-        grabber2.setPosition(.2);
+        grabber.setPosition(0);
+        grabber2.setPosition(0);
     }
 
     public boolean isGrabbing(){

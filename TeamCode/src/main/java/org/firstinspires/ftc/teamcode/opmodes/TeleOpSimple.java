@@ -22,10 +22,9 @@ public class TeleOpSimple extends LinearOpMode {
     //INSTANTIATE AND DEFINE VARIABLES
     double flPower, frPower, blPower, brPower = 0;
     public final static int GAMEPAD_LOCKOUT = 200; // PRESS DELAY IN MS
-    public double intakeLatch = 0.0, intakeUnlatch = 0.3;
     public double loaderPosLoad = 0.0, loaderPosShoot = 0.22;
     public double feederInit = 0.0, feederPush = 0.3;
-    public double wobbleGrabberGrab = 0.0, wobbleGrabberUngrab = 0.2;
+    public double wobbleGrabberGrab = 0.0, wobbleGrabberUngrab = 0.3;
     public double shooterServoPos = 0.0;
     public double chassisLimiter = 1.0;
     public double wobbleLimiter = 0.4;
@@ -176,6 +175,7 @@ public class TeleOpSimple extends LinearOpMode {
 
     public void resetServoPosition() {
         map.wobbleServo.setPosition(0.0);
+        map.wobbleServo2.setPosition(0.0);
         map.loaderFrontServo.setPosition(0.0);
         map.loaderBackServo.setPosition(0.0);
         map.feederServo.setPosition(0.0);
