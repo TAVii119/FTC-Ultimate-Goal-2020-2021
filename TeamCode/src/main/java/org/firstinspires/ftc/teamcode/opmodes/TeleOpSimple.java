@@ -10,7 +10,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * TeleOpTest for team Delta Force
  * Created on 21.11.2020 by Botosan Octavian
- * check
  */
 
 @TeleOp(name="TeleOpSimple")
