@@ -94,6 +94,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
                 phoneCam.stopRecordingPipeline();
 //                caseC(drive);
                 caseB(drive);
+//                caseA(drive);
                 sleep(30000);
             } else {
                 phoneCam.stopStreaming();
@@ -287,25 +288,25 @@ public class AutoRedRightFullPS extends LinearOpMode {
                 .lineTo(new Vector2d(-0.5, -18.0))
                 .build();
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .lineToSplineHeading(new Pose2d(27.0, -44.0))
+                .lineToSplineHeading(new Pose2d(23.0, -21.0, Math.toRadians(-60)))
                 .build();
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineToSplineHeading(new Pose2d(-22.0, -34.0, Math.toRadians(180)))
+                .lineToSplineHeading(new Pose2d(-14.0, -34.0, Math.toRadians(-180)))
                 .addDisplacementMarker(7, () -> {
                     // This marker runs 7 inch into the trajectory
                     placeWobbleGoal(450, 0.24);
                 })
                 .build();
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
-                .lineToSplineHeading(new Pose2d(-36.0, -50.5, Math.toRadians(180)))
+                .lineToSplineHeading(new Pose2d(-34.0, -50.0, Math.toRadians(-180)))
                 .build();
 
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
-                .lineToSplineHeading(new Pose2d(-0.5, -34.0))
+                .lineToSplineHeading(new Pose2d(-2.0, -37.5))
                 .build();
 
         Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
-                .lineToSplineHeading(new Pose2d(21.0, -52.0))
+                .lineToSplineHeading(new Pose2d(21.0, -51.0))
                 .build();
 
         Trajectory traj7 = drive.trajectoryBuilder(traj6.end())
@@ -318,13 +319,24 @@ public class AutoRedRightFullPS extends LinearOpMode {
         placeWobbleGoal(450, 0.24);
         returnWobbleArm();
         // Porneste intake
+        intakeRings(1);
         drive.followTrajectory(traj3);
         drive.followTrajectory(traj4);
+        intakeRings(0);
         // Oprim intake dupa ce am luat inelul. Dupa traj4 luam wobble
         pickWobbleGoal(100, 0.4);
         pickWobbleGoal(0, 0.2);
+        setShooterPower(1, 0.04);
         drive.followTrajectory(traj5);
         // Trage
+        sleep(500);
+        liftRingHolder();
+        sleep(700);
+        flicker();
+        sleep(100);
+        flicker();
+        setShooterPower(0, 0);
+        returnRingHolder();
         drive.followTrajectory(traj6);
         placeWobbleGoal(450, 0.24);
         returnWobbleArm();
@@ -511,7 +523,6 @@ public class AutoRedRightFullPS extends LinearOpMode {
         if (opModeIsActive()) {
             map.wobbleServo.setPosition(wobbleGrabberGrab);
             map.wobbleServo2.setPosition(wobbleGrabberGrab);
-
             sleep(500);
             map.wobbleMotor.setTargetPosition(motorPosition);
             map.wobbleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
