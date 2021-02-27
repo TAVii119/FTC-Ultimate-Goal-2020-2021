@@ -347,40 +347,32 @@ public class AutoRedRightFullPS extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(-36.0, -35.0))
+                .lineTo(new Vector2d(-36.0, -37.0))
                 .build();
         // 1) Trage primele 2 inele
-//        Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-//                .lineTo(
-//                        new Vector2d(-30.0, -35.0),
-//                        new MinVelocityConstraint(
-//                                Arrays.asList(
-//                                        new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-//                                        new MecanumVelocityConstraint(35, DriveConstants.TRACK_WIDTH)
-//                                )
-//                        ),
-//                        new ProfileAccelerationConstraint(30))
-//                .build();
-//        // 2) Ia urmatoarele 2 inele
-//        Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-//                .lineTo(
-//                        new Vector2d(-20.0, -35.0),
-//                        new MinVelocityConstraint(
-//                                Arrays.asList(
-//                                        new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-//                                        new MecanumVelocityConstraint(35, DriveConstants.TRACK_WIDTH)
-//                                )
-//                        ),
-//                        new ProfileAccelerationConstraint(30))
-//                .build();
-//        // 3) Ia urmatoarele 2 inele
-//        Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
-//                .lineTo(new Vector2d(-0.5, -18.0))
-//                .build();
-//        // 4) Merge la powershot-uri si le trage
-//        Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
-//                .lineToSplineHeading(new Pose2d(-0.5, -18.0, Math.toRadians(-40.0)))
-//                .build();
+        Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
+                .lineTo(
+                        new Vector2d(-25.0, -37.0),
+                        new MinVelocityConstraint(
+                                Arrays.asList(
+                                        new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
+                                        new MecanumVelocityConstraint(28, DriveConstants.TRACK_WIDTH)
+                                )
+                        ),
+                        new ProfileAccelerationConstraint(25))
+                .build();
+        // 2) Ia urmatoarele 2 inele
+        Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
+                .lineTo(new Vector2d(0.0, -37.0))
+                .build();
+        // 3) Ia urmatoarele 2 inele
+        Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
+                .lineTo(new Vector2d(-2.5, -18.0))
+                .build();
+        // 4) Merge la powershot-uri si le trage
+        Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
+                .lineToSplineHeading(new Pose2d(40.0, -50.0, Math.toRadians(-40.0)))
+                .build();
 //        // 5) Lasa primul wobble goal
 //        Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
 //                .lineToSplineHeading(new Pose2d(-34.0, -50.0, Math.toRadians(-180.0)))
@@ -403,31 +395,33 @@ public class AutoRedRightFullPS extends LinearOpMode {
         drive.followTrajectory(traj1);
         // 1) Trage primele 2 inele
         liftRingHolder();
+        sleep(700);
+        flicker();
+        sleep(100);
+        flicker();
+        setShooterPower(1, 0.032);
+        returnRingHolder();
+        intakeRings(1);
+        drive.followTrajectory(traj2);
+        // 2) Ia urmatoarele 2 inele
+        sleep(700);
+        liftRingHolder();
         sleep(500);
         flicker();
         sleep(100);
         flicker();
-//        setShooterPower(1, 0.032);
-//        returnRingHolder();
-//        intakeRings(1);
-//        drive.followTrajectory(traj2);
-//        // 2) Ia urmatoarele 2 inele
-//        liftRingHolder();
-//        sleep(500);
-//        flicker();
-//        sleep(100);
-//        flicker();
-//        setShooterPower(0, 0.032);
-//        drive.followTrajectory(traj3);
-//        // 3) Ia urmatoarele 2 inele
-//        sleep(100);
-//        intakeRings(0);
-//        drive.followTrajectory(traj4);
-//        // 4) Merge la powershot-uri si le trage
-//        drive.followTrajectory(traj5);
-//        // 5) Lasa primul wobble goal
-//        placeWobbleGoal(450, 0.24);
-//        returnWobbleArm();
+        setShooterPower(0, 0.032);
+        returnRingHolder();
+        drive.followTrajectory(traj3);
+        // 3) Ia urmatoarele 2 inele
+        sleep(700);
+        intakeRings(0);
+        drive.followTrajectory(traj4);
+        // 4) Merge la powershot-uri si le trage
+        drive.followTrajectory(traj5);
+        // 5) Lasa primul wobble goal
+        placeWobbleGoal(450, 0.24);
+        returnWobbleArm();
 //        drive.followTrajectory(traj6);
 //        // 6) Merge dupa al doilea wobble si il ia
 //        pickWobbleGoal(100, 0.4);
