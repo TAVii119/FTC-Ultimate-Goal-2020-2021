@@ -37,7 +37,7 @@ This class is for the 2 minutes Tele-Operated period.
 The robot is controlled by two robot operated using Playstation DualShock 4 controller.
  */
 
-@TeleOp(name="TeleOp")
+@TeleOp(name="TeleOperated")
 public class TeleOperated extends CommandOpMode {
 
     // Servos and Motors
@@ -133,14 +133,6 @@ public class TeleOperated extends CommandOpMode {
         driveSystem = new DriveSubsystem(drive, false, telemetry);
         driveCommand = new DriveCommand(driveSystem, driver1::getLeftY, driver1::getLeftX, driver1::getRightX);
 
-        ringBlockerSystem = new RingBlockerSubsystem(ringBlockerLeft, ringBlockerRight);
-
-        ringBlockerCommand = new InstantCommand(()-> {
-            if (ringBlockerSystem.isBlockerDown())
-                ringBlockerSystem.unBlockRings();
-            else ringBlockerSystem.blockRings();
-        }, ringBlockerSystem);
-
         normalModeCommand = new InstantCommand(()-> {
             driveSystem.normalMode();
         }, driveSystem);
@@ -173,24 +165,26 @@ public class TeleOperated extends CommandOpMode {
             rampSystem.rampPos(driveSystem.setRampPosition());
         }, rampSystem, driveSystem);
 
-
         shooterSystem = new ShooterSubsystem(flywheel);
         shootCommand = new InstantCommand(()-> {
             if (!shooterSystem.isShooting()) {
                 shooterSystem.shoot();
                 ringLiftSystem.moveRingLift();
                 rampSystem.topGoalPos();
+                ringBlockerSystem.unBlockRings();
             } else {
                 shooterSystem.stopShoot();
                 ringLiftSystem.returnRingLift();
+                ringBlockerSystem.blockRings();
             }
-        }, shooterSystem, ringLiftSystem, rampSystem);
+        }, shooterSystem, ringLiftSystem, rampSystem, ringBlockerSystem);
 
         slowShootCommand = new InstantCommand(()-> {
             shooterSystem.slowShoot();
             ringLiftSystem.moveRingLift();
             rampSystem.powershotPos();
-        }, shooterSystem, ringLiftSystem, rampSystem);
+            ringBlockerSystem.unBlockRings();
+        }, shooterSystem, ringLiftSystem, rampSystem, ringBlockerSystem);
 
         intakeSystem = new IntakeSubsystem(intake);
         intakeCommand = new IntakeCommand(intakeSystem);
@@ -226,6 +220,13 @@ public class TeleOperated extends CommandOpMode {
         liftRampCommand = new LiftRampCommand(rampSystem);
         lowerRampCommand = new LowerRampCommand(rampSystem);
 
+        ringBlockerSystem = new RingBlockerSubsystem(ringBlockerLeft, ringBlockerRight);
+        ringBlockerCommand = new InstantCommand(()-> {
+            if (ringBlockerSystem.isBlockerDown())
+                ringBlockerSystem.unBlockRings();
+            else ringBlockerSystem.blockRings();
+        }, ringBlockerSystem);
+
         intakeButton = new GamepadButton(driver1, GamepadKeys.Button.RIGHT_BUMPER).whenHeld(intakeCommand);
         outtakeButton = new GamepadButton(driver1, GamepadKeys.Button.LEFT_BUMPER).whenHeld(outtakeCommand);
         normalModeButton = new GamepadButton(driver1, GamepadKeys.Button.Y).whenPressed(normalModeCommand);
@@ -244,7 +245,7 @@ public class TeleOperated extends CommandOpMode {
         liftRampButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_UP).whenPressed(liftRampCommand);
         lowerRampButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_DOWN).whenPressed(lowerRampCommand);
 
-        register(driveSystem, wobbleSystem, flickerSystem, intakeSystem, rampSystem, ringLiftSystem, shooterSystem);
+        register(driveSystem, wobbleSystem, flickerSystem, intakeSystem, rampSystem, ringLiftSystem, shooterSystem, ringBlockerSystem);
         driveSystem.setDefaultCommand(driveCommand);
         wobbleSystem.setDefaultCommand(wobbleCommand);
     }
