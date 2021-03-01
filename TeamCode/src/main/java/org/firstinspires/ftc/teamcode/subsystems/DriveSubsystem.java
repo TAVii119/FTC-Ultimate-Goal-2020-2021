@@ -275,9 +275,6 @@ public class DriveSubsystem extends SubsystemBase {
         double position = positions.getClosest(distanceToTowergoal);
 
         return position;
-
-//        double position = distanceToTowergoal / 1.93;
-//        return position / 1000;
     }
 
     public void setDrivePower(Pose2d drivePower) {

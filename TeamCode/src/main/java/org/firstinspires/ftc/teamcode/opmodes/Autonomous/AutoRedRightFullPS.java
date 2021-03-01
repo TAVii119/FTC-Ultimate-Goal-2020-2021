@@ -70,37 +70,31 @@ public class AutoRedRightFullPS extends LinearOpMode {
 //            telemetry.addData("Analysis", pipeline.getAnalysis());
 //            telemetry.addData("Position", pipeline.position);
 //            telemetry.update();
-//
-//            // Don't burn CPU cycles busy-looping in this sample
-//            sleep(50);
+
+            // Don't burn CPU cycles busy-looping in this sample
+            sleep(50);
 
             dropIntake();
 
             if (pipeline.position == RingsDeterminationPipeline.RingPosition.NONE) {
                 phoneCam.stopStreaming();
                 phoneCam.stopRecordingPipeline();
-//                caseA(drive);
-                caseC(drive);
+                caseA(drive);
                 sleep(30000);
             } else if (pipeline.position == RingsDeterminationPipeline.RingPosition.ONE) {
                 phoneCam.stopStreaming();
                 phoneCam.stopRecordingPipeline();
-                caseC(drive);
-//                caseA(drive);
-
+                caseB(drive);
                 sleep(30000);
             } else if (pipeline.position == RingsDeterminationPipeline.RingPosition.FOUR) {
                 phoneCam.stopStreaming();
                 phoneCam.stopRecordingPipeline();
-//                caseC(drive);
                 caseC(drive);
-//                caseA(drive);
                 sleep(30000);
             } else {
                 phoneCam.stopStreaming();
                 phoneCam.stopRecordingPipeline();
-//                caseA(drive);
-                caseC(drive);
+                caseA(drive);
                 sleep(30000);
             }
 
@@ -128,7 +122,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
         /*
          * The core values which define the location and size of the sample regions
          */
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(200,170);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(220,180);
 
         static final int REGION_WIDTH = 35;
         static final int REGION_HEIGHT = 25;
@@ -256,29 +250,15 @@ public class AutoRedRightFullPS extends LinearOpMode {
         drive.followTrajectory(traj1);
 //        drive.turn(Math.toRadians(-90));
         drive.followTrajectory(traj2);
-        placeWobbleGoal(450, 0.24);
+        placeWobbleGoal(470, 0.24);
         returnWobbleArm();
         drive.followTrajectory(traj3);
         pickWobbleGoal(100, 0.4);
         pickWobbleGoal(0, 0.2);
         drive.followTrajectory(traj4);
-        placeWobbleGoal(450, 0.24);
+        placeWobbleGoal(470, 0.24);
         returnWobbleArm();
         drive.followTrajectory(traj5);
-//        // Trage la powershot
-//        sleep(750);
-//        flicker();
-//        // Rotatie
-//        drive.turn(Math.toRadians(6));
-//        sleep(300);
-//        flicker();
-//        // Rotatie
-//        drive.turn(Math.toRadians(6));
-//        sleep(300);
-//        flicker();
-//        setShooterPower(0, 0);
-//        drive.turn(Math.toRadians(0));
-//        returnRingHolder();
     }
 
     private void caseB(SampleMecanumDrive drive) {
@@ -316,7 +296,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
         drive.followTrajectory(traj1);
 //        drive.turn(Math.toRadians(-90));
         drive.followTrajectory(traj2);
-        placeWobbleGoal(450, 0.24);
+        placeWobbleGoal(470, 0.24);
         returnWobbleArm();
         // Porneste intake
         intakeRings(1);
@@ -338,7 +318,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
         setShooterPower(0, 0);
         returnRingHolder();
         drive.followTrajectory(traj6);
-        placeWobbleGoal(450, 0.24);
+        placeWobbleGoal(470, 0.24);
         returnWobbleArm();
         drive.followTrajectory(traj7);
     }
@@ -373,23 +353,11 @@ public class AutoRedRightFullPS extends LinearOpMode {
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
                 .lineToSplineHeading(new Pose2d(40.0, -50.0, Math.toRadians(-40.0)))
                 .build();
-//        // 5) Lasa primul wobble goal
-//        Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
-//                .lineToSplineHeading(new Pose2d(-34.0, -50.0, Math.toRadians(-180.0)))
-//                .addDisplacementMarker(7, () -> {
-//                    // This marker runs 7 inch into the trajectory
-//                    placeWobbleGoal(450, 0.24);
-//                })
-//                .build();
-//        // 6) Merge dupa al doilea wobble si il ia
-//        Trajectory traj7 = drive.trajectoryBuilder(traj6.end())
-//                .lineToSplineHeading(new Pose2d(40.0, -58.0, Math.toRadians(-40.0)))
-//                .build();
-//        // 7) Lasa al doilea wobble
-//        Trajectory traj8 = drive.trajectoryBuilder(traj7.end())
-//                .lineTo(new Vector2d(5.0, -55.0))
-//                .build();
-//        // 8) Parcheaza
+        // 5) Lasa primul wobble goal
+        Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
+                .lineToSplineHeading(new Pose2d(5.0, -40.0, Math.toRadians(-40.0)))
+                .build();
+        // 6) Parcheaza
 
         setShooterPower(1, 0.029);
         drive.followTrajectory(traj1);
@@ -420,17 +388,10 @@ public class AutoRedRightFullPS extends LinearOpMode {
         // 4) Merge la powershot-uri si le trage
         drive.followTrajectory(traj5);
         // 5) Lasa primul wobble goal
-        placeWobbleGoal(450, 0.24);
+        placeWobbleGoal(470, 0.24);
         returnWobbleArm();
-//        drive.followTrajectory(traj6);
-//        // 6) Merge dupa al doilea wobble si il ia
-//        pickWobbleGoal(100, 0.4);
-//        pickWobbleGoal(0, 0.2);
-//        drive.followTrajectory(traj7);
-//        // 7) Lasa al doilea wobble
-//        placeWobbleGoal(450, 0.24);
-//        drive.followTrajectory(traj8);
-//        // 8) Parcheaza
+        drive.followTrajectory(traj6);
+        // 6) Parcheaza
     }
 
     private void intakeRings(double power) {
