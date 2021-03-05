@@ -44,24 +44,24 @@ public class AutoRedRightFullPS extends LinearOpMode {
         map.init(hardwareMap);
         resetServos();
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-        pipeline = new RingsDeterminationPipeline();
-        phoneCam.setPipeline(pipeline);
-
-        // We set the viewport policy to optimized view so the preview doesn't appear 90 deg
-        // out when the RC activity is in portrait. We do our actual image processing assuming
-        // landscape orientation, though.
-        phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
-
-        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
-            @Override
-            public void onOpened()
-            {
-                phoneCam.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_LEFT);
-            }
-        });
+//        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+//        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+//        pipeline = new RingsDeterminationPipeline();
+//        phoneCam.setPipeline(pipeline);
+//
+//        // We set the viewport policy to optimized view so the preview doesn't appear 90 deg
+//        // out when the RC activity is in portrait. We do our actual image processing assuming
+//        // landscape orientation, though.
+//        phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
+//
+//        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+//        {
+//            @Override
+//            public void onOpened()
+//            {
+//                phoneCam.startStreaming(320,240, OpenCvCameraRotation.SIDEWAYS_LEFT);
+//            }
+//        });
 
         waitForStart();
 
@@ -75,28 +75,29 @@ public class AutoRedRightFullPS extends LinearOpMode {
             sleep(50);
 
             dropIntake();
-
-            if (pipeline.position == RingsDeterminationPipeline.RingPosition.NONE) {
-                phoneCam.stopStreaming();
-                phoneCam.stopRecordingPipeline();
-                caseC(drive);
-                sleep(30000);
-            } else if (pipeline.position == RingsDeterminationPipeline.RingPosition.ONE) {
-                phoneCam.stopStreaming();
-                phoneCam.stopRecordingPipeline();
-                caseC(drive);
-                sleep(30000);
-            } else if (pipeline.position == RingsDeterminationPipeline.RingPosition.FOUR) {
-                phoneCam.stopStreaming();
-                phoneCam.stopRecordingPipeline();
-                caseC(drive);
-                sleep(30000);
-            } else {
-                phoneCam.stopStreaming();
-                phoneCam.stopRecordingPipeline();
-                caseC(drive);
-                sleep(30000);
-            }
+            caseB(drive);
+            sleep(30000);
+//            if (pipeline.position == RingsDeterminationPipeline.RingPosition.NONE) {
+//                phoneCam.stopStreaming();
+//                phoneCam.stopRecordingPipeline();
+//                caseA(drive);
+//                sleep(30000);
+//            } else if (pipeline.position == RingsDeterminationPipeline.RingPosition.ONE) {
+//                phoneCam.stopStreaming();
+//                phoneCam.stopRecordingPipeline();
+//                caseA(drive);
+//                sleep(30000);
+//            } else if (pipeline.position == RingsDeterminationPipeline.RingPosition.FOUR) {
+//                phoneCam.stopStreaming();
+//                phoneCam.stopRecordingPipeline();
+//                caseA(drive);
+//                sleep(30000);
+//            } else {
+//                phoneCam.stopStreaming();
+//                phoneCam.stopRecordingPipeline();
+//                caseA(drive);
+//                sleep(30000);
+//            }
 
         }
     }
@@ -217,7 +218,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(-0.7, -16.0))
+                .lineTo(new Vector2d(-1.7, -20.0))
 //                .addDisplacementMarker(1, () -> {
 //                    // This marker runs 1 inch into the trajectory
 //                    setShooterPower(slowShooterSpeed, poweshotRampPos);
@@ -232,7 +233,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
                 .lineToSplineHeading(new Pose2d(0.0, -61.5, Math.toRadians(-25)))
                 .build();
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineToSplineHeading(new Pose2d(-33.2, -50.5, Math.toRadians(180)))
+                .lineToSplineHeading(new Pose2d(-33.2, -46.5, Math.toRadians(180)))
                 .addDisplacementMarker(7, () -> {
                     // This marker runs 7 inch into the trajectory
                     placeWobbleGoal(450, 0.24);
@@ -247,16 +248,16 @@ public class AutoRedRightFullPS extends LinearOpMode {
                 .lineTo(new Vector2d(5.0, -25.0))
                 .build();
 
-        setShooterPower(0.63, 0.0375);
+        setShooterPower(0.67, 0.045);
         liftRingHolder();
         drive.followTrajectory(traj1);
         flicker();
         drive.turn(Math.toRadians(8));
         flicker();
-        drive.turn(Math.toRadians(7));
+        drive.turn(Math.toRadians(6.5));
         flicker();
         returnRingHolder();
-        setShooterPower(0, 0.0375);
+        setShooterPower(0, 0.045);
         drive.followTrajectory(traj2);
         placeWobbleGoal(470, 0.24);
         returnWobbleArm();
@@ -273,10 +274,10 @@ public class AutoRedRightFullPS extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(-0.7, -16.0))
+                .lineTo(new Vector2d(-1.7, -20.0))
                 .build();
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .lineToSplineHeading(new Pose2d(23.0, -21.0, Math.toRadians(-60)))
+                .lineToSplineHeading(new Pose2d(23.0, -24.0, Math.toRadians(-60)))
                 .build();
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
                 .lineToSplineHeading(new Pose2d(-14.0, -34.0, Math.toRadians(-180)))
@@ -290,7 +291,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
                 .build();
 
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
-                .lineToSplineHeading(new Pose2d(-2.0, -37.5))
+                .lineToSplineHeading(new Pose2d(-2.0, -39.5))
                 .build();
 
         Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
@@ -300,16 +301,16 @@ public class AutoRedRightFullPS extends LinearOpMode {
         Trajectory traj7 = drive.trajectoryBuilder(traj6.end())
                 .lineTo(new Vector2d(5.0, -25.0))
                 .build();
-        setShooterPower(0.63, 0.0375);
+        setShooterPower(0.67, 0.045);
         liftRingHolder();
         drive.followTrajectory(traj1);
         flicker();
-        drive.turn(Math.toRadians(8.25));
+        drive.turn(Math.toRadians(8));
         flicker();
-        drive.turn(Math.toRadians(7));
+        drive.turn(Math.toRadians(6.5));
         flicker();
         returnRingHolder();
-        setShooterPower(0, 0.0375);
+        setShooterPower(0, 0.045);
         drive.followTrajectory(traj2);
         placeWobbleGoal(470, 0.24);
         returnWobbleArm();
@@ -321,7 +322,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
         // Oprim intake dupa ce am luat inelul. Dupa traj4 luam wobble
         pickWobbleGoal(100, 0.4);
         pickWobbleGoal(0, 0.2);
-        setShooterPower(1, 0.0145);
+        setShooterPower(0.9, 0.034);
         drive.followTrajectory(traj5);
         // Trage
         sleep(500);

@@ -205,7 +205,7 @@ public class TeleOperated extends CommandOpMode {
         flickerAction = new TimedAction(
                 ()->flickerServo.setPosition(0.3),
                 ()->flickerServo.setPosition(0),
-                100,
+                75,
                 true
         );
 
