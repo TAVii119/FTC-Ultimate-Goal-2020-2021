@@ -39,9 +39,9 @@ public class DriveSubsystem extends SubsystemBase {
     private final Pose2d startPosition = new Pose2d(-63.0, -48.5);
     // A target vector we want the bot to align with
     private Vector2d towerPosition = new Vector2d(83.0, -36.2);
-    private Vector2d rightPsPosition = new Vector2d(75.0, -19.0 + 5.512);
-    private Vector2d centerPsPosition = new Vector2d(75.0, -11.0 + 5.512);
-    private Vector2d leftPsPosition = new Vector2d(75.0, -2.0 + 5.512);
+    private Vector2d rightPsPosition = new Vector2d(75.0, -14);
+    private Vector2d centerPsPosition = new Vector2d(75.0, 0.0);
+    private Vector2d leftPsPosition = new Vector2d(75.0, -5);
     Telemetry tele;
 
     public double distanceToTowergoal;

@@ -28,6 +28,10 @@ public class FlickerSubsystem extends SubsystemBase {
     public void flick() {
         timedAction.run();
     }
+    public void flickOnce() {
+        flickerServo.setPosition(0.3);
+        flickerServo.setPosition(0);
+    }
 
     public void flickReset() {
         if(!timedAction.running())
