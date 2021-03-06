@@ -41,7 +41,7 @@ public class DriveSubsystem extends SubsystemBase {
     private Vector2d towerPosition = new Vector2d(83.0, -36.2);
     private Vector2d rightPsPosition = new Vector2d(75.0, -14);
     private Vector2d centerPsPosition = new Vector2d(75.0, 0.0);
-    private Vector2d leftPsPosition = new Vector2d(75.0, -5);
+    private Vector2d leftPsPosition = new Vector2d(75.0, 1);
     Telemetry tele;
 
     public double distanceToTowergoal;
