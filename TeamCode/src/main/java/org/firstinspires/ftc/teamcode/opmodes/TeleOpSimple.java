@@ -22,7 +22,7 @@ public class TeleOpSimple extends LinearOpMode {
     //INSTANTIATE AND DEFINE VARIABLES
     double flPower, frPower, blPower, brPower = 0;
     public final static int GAMEPAD_LOCKOUT = 200; // PRESS DELAY IN MS
-    public double loaderPosLoad = 0.0, loaderPosShoot = 0.22;
+    public double loaderPosLoad = 0.0, loaderPosShoot = 0.2125;
     public double feederInit = 0.0, feederPush = 0.3;
     public double wobbleGrabberGrab = 0.0, wobbleGrabberUngrab = 0.3;
     public double shooterServoPos = 0.0;
@@ -59,6 +59,8 @@ public class TeleOpSimple extends LinearOpMode {
             map.blMotor.setPower(blPower * chassisLimiter);
             map.brMotor.setPower(brPower * chassisLimiter);
 
+            map.intakeMotor.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
+
             //-//-----------\\-\\
             //-// GAMEPAD 2 \\-\\
             //-//-----------\\-\\
@@ -75,9 +77,9 @@ public class TeleOpSimple extends LinearOpMode {
             // Push rings into shooter
             if (gamepad2.a) {
                 map.feederServo.setPosition(feederPush);
-                sleep(300);
+                sleep(150);
                 map.feederServo.setPosition(feederInit);
-                sleep(400);
+                sleep(200);
             }
 
             map.shooterServo.setPosition(shooterServoPos);
@@ -111,28 +113,14 @@ public class TeleOpSimple extends LinearOpMode {
         if (gamepad2.b && map.shooterFrontMotor.getPower() == 0) {
             map.shooterFrontMotor.setPower(1);
             map.shooterBackMotor.setPower(1);
+            map.loaderFrontServo.setPosition(loaderPosShoot);
+            map.loaderBackServo.setPosition(loaderPosShoot);
             gamepadRateLimit.reset();
-        } else if (gamepad2.b && map.shooterFrontMotor.getPower() == 1) {
+        } else if (gamepad2.b && map.shooterFrontMotor.getPower() > 0.2) {
             map.shooterFrontMotor.setPower(0);
             map.shooterBackMotor.setPower(0);
-            gamepadRateLimit.reset();
-        }
-
-        if (gamepad1.a && !activeIntake) { // INTAKE
-            map.intakeMotor.setPower(1);
-            activeIntake = true;
-            gamepadRateLimit.reset();
-        } else if (gamepad1.a && activeIntake) {
-            map.intakeMotor.setPower(0);
-            activeIntake = false;
-            gamepadRateLimit.reset();
-        } else if (gamepad1.b && !activeIntake) {
-            map.intakeMotor.setPower(-1);
-            activeIntake = true;
-            gamepadRateLimit.reset();
-        } else if (gamepad1.b && activeIntake) {
-            map.intakeMotor.setPower(0);
-            activeIntake = false;
+            map.loaderFrontServo.setPosition(loaderPosLoad);
+            map.loaderBackServo.setPosition(loaderPosLoad);
             gamepadRateLimit.reset();
         }
 
@@ -141,18 +129,6 @@ public class TeleOpSimple extends LinearOpMode {
             gamepadRateLimit.reset();
         } else if (gamepad2.dpad_down && shooterServoPos >= 0.01) {
             shooterServoPos -= 0.01;
-            gamepadRateLimit.reset();
-        }
-
-        if (gamepad2.x && map.loaderFrontServo.getPosition() != loaderPosLoad) { // RING LOADER
-            map.loaderFrontServo.setPosition(loaderPosLoad);
-            map.loaderBackServo.setPosition(loaderPosLoad);
-            map.shooterFrontMotor.setPower(0);
-            map.shooterBackMotor.setPower(0);
-            gamepadRateLimit.reset();
-        } else if (gamepad2.x && map.loaderFrontServo.getPosition() != loaderPosShoot) {
-            map.loaderFrontServo.setPosition(loaderPosShoot);
-            map.loaderBackServo.setPosition(loaderPosShoot);
             gamepadRateLimit.reset();
         }
 

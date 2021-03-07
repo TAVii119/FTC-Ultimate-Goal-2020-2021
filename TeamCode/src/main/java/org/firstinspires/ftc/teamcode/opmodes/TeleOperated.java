@@ -205,7 +205,7 @@ public class TeleOperated extends CommandOpMode {
         flickerAction = new TimedAction(
                 ()->flickerServo.setPosition(0.3),
                 ()->flickerServo.setPosition(0),
-                200,
+                300,
                 true
         );
 
@@ -253,8 +253,6 @@ public class TeleOperated extends CommandOpMode {
         liftRampButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_UP).whenPressed(liftRampCommand);
         lowerRampButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_DOWN).whenPressed(lowerRampCommand);
         upperRampButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_RIGHT).whenPressed(upperRampCommand);
-//        flickOnceButton = new GamepadButton(driver2, GamepadKeys.Button.LEFT_BUMPER).whenPressed(flickerOnceCommand);
-
 
         register(driveSystem, wobbleSystem, flickerSystem, intakeSystem, rampSystem, ringLiftSystem, shooterSystem, ringBlockerSystem);
         driveSystem.setDefaultCommand(driveCommand);
