@@ -327,7 +327,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
         // Oprim intake dupa ce am luat inelul. Dupa traj4 luam wobble
         pickWobbleGoal(100, 0.4);
         pickWobbleGoal(0, 0.2);
-        setShooterPower(1, 0.065);
+        setShooterPower(1, 0.062);
         drive.followTrajectory(traj5);
         // Trage
         intakeRings(0);
@@ -398,7 +398,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
         // Oprim intake dupa ce am luat inelul. Dupa traj4 luam wobble
         pickWobbleGoal(100, 0.4);
         pickWobbleGoal(0, 0.2);
-        setShooterPower(1, 0.07);
+        setShooterPower(1, 0.064);
         drive.followTrajectory(traj5);
         // Trage
         intakeRings(0);

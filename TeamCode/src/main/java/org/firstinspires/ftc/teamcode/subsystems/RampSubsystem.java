@@ -20,7 +20,7 @@ public class RampSubsystem extends SubsystemBase {
     }
 
     public void topGoalPos () {
-        shooterServo.setPosition(0.06);
+        shooterServo.setPosition(0.061);
     }
 
     public void powershotPos () {
