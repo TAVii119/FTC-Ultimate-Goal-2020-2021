@@ -205,7 +205,7 @@ public class TeleOperated extends CommandOpMode {
         flickerAction = new TimedAction(
                 ()->flickerServo.setPosition(0.3),
                 ()->flickerServo.setPosition(0),
-                300,
+                175,
                 true
         );
 
@@ -236,7 +236,6 @@ public class TeleOperated extends CommandOpMode {
         intakeButton = new GamepadButton(driver1, GamepadKeys.Button.RIGHT_BUMPER).whenHeld(intakeCommand);
         outtakeButton = new GamepadButton(driver1, GamepadKeys.Button.LEFT_BUMPER).whenHeld(outtakeCommand);
         flickButton = new GamepadButton(driver1, GamepadKeys.Button.A).whenHeld(flickerCommand);
-        singleFlickButton = new GamepadButton(driver1, GamepadKeys.Button.X).whenPressed(flickerCommand);
         ringBlockerButton = new GamepadButton(driver1, GamepadKeys.Button.B).whenPressed(ringBlockerCommand);
         normalModeButton = new GamepadButton(driver1, GamepadKeys.Button.Y).whenPressed(normalModeCommand);
         leftPsAlignButton = new GamepadButton(driver1, GamepadKeys.Button.DPAD_LEFT).whenPressed(leftPsAlignCommand);

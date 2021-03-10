@@ -125,7 +125,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
         /*
          * The core values which define the location and size of the sample regions
          */
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(945,320);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(900,50);
 
         static final int REGION_WIDTH = 160;
         static final int REGION_HEIGHT = 170;
@@ -220,7 +220,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(-1.7, -20.0))
+                .lineTo(new Vector2d(-1.7, -18.0))
 //                .addDisplacementMarker(1, () -> {
 //                    // This marker runs 1 inch into the trajectory
 //                    setShooterPower(slowShooterSpeed, poweshotRampPos);
@@ -250,7 +250,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
                 .lineTo(new Vector2d(5.0, -25.0))
                 .build();
 
-        setShooterPower(0.67, 0.025);
+        setShooterPower(0.67, 0.0715);
         liftRingHolder();
         drive.followTrajectory(traj1);
         flicker();
@@ -278,7 +278,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(-1.7, -21.0))
+                .lineTo(new Vector2d(-1.7, -18.0))
                 .build();
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
                 .lineToSplineHeading(new Pose2d(18.0, -23.0, Math.toRadians(-60)))
@@ -305,7 +305,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
         Trajectory traj7 = drive.trajectoryBuilder(traj6.end())
                 .lineTo(new Vector2d(5.0, -56))
                 .build();
-        setShooterPower(0.67, 0.025);
+        setShooterPower(0.67, 0.0715);
         liftRingHolder();
         drive.followTrajectory(traj1);
         flicker();
@@ -327,7 +327,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
         // Oprim intake dupa ce am luat inelul. Dupa traj4 luam wobble
         pickWobbleGoal(100, 0.4);
         pickWobbleGoal(0, 0.2);
-        setShooterPower(0.9, 0.014);
+        setShooterPower(1, 0.065);
         drive.followTrajectory(traj5);
         // Trage
         intakeRings(0);
@@ -349,92 +349,82 @@ public class AutoRedRightFullPS extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                .lineToSplineHeading(new Pose2d(-33.0, -37.0, Math.toRadians(3)))
+                .lineTo(new Vector2d(-1.7, -20.2))
                 .build();
-        // 1) Trage primele 2 inele
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .lineToSplineHeading(new Pose2d(-14.0, -37.0, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(52.5, -49.5, Math.toRadians(-75.0)))
                 .build();
-        // 2) Sparge inelele
-        Trajectory traj3 = drive.trajectoryBuilder(traj1.end())
-                .lineTo(
-                        new Vector2d(-10.0, -37.0),
-                        new MinVelocityConstraint(
-                                Arrays.asList(
-                                        new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-                                        new MecanumVelocityConstraint(28, DriveConstants.TRACK_WIDTH)
-                                )
-                        ),
-                        new ProfileAccelerationConstraint(25))
+        Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
+                .lineToSplineHeading(new Pose2d(-21.0, -32.0, Math.toRadians(-180)))
+                .addDisplacementMarker(15, () -> {
+                    // This marker runs 7 inch into the trajectory
+                    placeWobbleGoal(450, 0.24);
+                })
                 .build();
-        // 3) Ia inele
-        Trajectory traj4 = drive.trajectoryBuilder(traj2.end())
-                .lineTo(new Vector2d(7.0, -37.0))
+        Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
+                .lineToSplineHeading(new Pose2d(-32.0, -50.0, Math.toRadians(-180)))
                 .build();
-        // 4) Ia inele
-        Trajectory traj5 = drive.trajectoryBuilder(traj3.end())
-                .lineTo(new Vector2d(-7.0, -12.5))
-                .build();
-        // 5) Merge la powershot-uri si le trage
-        Trajectory traj6 = drive.trajectoryBuilder(traj4.end())
-                .lineToSplineHeading(new Pose2d(42.0, -49.5, Math.toRadians(-60.0)))
-                .build();
-        // 6) Lasa primul wobble goal
-        Trajectory traj7 = drive.trajectoryBuilder(traj5.end())
-                .lineToSplineHeading(new Pose2d(12.0, -40.0, Math.toRadians(-40.0)))
-                .build();
-        // 7) Parcheaza
 
-        setShooterPower(0.95, 0);
+        Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
+                .lineToSplineHeading(new Pose2d(-1.5, -36.5))
+                .build();
+
+        Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
+                .lineToSplineHeading(new Pose2d(39.0, -51.5, Math.toRadians(-60.0)))
+                .build();
+
+        Trajectory traj7 = drive.trajectoryBuilder(traj6.end())
+                .lineToSplineHeading(new Pose2d(4.0, -51.5, Math.toRadians(0)))
+                .build();
+        setShooterPower(0.67, 0.0715);
+        liftRingHolder();
         drive.followTrajectory(traj1);
-        // 1) Trage primele 2 inele
+        flicker();
+        drive.turn(Math.toRadians(8.3));
+        sleep(100);
+        flicker();
+        drive.turn(Math.toRadians(7.5));
+        sleep(100);
+        flicker();
+        returnRingHolder();
+        setShooterPower(0, 0.025);
+        drive.followTrajectory(traj2);
+        placeWobbleGoal(490, 0.24);
+        returnWobbleArm();
+        // Porneste intake
+        intakeRings(1);
+        drive.followTrajectory(traj3);
+        drive.followTrajectory(traj4);
+        // Oprim intake dupa ce am luat inelul. Dupa traj4 luam wobble
+        pickWobbleGoal(100, 0.4);
+        pickWobbleGoal(0, 0.2);
+        setShooterPower(1, 0.07);
+        drive.followTrajectory(traj5);
+        // Trage
+        intakeRings(0);
         liftRingHolder();
         sleep(700);
         flicker();
-        sleep(100);
+        sleep(75);
         flicker();
-        sleep(100);
+        sleep(75);
         flicker();
         setShooterPower(0, 0);
         returnRingHolder();
-        drive.followTrajectory(traj2);
-        sleep(100);
-        // 2) Sparge inelele
-        intakeRings(1);
-        drive.followTrajectory(traj3);
-        // 3) Ia inele
-        sleep(1500);
-        drive.turn(Math.toRadians(3));
-        setShooterPower(0.95, 0);
-        sleep(500);
-        liftRingHolder();
-        sleep(500);
-        flicker();
-        sleep(100);
-        setShooterPower(0, 0);
-        returnRingHolder();
-        drive.followTrajectory(traj4);
-        // 4) Ia inele
-        sleep(2000);
-        liftRingHolder();
-        intakeRings(0);
-        setShooterPower(0.67, 0.02);
-        drive.followTrajectory(traj5);
-        // 5) Merge la powershot-uri si le trage
-        flicker();
-        drive.turn(Math.toRadians(7.9));
-        flicker();
-        drive.turn(Math.toRadians(7.2));
-        flicker();
-        returnRingHolder();
-        setShooterPower(0, 0);
         drive.followTrajectory(traj6);
-        // 6) Lasa primul wobble goal
         placeWobbleGoal(490, 0.24);
-        returnWobbleArm();
+//        returnWobbleArm();
         drive.followTrajectory(traj7);
-        // 7) Parcheaza
     }
+
+//    private void caseD(SampleMecanumDrive drive) {
+//        drive.setPoseEstimate(startPose);
+//
+//        Trajectory traj1 = drive.trajectoryBuilder(startPose)
+//                .strafeRight(17)
+//                .build();
+//        drive.followTrajectory(traj1);
+//    }
 
     private void intakeRings(double power) {
         map.intakeMotor.setPower(power);
