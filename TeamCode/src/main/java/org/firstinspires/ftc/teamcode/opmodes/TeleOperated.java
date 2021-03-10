@@ -163,7 +163,7 @@ public class TeleOperated extends CommandOpMode {
         }, driveSystem);
 
         resetLeftPoseCommand = new InstantCommand(()-> {
-            driveSystem.setPoseEstimate(new Pose2d(-9, 63.0));
+            driveSystem.setPoseEstimate(new Pose2d(-9, 14.0));
         }, driveSystem);
 
         setRampPositionCommand = new InstantCommand(()-> {
