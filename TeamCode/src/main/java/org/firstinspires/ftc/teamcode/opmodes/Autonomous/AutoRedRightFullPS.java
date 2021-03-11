@@ -254,11 +254,11 @@ public class AutoRedRightFullPS extends LinearOpMode {
         liftRingHolder();
         drive.followTrajectory(traj1);
         flicker();
-        drive.turn(Math.toRadians(8));
-        sleep(2000);
+        drive.turn(Math.toRadians(8.3));
+        sleep(500);
         flicker();
-        drive.turn(Math.toRadians(7));
-        sleep(2000);
+        drive.turn(Math.toRadians(7.5));
+        sleep(500);
         flicker();
         returnRingHolder();
         setShooterPower(0, 0.045);

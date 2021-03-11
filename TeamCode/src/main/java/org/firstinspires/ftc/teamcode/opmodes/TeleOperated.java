@@ -126,7 +126,6 @@ public class TeleOperated extends CommandOpMode {
         wobbleServo2.setDirection(Servo.Direction.REVERSE);
         ringBlockerRight.setDirection(Servo.Direction.REVERSE);
 
-
         // Controller
         driver1 = new GamepadEx(gamepad1);
         driver2 = new GamepadEx(gamepad2);
@@ -203,7 +202,7 @@ public class TeleOperated extends CommandOpMode {
         }, ringLiftSystem);
 
         flickerAction = new TimedAction(
-                ()->flickerServo.setPosition(0.3),
+                ()->flickerServo.setPosition(0.32),
                 ()->flickerServo.setPosition(0),
                 200,
                 true
