@@ -20,8 +20,8 @@ public class RingBlockerSubsystem extends SubsystemBase {
     }
 
     public void unBlockRings() {
-        ringBlockerLeft.setPosition(0.05);
-        ringBlockerRight.setPosition(0.05);
+        ringBlockerLeft.setPosition(0.07);
+        ringBlockerRight.setPosition(0.07);
         down = false;
     }
 

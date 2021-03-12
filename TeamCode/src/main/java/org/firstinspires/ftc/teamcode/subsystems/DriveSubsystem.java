@@ -8,15 +8,21 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.util.LUT;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import java.util.List;
 
 public class DriveSubsystem extends SubsystemBase {
 
+    private BNO055IMU imu;
     private final SampleMecanumDrive drive;
     private final boolean fieldCentric;
     private int controlMode;
@@ -250,9 +256,8 @@ public class DriveSubsystem extends SubsystemBase {
         headingController.update(poseEstimate.getHeading());
         distanceToTowergoal = towerPosition.getX() - poseEstimate.getX();
 
-        // Update he localizer
+        // Update the localizer
         drive.getLocalizer().update();
-
         tele.addData("Distance to Tower Goal", towerPosition.getX() - poseEstimate.getX());
         tele.addData("x", poseEstimate.getX());
         tele.addData("y", poseEstimate.getY());
