@@ -295,7 +295,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
                 .build();
 
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
-                .lineToSplineHeading(new Pose2d(-2.0, -36.5))
+                .lineToSplineHeading(new Pose2d(-2.0, -33.2))
                 .build();
 
         Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
