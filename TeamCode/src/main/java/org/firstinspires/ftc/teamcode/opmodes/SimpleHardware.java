@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -36,11 +37,16 @@ public class SimpleHardware {
     public Servo loaderFrontServo = null;
     public Servo loaderBackServo = null;
 
+    public BNO055IMU imu = null;
+
     // CREATE NEW HardwareMap
     HardwareMap robotMap;
 
     // DEFINE NEW HardwareMap
     public void init(HardwareMap robotMap) {
+
+        imu = robotMap.get(BNO055IMU.class, "imu");
+
 
         // DEFINE MOTORS
         flMotor = robotMap.get(DcMotor.class, "flMotor");

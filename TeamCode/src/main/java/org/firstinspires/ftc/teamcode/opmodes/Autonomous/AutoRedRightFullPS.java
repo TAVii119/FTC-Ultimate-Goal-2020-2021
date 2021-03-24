@@ -243,7 +243,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
                 .build();
 
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
-                .lineToSplineHeading(new Pose2d(-3.5, -55.0, Math.toRadians(-48)))
+                .lineToSplineHeading(new Pose2d(-3.5, -53.0, Math.toRadians(-48)))
                 .build();
 
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
@@ -254,11 +254,11 @@ public class AutoRedRightFullPS extends LinearOpMode {
         liftRingHolder();
         drive.followTrajectory(traj1);
         flicker();
-        drive.turn(Math.toRadians(8));
-        sleep(2000);
+        drive.turn(Math.toRadians(8.3));
+        sleep(500);
         flicker();
-        drive.turn(Math.toRadians(7));
-        sleep(2000);
+        drive.turn(Math.toRadians(7.5));
+        sleep(500);
         flicker();
         returnRingHolder();
         setShooterPower(0, 0.045);
@@ -295,7 +295,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
                 .build();
 
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
-                .lineToSplineHeading(new Pose2d(-2.0, -36.5))
+                .lineToSplineHeading(new Pose2d(-2.0, -33.2))
                 .build();
 
         Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
@@ -327,7 +327,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
         // Oprim intake dupa ce am luat inelul. Dupa traj4 luam wobble
         pickWobbleGoal(100, 0.4);
         pickWobbleGoal(0, 0.2);
-        setShooterPower(1, 0.065);
+        setShooterPower(1, 0.062);
         drive.followTrajectory(traj5);
         // Trage
         intakeRings(0);
@@ -349,7 +349,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(-1.7, -20.2))
+                .lineTo(new Vector2d(-1.7, -18.0))
                 .build();
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
                 .lineToSplineHeading(new Pose2d(52.5, -49.5, Math.toRadians(-75.0)))
@@ -366,7 +366,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
                 .build();
 
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
-                .lineToSplineHeading(new Pose2d(-1.5, -36.5))
+                .lineToSplineHeading(new Pose2d(-3.5, -32.5))
                 .build();
 
         Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
@@ -398,7 +398,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
         // Oprim intake dupa ce am luat inelul. Dupa traj4 luam wobble
         pickWobbleGoal(100, 0.4);
         pickWobbleGoal(0, 0.2);
-        setShooterPower(1, 0.07);
+        setShooterPower(1, 0.064);
         drive.followTrajectory(traj5);
         // Trage
         intakeRings(0);
@@ -497,7 +497,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
     }
 
     private void liftRingHolder() {
-        double loaderPosLoad = 0.0, loaderPosShoot = .2125;
+        double loaderPosLoad = 0.0, loaderPosShoot = .22;
         map.loaderFrontServo.setPosition(loaderPosShoot);
         map.loaderBackServo.setPosition(loaderPosShoot);
     }
@@ -530,7 +530,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
         map.intakeServo.setPosition(0.0);
         map.shooterServo.setPosition(0.0);
         map.wobbleMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        map.ringBlockerLeft.setPosition(0.031);
-        map.ringBlockerRight.setPosition(0.031);
+        map.ringBlockerLeft.setPosition(0.07);
+        map.ringBlockerRight.setPosition(0.07);
     }
 }

@@ -11,6 +11,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
@@ -97,9 +98,10 @@ public class TeleOperated extends CommandOpMode {
     private Trigger towerAlignTrigger;
     private FtcDashboard dashboard;
     public double mult = 1.0;
-
+    BNO055IMU imu;
     @Override
     public void initialize() {
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
 
         // MOTORS
         fL = new Motor(hardwareMap, "flMotor", Motor.GoBILDA.RPM_312);
@@ -132,7 +134,6 @@ public class TeleOperated extends CommandOpMode {
         shooterServo.setDirection(Servo.Direction.REVERSE);
         wobbleServo2.setDirection(Servo.Direction.REVERSE);
         ringBlockerRight.setDirection(Servo.Direction.REVERSE);
-
 
         // Controller
         driver1 = new GamepadEx(gamepad1);
@@ -171,6 +172,12 @@ public class TeleOperated extends CommandOpMode {
 
         resetLeftPoseCommand = new InstantCommand(()-> {
             driveSystem.setPoseEstimate(new Pose2d(-9, 14.0));
+        }, driveSystem);
+
+        resetAndAlignCommand = new InstantCommand(()-> {
+            driveSystem.setPoseEstimate(new Pose2d(-0.5, -14.7));
+            sleep(50);
+            driveSystem.alignToTower();
         }, driveSystem);
 
         setRampPositionCommand = new InstantCommand(()-> {
@@ -215,7 +222,7 @@ public class TeleOperated extends CommandOpMode {
         flickerAction = new TimedAction(
                 ()->flickerServo.setPosition(0.3),
                 ()->flickerServo.setPosition(0),
-                175,
+                200,
                 true
         );
 
@@ -254,6 +261,7 @@ public class TeleOperated extends CommandOpMode {
         flickButton = new GamepadButton(driver1, GamepadKeys.Button.A).whenHeld(flickerCommand);
         ringBlockerButton = new GamepadButton(driver1, GamepadKeys.Button.B).whenPressed(ringBlockerCommand);
         normalModeButton = new GamepadButton(driver1, GamepadKeys.Button.Y).whenPressed(normalModeCommand);
+        resetAndAlignButton = new GamepadButton(driver1, GamepadKeys.Button.X).whenPressed(resetAndAlignCommand);
         leftPsAlignButton = new GamepadButton(driver1, GamepadKeys.Button.DPAD_LEFT).whenPressed(leftPsAlignCommand);
         centerPsAlignButton = new GamepadButton(driver1, GamepadKeys.Button.DPAD_UP).whenPressed(centerPsAlignCommand);
         rightPsAlignButton = new GamepadButton(driver1, GamepadKeys.Button.DPAD_RIGHT).whenPressed(rightPsAlignCommand);
