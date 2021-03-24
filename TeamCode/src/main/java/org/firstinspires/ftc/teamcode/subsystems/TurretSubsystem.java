@@ -8,32 +8,19 @@ import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 
 import java.util.concurrent.TimeUnit;
 
-public class RampSubsystem extends SubsystemBase {
+public class TurretSubsystem extends SubsystemBase {
 
-    private Servo shooterServo;
-    private double rampServoPos = 0;
+    private Servo turretServo;
+
     Telemetry tele;
 
-    public RampSubsystem(Servo servo, Telemetry telemetry) {
-        shooterServo = servo; // shooter servo
+    public TurretSubsystem(Servo servo, Telemetry telemetry) {
+        turretServo = servo;
         tele = telemetry;
     }
 
-    public void topGoalPos () {
-        shooterServo.setPosition(0.06);
-    }
-
-    public void powershotPos () {
-        shooterServo.setPosition(0.079);
-    }
-
-    public void upperPos () {
-        shooterServo.setPosition(0.09);
-    }
-
-    public void rampPos (double pos) {
-        shooterServo.setPosition(pos);
-        rampServoPos = pos;
+    public void setTurretPos (double turretPos) {
+        turretServo.setPosition(turretPos);
     }
 
     @Override

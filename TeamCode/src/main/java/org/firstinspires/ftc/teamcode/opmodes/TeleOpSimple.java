@@ -23,12 +23,13 @@ public class TeleOpSimple extends LinearOpMode {
     double flPower, frPower, blPower, brPower = 0;
     public final static int GAMEPAD_LOCKOUT = 200; // PRESS DELAY IN MS
     public double loaderPosLoad = 0.0, loaderPosShoot = 0.2125;
-    public double feederInit = 0.0, feederPush = 0.3;
+    public double feederInit = 0.0, feederPush = 0.165;
     public double wobbleGrabberGrab = 0.0, wobbleGrabberUngrab = 0.3;
     public double shooterServoPos = 0.0;
     public double chassisLimiter = 1.0;
     public double wobbleLimiter = 0.4;
     public double ringBlockerPosition = 0.031;
+    public double turretServoPos = 0;
     boolean activeIntake = false;
     Deadline gamepadRateLimit;
 
@@ -61,28 +62,26 @@ public class TeleOpSimple extends LinearOpMode {
 
             map.intakeMotor.setPower(gamepad1.right_trigger - gamepad1.left_trigger);
 
-            //-//-----------\\-\\
-            //-// GAMEPAD 2 \\-\\
-            //-//-----------\\-\\
-
-            // Handle Wobble Mechanism
-            //map.wobbleMotor.setPower(gamepad2.right_trigger * wobbleLimiter - gamepad2.left_trigger * wobbleLimiter);
-
-            if (-gamepad2.right_stick_y > 0.1 && map.wobbleMotor.getCurrentPosition() < 500)
-                map.wobbleMotor.setPower(-gamepad2.right_stick_y * wobbleLimiter);
-            else if (-gamepad2.right_stick_y < -0.1 && map.wobbleMotor.getCurrentPosition() > 50)
-                map.wobbleMotor.setPower(-gamepad2.right_stick_y * wobbleLimiter);
-            else map.wobbleMotor.setPower(0);
-
             // Push rings into shooter
-            if (gamepad2.a) {
+            if (gamepad1.b) {
                 map.feederServo.setPosition(feederPush);
                 sleep(150);
                 map.feederServo.setPosition(feederInit);
                 sleep(200);
             }
 
+            map.turretServo.setPosition(turretServoPos);
             map.shooterServo.setPosition(shooterServoPos);
+
+            //-//-----------\\-\\
+            //-// GAMEPAD 2 \\-\\
+            //-//-----------\\-\\
+
+            if (-gamepad2.right_stick_y > 0.1 && map.wobbleMotor.getCurrentPosition() < 500)
+                map.wobbleMotor.setPower(-gamepad2.right_stick_y * wobbleLimiter);
+            else if (-gamepad2.right_stick_y < -0.1 && map.wobbleMotor.getCurrentPosition() > 50)
+                map.wobbleMotor.setPower(-gamepad2.right_stick_y * wobbleLimiter);
+            else map.wobbleMotor.setPower(0);
 
             //-//-------------------\\-\\
             //-// TELEMETRY & OTHER \\-\\
@@ -91,6 +90,7 @@ public class TeleOpSimple extends LinearOpMode {
             telemetry.addData("Intake Speed: ", map.intakeMotor.getPower());
             telemetry.addData("Shooter Speed: ", map.shooterFrontMotor.getPower());
             telemetry.addData("Shooter Servo Position: ", shooterServoPos);
+            telemetry.addData("Turret Position: ", turretServoPos);
             telemetry.update();
         }
     }
@@ -110,25 +110,29 @@ public class TeleOpSimple extends LinearOpMode {
             return;
         }
 
-        if (gamepad2.b && map.shooterFrontMotor.getPower() == 0) {
-            map.shooterFrontMotor.setPower(1);
-            map.shooterBackMotor.setPower(1);
-            map.loaderFrontServo.setPosition(loaderPosShoot);
-            map.loaderBackServo.setPosition(loaderPosShoot);
+        if (gamepad1.a && map.shooterFrontMotor.getPower() == 0) {
+            map.shooterFrontMotor.setPower(0.6);
+            map.shooterBackMotor.setPower(0.6);
             gamepadRateLimit.reset();
-        } else if (gamepad2.b && map.shooterFrontMotor.getPower() > 0.2) {
+        } else if (gamepad1.a && map.shooterFrontMotor.getPower() > 0.2) {
             map.shooterFrontMotor.setPower(0);
             map.shooterBackMotor.setPower(0);
-            map.loaderFrontServo.setPosition(loaderPosLoad);
-            map.loaderBackServo.setPosition(loaderPosLoad);
             gamepadRateLimit.reset();
         }
 
-        if (gamepad2.dpad_up) { // SHOOTER SERVO POSITION
+        if (gamepad1.dpad_up) { // SHOOTER SERVO POSITION
             shooterServoPos += 0.01;
             gamepadRateLimit.reset();
-        } else if (gamepad2.dpad_down && shooterServoPos >= 0.01) {
+        } else if (gamepad1.dpad_down && shooterServoPos >= 0.01) {
             shooterServoPos -= 0.01;
+            gamepadRateLimit.reset();
+        }
+
+        if (gamepad1.dpad_left) { // SHOOTER SERVO POSITION
+            turretServoPos += 0.01;
+            gamepadRateLimit.reset();
+        } else if (gamepad1.dpad_right && turretServoPos >= 0.01) {
+            turretServoPos -= 0.01;
             gamepadRateLimit.reset();
         }
 
@@ -152,12 +156,13 @@ public class TeleOpSimple extends LinearOpMode {
     public void resetServoPosition() {
         map.wobbleServo.setPosition(0.0);
         map.wobbleServo2.setPosition(0.0);
-        map.loaderFrontServo.setPosition(0.0);
-        map.loaderBackServo.setPosition(0.0);
         map.feederServo.setPosition(0.0);
         map.intakeServo.setPosition(0.0);
         map.shooterServo.setPosition(0.0);
         map.ringBlockerLeft.setPosition(0.031);
         map.ringBlockerRight.setPosition(0.031);
+        map.wobbleServoLeft.setPosition(0.0);
+        map.wobbleServoLeftGrabber.setPosition(0.0);
+        map.turretServo.setPosition(0.0);
     }
 }
