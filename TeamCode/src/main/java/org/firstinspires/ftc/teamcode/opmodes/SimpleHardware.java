@@ -22,8 +22,6 @@ public class SimpleHardware {
     public DcMotor wobbleMotor = null; // WOBBLE GOAL MECHANSIM MOTOR
 
     // INSTANTIATE SERVOS
-    public Servo wobbleServo = null;
-    public Servo wobbleServo2 = null;
 //    public Servo loaderFrontServo = null;
 //    public Servo loaderBackServo = null;
     public Servo feederServo = null;
@@ -32,8 +30,8 @@ public class SimpleHardware {
     public Servo ringBlockerLeft = null;
     public Servo ringBlockerRight = null;
     public Servo turretServo = null;
-    public Servo wobbleServoLeft = null;
-    public Servo wobbleServoLeftGrabber = null;
+    public Servo wobbleServo = null;
+    public Servo wobbleServoGrabber = null;
     public Servo loaderFrontServo = null;
     public Servo loaderBackServo = null;
 
@@ -100,37 +98,30 @@ public class SimpleHardware {
         wobbleMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // DEFINE SERVOS
-        wobbleServo = robotMap.get(Servo.class, "wobbleServo");
-        wobbleServo2 = robotMap.get(Servo.class, "wobbleServo2");
         feederServo = robotMap.get(Servo.class, "feederServo");
         intakeServo = robotMap.get(Servo.class, "intakeServo");
         shooterServo = robotMap.get(Servo.class, "shooterServo");
         ringBlockerLeft = robotMap.get(Servo.class, "ringBlockerLeft");
         ringBlockerRight = robotMap.get(Servo.class, "ringBlockerRight");
         turretServo = robotMap.get(Servo.class, "turretServo");
-        wobbleServoLeft = robotMap.get(Servo.class, "wobbleServoLeft");
-        wobbleServoLeftGrabber = robotMap.get(Servo.class, "wobbleServoLeftGrabber");
+        wobbleServo = robotMap.get(Servo.class, "wobbleServoLeft");
+        wobbleServoGrabber = robotMap.get(Servo.class, "wobbleServoLeftGrabber");
 
         // SET SERVO DIRECTION
-        wobbleServo.setDirection(Servo.Direction.FORWARD);
-        wobbleServo2.setDirection(Servo.Direction.REVERSE);
         feederServo.setDirection(Servo.Direction.REVERSE);
         intakeServo.setDirection(Servo.Direction.REVERSE);
-        shooterServo.setDirection(Servo.Direction.REVERSE);
+        shooterServo.setDirection(Servo.Direction.FORWARD);
         ringBlockerRight.setDirection(Servo.Direction.REVERSE);
         turretServo.setDirection(Servo.Direction.FORWARD);
-        wobbleServoLeftGrabber.setDirection(Servo.Direction.REVERSE);
-        wobbleServoLeft.setDirection(Servo.Direction.REVERSE);
+        wobbleServoGrabber.setDirection(Servo.Direction.REVERSE);
+        wobbleServo.setDirection(Servo.Direction.FORWARD);
 
         // SET SERVO POSITION
         wobbleServo.setPosition(0.0);
-        wobbleServo2.setPosition(0.0);
+        wobbleServoGrabber.setPosition(0.0);
         feederServo.setPosition(0.0);
         intakeServo.setPosition(0.0);
         shooterServo.setPosition(0.0);
         turretServo.setPosition(0.0);
-
-        wobbleServoLeft.setPosition(0.0);
-        wobbleServoLeftGrabber.setPosition(0.0);
     }
 }

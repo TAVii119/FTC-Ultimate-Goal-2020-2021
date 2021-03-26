@@ -76,12 +76,23 @@ public class TeleOpSimple extends LinearOpMode {
             //-//-----------\\-\\
             //-// GAMEPAD 2 \\-\\
             //-//-----------\\-\\
+            if (gamepad2.y) {
+                map.wobbleServo.setPosition(0.32);
+            }
 
-            if (-gamepad2.right_stick_y > 0.1 && map.wobbleMotor.getCurrentPosition() < 500)
-                map.wobbleMotor.setPower(-gamepad2.right_stick_y * wobbleLimiter);
-            else if (-gamepad2.right_stick_y < -0.1 && map.wobbleMotor.getCurrentPosition() > 50)
-                map.wobbleMotor.setPower(-gamepad2.right_stick_y * wobbleLimiter);
-            else map.wobbleMotor.setPower(0);
+            if (gamepad2.x) {
+                map.wobbleServo.setPosition(0.0);
+            }
+
+            if (gamepad2.a) {
+                map.wobbleServoGrabber.setPosition(0.49);
+            }
+
+            if (gamepad2.b) {
+                map.wobbleServoGrabber.setPosition(0.0);
+            }
+
+
 
             //-//-------------------\\-\\
             //-// TELEMETRY & OTHER \\-\\
@@ -111,8 +122,8 @@ public class TeleOpSimple extends LinearOpMode {
         }
 
         if (gamepad1.a && map.shooterFrontMotor.getPower() == 0) {
-            map.shooterFrontMotor.setPower(0.6);
-            map.shooterBackMotor.setPower(0.6);
+            map.shooterFrontMotor.setPower(0.8);
+            map.shooterBackMotor.setPower(0.8);
             gamepadRateLimit.reset();
         } else if (gamepad1.a && map.shooterFrontMotor.getPower() > 0.2) {
             map.shooterFrontMotor.setPower(0);
@@ -129,7 +140,11 @@ public class TeleOpSimple extends LinearOpMode {
         }
 
         if (gamepad1.dpad_left) { // SHOOTER SERVO POSITION
-            turretServoPos += 0.01;
+            if (turretServoPos <= 0.37) {
+                turretServoPos += 0.01;
+            } else {
+                turretServoPos = 0.37;
+            }
             gamepadRateLimit.reset();
         } else if (gamepad1.dpad_right && turretServoPos >= 0.01) {
             turretServoPos -= 0.01;
@@ -154,15 +169,13 @@ public class TeleOpSimple extends LinearOpMode {
     }
 
     public void resetServoPosition() {
-        map.wobbleServo.setPosition(0.0);
-        map.wobbleServo2.setPosition(0.0);
         map.feederServo.setPosition(0.0);
         map.intakeServo.setPosition(0.0);
         map.shooterServo.setPosition(0.0);
         map.ringBlockerLeft.setPosition(0.031);
         map.ringBlockerRight.setPosition(0.031);
-        map.wobbleServoLeft.setPosition(0.0);
-        map.wobbleServoLeftGrabber.setPosition(0.0);
+        map.wobbleServo.setPosition(0.0);
+        map.wobbleServoGrabber.setPosition(0.0);
         map.turretServo.setPosition(0.0);
     }
 }

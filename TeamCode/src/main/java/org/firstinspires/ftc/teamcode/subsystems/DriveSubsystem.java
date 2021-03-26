@@ -21,8 +21,6 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import java.util.List;
 
 public class DriveSubsystem extends SubsystemBase {
-
-    private BNO055IMU imu;
     private final SampleMecanumDrive drive;
     private final boolean fieldCentric;
     private int controlMode;
@@ -42,7 +40,7 @@ public class DriveSubsystem extends SubsystemBase {
     private PIDFController headingController = new PIDFController(SampleMecanumDrive.HEADING_PID);
 
     // The position of the robot at the start of the Tele-Operated period
-    private final Pose2d startPosition = new Pose2d(-63.0, -48.5);
+    private final Pose2d startPosition = new Pose2d(0.0, -36.2);
     // A target vector we want the bot to align with
     private Vector2d towerPosition = new Vector2d(83.0, -36.2);
     private Vector2d rightPsPosition = new Vector2d(75.0, -18.5);
@@ -50,7 +48,7 @@ public class DriveSubsystem extends SubsystemBase {
     private Vector2d leftPsPosition = new Vector2d(75.0, 4.5);
     Telemetry tele;
 
-    public double distanceToTowergoal;
+    public double distanceToTowergoal, currentY;
 
     public DriveSubsystem(SampleMecanumDrive drive, boolean isFieldCentric, Telemetry telemetry) {
         tele = telemetry;
@@ -255,9 +253,11 @@ public class DriveSubsystem extends SubsystemBase {
         // Update the heading controller with our current heading
         headingController.update(poseEstimate.getHeading());
         distanceToTowergoal = towerPosition.getX() - poseEstimate.getX();
+        currentY = poseEstimate.getY();
 
         // Update the localizer
         drive.getLocalizer().update();
+        tele.addData("Current Y: ", currentY);
         tele.addData("Distance to Tower Goal", towerPosition.getX() - poseEstimate.getX());
         tele.addData("x", poseEstimate.getX());
         tele.addData("y", poseEstimate.getY());
@@ -278,6 +278,20 @@ public class DriveSubsystem extends SubsystemBase {
             add(139.463, 0.027);
         }};
         double position = positions.getClosest(distanceToTowergoal);
+
+        return position;
+    }
+
+    public double setTurretPosition() {
+        // Key reprezinta distantele Y la care se afla robotul
+        // 0.36 extremitate stanga, 0.23 mijloc, 0.0 dreapta
+        LUT<Double, Double> positions = new LUT<Double, Double>()
+        {{
+            add(-36.2, 0.23);
+            add(-33.0, 0.17);
+            add(-30.0, 0.12);
+        }};
+        double position = positions.getClosest(currentY);
 
         return position;
     }

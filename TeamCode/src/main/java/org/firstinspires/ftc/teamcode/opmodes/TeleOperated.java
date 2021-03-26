@@ -30,7 +30,6 @@ import org.firstinspires.ftc.teamcode.subsystems.FlickerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RampSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RingBlockerSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.RingLiftSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.WobbleSubsystem;
@@ -40,7 +39,7 @@ import org.firstinspires.ftc.teamcode.util.TimedAction;
 This class was created by Botosan Octavian on October 28, 2020.
 This class is for the 2 minutes Tele-Operated period.
 The robot is controlled by two robot operated using Playstation DualShock 4 controller.
- */
+*/
 
 @TeleOp(name="TeleOperated")
 public class TeleOperated extends CommandOpMode {
@@ -56,7 +55,6 @@ public class TeleOperated extends CommandOpMode {
     private DriveSubsystem driveSystem;
     private ShooterSubsystem shooterSystem;
     private IntakeSubsystem intakeSystem;
-//    private RingLiftSubsystem ringLiftSystem;
     private FlickerSubsystem flickerSystem;
     private WobbleSubsystem wobbleSystem;
     private RampSubsystem rampSystem;
@@ -69,7 +67,6 @@ public class TeleOperated extends CommandOpMode {
     private OuttakeCommand outtakeCommand;
     private FlickerCommand flickerCommand;
     private FlickerOnceCommand flickerOnceCommand;
-//    private InstantCommand ringLiftCommand;
     private WobbleCommand wobbleCommand;
     private InstantCommand grabberCommand;
     private LiftRampCommand liftRampCommand;
@@ -120,8 +117,6 @@ public class TeleOperated extends CommandOpMode {
         wobbleMotor = new Motor(hardwareMap, "wobbleMotor", Motor.GoBILDA.RPM_312);
 
         // SERVOS
-//        loaderFront = hardwareMap.get(Servo.class, "loaderFrontServo");
-//        loaderBack = hardwareMap.get(Servo.class, "loaderBackServo");
         wobbleServo = hardwareMap.get(Servo.class, "wobbleServo");
         wobbleServo2 = hardwareMap.get(Servo.class, "wobbleServo2");
         shooterServo = hardwareMap.get(Servo.class, "shooterServo");
@@ -130,8 +125,6 @@ public class TeleOperated extends CommandOpMode {
         ringBlockerRight = hardwareMap.get(Servo.class, "ringBlockerRight");
         turretServo = hardwareMap.get(Servo.class, "turretServo");
 
-//        loaderBack.setDirection(Servo.Direction.REVERSE);
-        shooterServo.setDirection(Servo.Direction.REVERSE);
         wobbleServo2.setDirection(Servo.Direction.REVERSE);
         ringBlockerRight.setDirection(Servo.Direction.REVERSE);
 
@@ -185,7 +178,6 @@ public class TeleOperated extends CommandOpMode {
         }, rampSystem, driveSystem);
 
         shooterSystem = new ShooterSubsystem(flywheel);
-        turretSystem = new TurretSubsystem(turretServo, telemetry);
         shootCommand = new InstantCommand(()-> {
             if (!shooterSystem.isShooting()) {
                 shooterSystem.shoot();
@@ -212,15 +204,8 @@ public class TeleOperated extends CommandOpMode {
         intakeCommand = new IntakeCommand(intakeSystem);
         outtakeCommand = new OuttakeCommand(intakeSystem);
 
-//        ringLiftSystem = new RingLiftSubsystem(loaderFront, loaderBack);
-//        ringLiftCommand = new InstantCommand(()-> {
-//            if (ringLiftSystem.isLiftUp())
-//                ringLiftSystem.returnRingLift();
-//            else ringLiftSystem.moveRingLift();
-//        }, ringLiftSystem);
-
         flickerAction = new TimedAction(
-                ()->flickerServo.setPosition(0.3),
+                ()->flickerServo.setPosition(0.165),
                 ()->flickerServo.setPosition(0),
                 200,
                 true
@@ -250,10 +235,12 @@ public class TeleOperated extends CommandOpMode {
             else ringBlockerSystem.blockRings();
         }, ringBlockerSystem);
 
+        turretSystem = new TurretSubsystem(turretServo, telemetry);
+        turretCommand = new TurretCommand(turretSystem, driveSystem);
+
         resetAndAlignCommand = new InstantCommand(()-> {
             driveSystem.setPoseEstimate(new Pose2d(-0.5, -14.7));
             sleep(50);
-//            driveSystem.alignToTower();
         }, driveSystem);
 
         intakeButton = new GamepadButton(driver1, GamepadKeys.Button.RIGHT_BUMPER).whenHeld(intakeCommand);
@@ -261,12 +248,6 @@ public class TeleOperated extends CommandOpMode {
         flickButton = new GamepadButton(driver1, GamepadKeys.Button.A).whenHeld(flickerCommand);
         ringBlockerButton = new GamepadButton(driver1, GamepadKeys.Button.B).whenPressed(ringBlockerCommand);
         normalModeButton = new GamepadButton(driver1, GamepadKeys.Button.Y).whenPressed(normalModeCommand);
-        resetAndAlignButton = new GamepadButton(driver1, GamepadKeys.Button.X).whenPressed(resetAndAlignCommand);
-        leftPsAlignButton = new GamepadButton(driver1, GamepadKeys.Button.DPAD_LEFT).whenPressed(leftPsAlignCommand);
-        centerPsAlignButton = new GamepadButton(driver1, GamepadKeys.Button.DPAD_UP).whenPressed(centerPsAlignCommand);
-        rightPsAlignButton = new GamepadButton(driver1, GamepadKeys.Button.DPAD_RIGHT).whenPressed(rightPsAlignCommand);
-        resetLeftPoseButton = new GamepadButton(driver1, GamepadKeys.Button.LEFT_STICK_BUTTON).whenPressed(resetLeftPoseCommand);
-        resetRightPoseButton = new GamepadButton(driver1, GamepadKeys.Button.RIGHT_STICK_BUTTON).whenPressed(resetRightPoseCommand);
         resetAndAlignButton = new GamepadButton(driver1, GamepadKeys.Button.X).whenPressed(resetAndAlignCommand);
 
         shootButton = new GamepadButton(driver2, GamepadKeys.Button.A).whenPressed(shootCommand);
