@@ -40,7 +40,7 @@ public class DriveSubsystem extends SubsystemBase {
     private PIDFController headingController = new PIDFController(SampleMecanumDrive.HEADING_PID);
 
     // The position of the robot at the start of the Tele-Operated period
-    private final Pose2d startPosition = new Pose2d(0.0, -36.2);
+    private final Pose2d startPosition = new Pose2d(-0.5, -14.7);
     // A target vector we want the bot to align with
     private Vector2d towerPosition = new Vector2d(83.0, -36.2);
     private Vector2d rightPsPosition = new Vector2d(75.0, -18.5);
@@ -287,9 +287,23 @@ public class DriveSubsystem extends SubsystemBase {
         // 0.36 extremitate stanga, 0.23 mijloc, 0.0 dreapta
         LUT<Double, Double> positions = new LUT<Double, Double>()
         {{
-            add(-36.2, 0.23);
-            add(-33.0, 0.17);
-            add(-30.0, 0.12);
+            add(-54.0, 0.292);
+            add(-51.0, 0.282);
+            add(-48.0, 0.272);
+            add(-45.0, 0.262);
+            add(-42.0, 0.252);
+            add(-39.0, 0.242);
+            add(-36.0, 0.23);
+            add(-32.0, 0.222);
+            add(-28.0, 0.212);
+            add(-24.0, 0.202);
+            add(-20.0, 0.192);
+            add(-16.0, 0.182);
+            add(-13.0, 0.172);
+            add(-10.0, 0.162);
+            add(-7.0, 0.152);
+            add(-4.0, 0.142);
+            add(-1.0, 0.132);
         }};
         double position = positions.getClosest(currentY);
 

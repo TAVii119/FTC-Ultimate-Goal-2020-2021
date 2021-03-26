@@ -15,11 +15,11 @@ public class SimpleHardware {
     public DcMotor flMotor = null; // FRONT LEFT CHASSIS MOTOR
     public DcMotor frMotor = null; // FRONT RIGHT CHASSIS MOTOR
     public DcMotor blMotor = null; // BACK LEFT CHASSIS MOTOR
-    public DcMotor brMotor = null; // BACK RIGHT CHASSI MOTOR
+    public DcMotor brMotor = null; // BACK RIGHT CHASSIS MOTOR
     public DcMotor shooterFrontMotor = null; // SHOOTER FRONT MOTOR
     public DcMotor shooterBackMotor = null; // SHOOTER BACK MOTOR
     public DcMotor intakeMotor = null; // INTAKE MOTOR
-    public DcMotor wobbleMotor = null; // WOBBLE GOAL MECHANSIM MOTOR
+    public DcMotor wobbleMotor = null; // WOBBLE GOAL MECHANISM MOTOR
 
     // INSTANTIATE SERVOS
 //    public Servo loaderFrontServo = null;
@@ -109,7 +109,7 @@ public class SimpleHardware {
 
         // SET SERVO DIRECTION
         feederServo.setDirection(Servo.Direction.REVERSE);
-        intakeServo.setDirection(Servo.Direction.REVERSE);
+        intakeServo.setDirection(Servo.Direction.FORWARD);
         shooterServo.setDirection(Servo.Direction.FORWARD);
         ringBlockerRight.setDirection(Servo.Direction.REVERSE);
         turretServo.setDirection(Servo.Direction.FORWARD);

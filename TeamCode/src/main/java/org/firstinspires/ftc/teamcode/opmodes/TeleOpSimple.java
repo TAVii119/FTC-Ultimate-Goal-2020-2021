@@ -7,10 +7,10 @@ import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 
 import java.util.concurrent.TimeUnit;
 
-/**
+/*
  * TeleOpTest for team Delta Force
  * Created on 21.11.2020 by Botosan Octavian
- */
+*/
 
 @TeleOp(name="TeleOpSimple")
 
@@ -19,18 +19,13 @@ public class TeleOpSimple extends LinearOpMode {
     // DEFINE ROBOT HARDWARE
     SimpleHardware map = new SimpleHardware();
 
-    //INSTANTIATE AND DEFINE VARIABLES
+    // INSTANTIATE AND DEFINE VARIABLES
     double flPower, frPower, blPower, brPower = 0;
     public final static int GAMEPAD_LOCKOUT = 200; // PRESS DELAY IN MS
-    public double loaderPosLoad = 0.0, loaderPosShoot = 0.2125;
     public double feederInit = 0.0, feederPush = 0.165;
-    public double wobbleGrabberGrab = 0.0, wobbleGrabberUngrab = 0.3;
     public double shooterServoPos = 0.0;
     public double chassisLimiter = 1.0;
-    public double wobbleLimiter = 0.4;
-    public double ringBlockerPosition = 0.031;
     public double turretServoPos = 0;
-    boolean activeIntake = false;
     Deadline gamepadRateLimit;
 
     @Override
@@ -76,22 +71,6 @@ public class TeleOpSimple extends LinearOpMode {
             //-//-----------\\-\\
             //-// GAMEPAD 2 \\-\\
             //-//-----------\\-\\
-            if (gamepad2.y) {
-                map.wobbleServo.setPosition(0.32);
-            }
-
-            if (gamepad2.x) {
-                map.wobbleServo.setPosition(0.0);
-            }
-
-            if (gamepad2.a) {
-                map.wobbleServoGrabber.setPosition(0.49);
-            }
-
-            if (gamepad2.b) {
-                map.wobbleServoGrabber.setPosition(0.0);
-            }
-
 
 
             //-//-------------------\\-\\
@@ -122,8 +101,8 @@ public class TeleOpSimple extends LinearOpMode {
         }
 
         if (gamepad1.a && map.shooterFrontMotor.getPower() == 0) {
-            map.shooterFrontMotor.setPower(0.8);
-            map.shooterBackMotor.setPower(0.8);
+            map.shooterFrontMotor.setPower(0.7);
+            map.shooterBackMotor.setPower(0.7);
             gamepadRateLimit.reset();
         } else if (gamepad1.a && map.shooterFrontMotor.getPower() > 0.2) {
             map.shooterFrontMotor.setPower(0);
@@ -159,12 +138,24 @@ public class TeleOpSimple extends LinearOpMode {
             gamepadRateLimit.reset();
         }
 
-        if (gamepad2.y && map.wobbleServo.getPosition() != wobbleGrabberGrab) { // WOBBLE GRABBER
-            map.wobbleServo.setPosition(wobbleGrabberGrab);
-            gamepadRateLimit.reset();
-        } else if (gamepad2.y && map.wobbleServo.getPosition() != wobbleGrabberUngrab) {
-            map.wobbleServo.setPosition(wobbleGrabberUngrab);
-            gamepadRateLimit.reset();
+        if (gamepad1.y) {
+            map.intakeServo.setPosition(0.6);
+        }
+
+        if (gamepad1.x) {
+            map.intakeServo.setPosition(0.0);
+        }
+
+        if (gamepad2.y && map.wobbleServo.getPosition() == 0) {
+            map.wobbleServo.setPosition(0.32);
+        } else if (gamepad2.y && map.wobbleServo.getPosition() != 0) {
+            map.wobbleServo.setPosition(0.0);
+        }
+
+        if (gamepad2.b && map.wobbleServoGrabber.getPosition() == 0) {
+            map.wobbleServoGrabber.setPosition(0.49);
+        } else if (gamepad2.b && map.wobbleServoGrabber.getPosition() != 0) {
+            map.wobbleServoGrabber.setPosition(0.0);
         }
     }
 

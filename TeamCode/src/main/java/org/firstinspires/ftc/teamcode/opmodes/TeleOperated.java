@@ -11,28 +11,23 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.commands.FlickerCommand;
-import org.firstinspires.ftc.teamcode.commands.FlickerOnceCommand;
 import org.firstinspires.ftc.teamcode.commands.LiftRampCommand;
 import org.firstinspires.ftc.teamcode.commands.IntakeCommand;
 import org.firstinspires.ftc.teamcode.commands.LowerRampCommand;
 import org.firstinspires.ftc.teamcode.commands.OuttakeCommand;
 import org.firstinspires.ftc.teamcode.commands.TurretCommand;
 import org.firstinspires.ftc.teamcode.commands.UpperRampCommand;
-import org.firstinspires.ftc.teamcode.commands.WobbleCommand;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.FlickerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RampSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.RingBlockerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.WobbleSubsystem;
 import org.firstinspires.ftc.teamcode.util.TimedAction;
 
 /*
@@ -46,9 +41,9 @@ public class TeleOperated extends CommandOpMode {
 
     // Servos and Motors
     private Motor fL, fR, bL, bR;
-    private Motor intake, wobbleMotor;
+    private Motor intake;
     private MotorGroup flywheel;
-    private Servo loaderFront, loaderBack, wobbleServo, wobbleServo2, flickerServo, shooterServo, ringBlockerLeft, ringBlockerRight, turretServo;
+    private Servo flickerServo, shooterServo, turretServo, intakeServo;
 
     // Subsystems
     private TurretSubsystem turretSystem;
@@ -56,9 +51,7 @@ public class TeleOperated extends CommandOpMode {
     private ShooterSubsystem shooterSystem;
     private IntakeSubsystem intakeSystem;
     private FlickerSubsystem flickerSystem;
-    private WobbleSubsystem wobbleSystem;
     private RampSubsystem rampSystem;
-    private RingBlockerSubsystem ringBlockerSystem;
 
     // Commands
     private TurretCommand turretCommand;
@@ -66,8 +59,6 @@ public class TeleOperated extends CommandOpMode {
     private IntakeCommand intakeCommand;
     private OuttakeCommand outtakeCommand;
     private FlickerCommand flickerCommand;
-    private FlickerOnceCommand flickerOnceCommand;
-    private WobbleCommand wobbleCommand;
     private InstantCommand grabberCommand;
     private LiftRampCommand liftRampCommand;
     private LowerRampCommand lowerRampCommand;
@@ -82,23 +73,21 @@ public class TeleOperated extends CommandOpMode {
     private InstantCommand resetRightPoseCommand;
     private InstantCommand resetLeftPoseCommand;
     private InstantCommand setRampPositionCommand;
-    private InstantCommand ringBlockerCommand;
+    private InstantCommand resetAlignmentCommand;
     private InstantCommand resetAndAlignCommand;
+    private InstantCommand liftIntakeCommand;
     private TimedAction flickerAction;
 
     // Extra
     private GamepadEx driver1, driver2;
     private Button intakeButton, outtakeButton, resetFlickButton, fastFlickButton, flickButton, ringLiftButton,
-            shootButton, slowShootButton, wobbleGrabberButton, liftRampButton, lowerRampButton, normalModeButton, towerAlignButton,
+            shootButton, slowShootButton, liftRampButton, lowerRampButton, normalModeButton, towerAlignButton,
             rightPsAlignButton, centerPsAlignButton, leftPsAlignButton, resetRightPoseButton, resetLeftPoseButton,
-            ringBlockerButton, singleFlickButton, upperRampButton, flickOnceButton, resetAndAlignButton;
+            singleFlickButton, upperRampButton, flickOnceButton, resetAlignmentButton, liftIntakeButton;
     private Trigger towerAlignTrigger;
     private FtcDashboard dashboard;
-    public double mult = 1.0;
-    BNO055IMU imu;
     @Override
     public void initialize() {
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
 
         // MOTORS
         fL = new Motor(hardwareMap, "flMotor", Motor.GoBILDA.RPM_312);
@@ -114,19 +103,14 @@ public class TeleOperated extends CommandOpMode {
                 new Motor(hardwareMap, "shooterBackMotor", Motor.GoBILDA.BARE)
         );
         flywheel.setInverted(true);
-        wobbleMotor = new Motor(hardwareMap, "wobbleMotor", Motor.GoBILDA.RPM_312);
 
         // SERVOS
-        wobbleServo = hardwareMap.get(Servo.class, "wobbleServo");
-        wobbleServo2 = hardwareMap.get(Servo.class, "wobbleServo2");
         shooterServo = hardwareMap.get(Servo.class, "shooterServo");
         flickerServo = hardwareMap.get(Servo.class, "feederServo");
-        ringBlockerLeft = hardwareMap.get(Servo.class, "ringBlockerLeft");
-        ringBlockerRight = hardwareMap.get(Servo.class, "ringBlockerRight");
         turretServo = hardwareMap.get(Servo.class, "turretServo");
+        intakeServo = hardwareMap.get(Servo.class, "intakeServo");
 
-        wobbleServo2.setDirection(Servo.Direction.REVERSE);
-        ringBlockerRight.setDirection(Servo.Direction.REVERSE);
+        flickerServo.setDirection(Servo.Direction.REVERSE);
 
         // Controller
         driver1 = new GamepadEx(gamepad1);
@@ -137,7 +121,6 @@ public class TeleOperated extends CommandOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         driveSystem = new DriveSubsystem(drive, false, telemetry);
         driveCommand = new DriveCommand(driveSystem, driver1::getLeftY, driver1::getLeftX, driver1::getRightX);
-        flickerOnceCommand = new FlickerOnceCommand(flickerSystem);
 
         normalModeCommand = new InstantCommand(()-> {
             driveSystem.normalMode();
@@ -167,12 +150,6 @@ public class TeleOperated extends CommandOpMode {
             driveSystem.setPoseEstimate(new Pose2d(-9, 14.0));
         }, driveSystem);
 
-        resetAndAlignCommand = new InstantCommand(()-> {
-            driveSystem.setPoseEstimate(new Pose2d(-0.5, -14.7));
-            sleep(50);
-            driveSystem.alignToTower();
-        }, driveSystem);
-
         setRampPositionCommand = new InstantCommand(()-> {
             rampSystem.rampPos(driveSystem.setRampPosition());
         }, rampSystem, driveSystem);
@@ -181,26 +158,20 @@ public class TeleOperated extends CommandOpMode {
         shootCommand = new InstantCommand(()-> {
             if (!shooterSystem.isShooting()) {
                 shooterSystem.shoot();
-//                ringLiftSystem.moveRingLift();
                 turretSystem.setTurretPos(0.3);
                 rampSystem.topGoalPos();
-                ringBlockerSystem.unBlockRings();
             } else {
                 shooterSystem.stopShoot();
-//                ringLiftSystem.returnRingLift();
                 turretSystem.setTurretPos(0.0);
-                ringBlockerSystem.blockRings();
             }
-        }, shooterSystem, rampSystem, ringBlockerSystem, turretSystem);
+        }, shooterSystem, rampSystem, turretSystem);
 
         slowShootCommand = new InstantCommand(()-> {
             shooterSystem.slowShoot();
-//            ringLiftSystem.moveRingLift();
             rampSystem.powershotPos();
-            ringBlockerSystem.unBlockRings();
-        }, shooterSystem, rampSystem, ringBlockerSystem);
+        }, shooterSystem, rampSystem);
 
-        intakeSystem = new IntakeSubsystem(intake);
+        intakeSystem = new IntakeSubsystem(intake, intakeServo);
         intakeCommand = new IntakeCommand(intakeSystem);
         outtakeCommand = new OuttakeCommand(intakeSystem);
 
@@ -214,54 +185,43 @@ public class TeleOperated extends CommandOpMode {
         flickerSystem = new FlickerSubsystem(flickerServo, flickerAction);
         flickerCommand = new FlickerCommand(flickerSystem);
 
-        wobbleSystem = new WobbleSubsystem(wobbleMotor, wobbleServo, wobbleServo2);
-        wobbleCommand = new WobbleCommand(wobbleSystem, driver2::getRightY);
-        grabberCommand = new InstantCommand(()-> {
-            if (wobbleSystem.isGrabbing())
-                wobbleSystem.openGrabber();
-            else
-                wobbleSystem.closeGrabber();
-        }, wobbleSystem);
-
         rampSystem = new RampSubsystem(shooterServo, telemetry);
         liftRampCommand = new LiftRampCommand(rampSystem);
         lowerRampCommand = new LowerRampCommand(rampSystem);
         upperRampCommand = new UpperRampCommand(rampSystem);
 
-        ringBlockerSystem = new RingBlockerSubsystem(ringBlockerLeft, ringBlockerRight);
-        ringBlockerCommand = new InstantCommand(()-> {
-            if (ringBlockerSystem.isBlockerDown())
-                ringBlockerSystem.initBlockRings();
-            else ringBlockerSystem.blockRings();
-        }, ringBlockerSystem);
-
         turretSystem = new TurretSubsystem(turretServo, telemetry);
         turretCommand = new TurretCommand(turretSystem, driveSystem);
 
-        resetAndAlignCommand = new InstantCommand(()-> {
+        resetAlignmentCommand = new InstantCommand(()-> {
             driveSystem.setPoseEstimate(new Pose2d(-0.5, -14.7));
             sleep(50);
         }, driveSystem);
 
+        liftIntakeCommand = new InstantCommand(()-> {
+            if (intakeSystem.getServoPosition() == 0.0) {
+                intakeSystem.unLift();
+            } else {
+                intakeSystem.lift();
+            }
+            sleep(50);
+        }, intakeSystem);
+
         intakeButton = new GamepadButton(driver1, GamepadKeys.Button.RIGHT_BUMPER).whenHeld(intakeCommand);
         outtakeButton = new GamepadButton(driver1, GamepadKeys.Button.LEFT_BUMPER).whenHeld(outtakeCommand);
-        flickButton = new GamepadButton(driver1, GamepadKeys.Button.A).whenHeld(flickerCommand);
-        ringBlockerButton = new GamepadButton(driver1, GamepadKeys.Button.B).whenPressed(ringBlockerCommand);
+        resetAlignmentButton = new GamepadButton(driver1, GamepadKeys.Button.B).whenPressed(resetAlignmentCommand);
         normalModeButton = new GamepadButton(driver1, GamepadKeys.Button.Y).whenPressed(normalModeCommand);
-        resetAndAlignButton = new GamepadButton(driver1, GamepadKeys.Button.X).whenPressed(resetAndAlignCommand);
+        liftIntakeButton = new GamepadButton(driver1, GamepadKeys.Button.A).whenPressed(liftIntakeCommand);
 
         shootButton = new GamepadButton(driver2, GamepadKeys.Button.A).whenPressed(shootCommand);
         slowShootButton = new GamepadButton(driver2, GamepadKeys.Button.B).whenPressed(slowShootCommand);
         flickButton = new GamepadButton(driver2, GamepadKeys.Button.X).whenHeld(flickerCommand);
-        ringBlockerButton = new GamepadButton(driver2, GamepadKeys.Button.Y).whenPressed(ringBlockerCommand);
-        wobbleGrabberButton = new GamepadButton(driver2, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(grabberCommand);
         liftRampButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_UP).whenPressed(liftRampCommand);
         lowerRampButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_DOWN).whenPressed(lowerRampCommand);
         upperRampButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_RIGHT).whenPressed(upperRampCommand);
 
-        register(driveSystem, wobbleSystem, flickerSystem, intakeSystem, rampSystem, shooterSystem, ringBlockerSystem);
+        register(driveSystem, flickerSystem, intakeSystem, rampSystem, shooterSystem, turretSystem);
         driveSystem.setDefaultCommand(driveCommand);
-        wobbleSystem.setDefaultCommand(wobbleCommand);
         turretSystem.setDefaultCommand(turretCommand);
     }
 }

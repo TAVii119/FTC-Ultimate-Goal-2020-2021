@@ -29,7 +29,7 @@ public class FlickerSubsystem extends SubsystemBase {
         timedAction.run();
     }
     public void flickOnce() {
-        flickerServo.setPosition(0.3);
+        flickerServo.setPosition(0.165);
         flickerServo.setPosition(0);
     }
 
