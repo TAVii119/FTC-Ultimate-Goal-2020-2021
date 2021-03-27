@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 public class TurretSubsystem extends SubsystemBase {
 
     private Servo turretServo;
+    public boolean alignedToPowershots;
 
     Telemetry tele;
 
@@ -21,6 +22,14 @@ public class TurretSubsystem extends SubsystemBase {
 
     public void setTurretPos (double turretPos) {
         turretServo.setPosition(turretPos);
+    }
+
+    public void setAlignedToPowershots(boolean b) {
+        alignedToPowershots = b;
+    }
+
+    public boolean getAlignedToPowershots() {
+        return alignedToPowershots;
     }
 
     @Override

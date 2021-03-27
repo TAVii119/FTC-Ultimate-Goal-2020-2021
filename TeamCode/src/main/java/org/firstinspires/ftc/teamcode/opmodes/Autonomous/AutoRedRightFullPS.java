@@ -6,9 +6,11 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.opmodes.SimpleHardware;
 import org.opencv.core.Core;
@@ -21,6 +23,8 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
+
+import java.util.Arrays;
 
 @Autonomous(name = "AutoRedRightFullPS", group = "Red Auto")
 public class AutoRedRightFullPS extends LinearOpMode {
@@ -99,7 +103,7 @@ public class AutoRedRightFullPS extends LinearOpMode {
         static final Scalar BLUE = new Scalar(0, 0, 255);
         static final Scalar GREEN = new Scalar(0, 255, 0);
 
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(900,50);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(1050,320);
 
         static final int REGION_WIDTH = 160;
         static final int REGION_HEIGHT = 170;
@@ -162,123 +166,130 @@ public class AutoRedRightFullPS extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(-1.7, -18.0))
-//                .addDisplacementMarker(1, () -> {
-//                    // This marker runs 1 inch into the trajectory
-//                    setShooterPower(slowShooterSpeed, poweshotRampPos);
-//                    liftRingHolder();
-//                })
-//                .addDisplacementMarker(() -> {
-//                    // This marker runs after lineTo()
-//
-//                })
-                .build();
-        Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .lineToSplineHeading(new Pose2d(0.0, -61.5, Math.toRadians(-25)))
-                .build();
-        Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineToSplineHeading(new Pose2d(-33.2, -45.0, Math.toRadians(180)))
+                .lineTo(new Vector2d(-3.0, -22.0))
                 .addDisplacementMarker(7, () -> {
                     // This marker runs 7 inch into the trajectory
-//                    placeWobbleGoal(450, 0.24);
+//                    placeWobbleGoal();
                 })
+                .build();
+        Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
+                .lineTo(new Vector2d(22.0, -50.0))
+                .build();
+        Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
+                .lineToSplineHeading(new Pose2d(-17.0, -30.0, Math.toRadians(-90)))
                 .build();
 
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
-                .lineToSplineHeading(new Pose2d(-3.5, -53.0, Math.toRadians(-48)))
+                .lineToSplineHeading(new Pose2d(-38.0, -60.0, Math.toRadians(-90)))
                 .build();
 
-        Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
-                .lineTo(new Vector2d(5.0, -25.0))
+        Trajectory traj5 = drive.trajectoryBuilder(new Pose2d(-38.0, -60.0, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(1.5, -47.0, Math.toRadians(50)))
                 .build();
 
-        setShooterPower(0.67, 0.0715);
+        Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
+                .lineToSplineHeading(new Pose2d(10.0, -25.0, Math.toRadians(0)))
+                .build();
+
+        setShooterPower(0.57, 0.034);
         drive.followTrajectory(traj1);
+        sleep(200);
         flicker();
-        drive.turn(Math.toRadians(8.3));
-        sleep(500);
+        rotateTurret(0.24);
+        sleep(200);
         flicker();
-        drive.turn(Math.toRadians(7.5));
-        sleep(500);
+        rotateTurret(0.26);
+        sleep(200);
         flicker();
-        setShooterPower(0, 0.045);
+        sleep(200);
+        setShooterPower(0, 0.03);
         drive.followTrajectory(traj2);
-//        placeWobbleGoal(470, 0.24);
-        returnWobbleArm();
+        placeWobbleGoal();
+        ungrabWobbleGoal();
         drive.followTrajectory(traj3);
-//        pickWobbleGoal(100, 0.4);
-//        pickWobbleGoal(0, 0.2);
         drive.followTrajectory(traj4);
-//        placeWobbleGoal(470, 0.24);
+        grabWobbleGoal();
+        sleep(500);
         returnWobbleArm();
+        sleep(500);
         drive.followTrajectory(traj5);
+        placeWobbleGoal();
+        ungrabWobbleGoal();
+        sleep(200);
+        map.wobbleServo.setPosition(0);
+        drive.followTrajectory(traj6);
     }
 
     private void caseB(SampleMecanumDrive drive) {
         drive.setPoseEstimate(startPose);
 
         Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(-1.7, -18.0))
-                .build();
-        Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .lineToSplineHeading(new Pose2d(18.0, -23.0, Math.toRadians(-60)))
-                .build();
-        Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineToSplineHeading(new Pose2d(-14.0, -34.0, Math.toRadians(-180)))
+                .lineTo(new Vector2d(-3.0, -22.0))
                 .addDisplacementMarker(7, () -> {
                     // This marker runs 7 inch into the trajectory
-//                    placeWobbleGoal(450, 0.24);
+//                    placeWobbleGoal();
                 })
                 .build();
-        Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
-                .lineToSplineHeading(new Pose2d(-32.0, -50.0, Math.toRadians(-180)))
+
+        Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
+                .lineTo(new Vector2d(45.0, -24.0))
                 .build();
 
-        Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
-                .lineToSplineHeading(new Pose2d(-2.0, -33.2))
+        Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
+                .lineToSplineHeading(new Pose2d(-28.0, -40.0, Math.toRadians(180)))
+                .build();
+
+        Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
+                .lineToSplineHeading(new Pose2d(-38.0, -50.0, Math.toRadians(-90)))
+                .build();
+
+        Trajectory traj5 = drive.trajectoryBuilder(new Pose2d(-38.0, -50.0, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(-3.5, -32.5, Math.toRadians(-10)))
                 .build();
 
         Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
-                .lineToSplineHeading(new Pose2d(25.0, -54.0))
+                .lineToSplineHeading(new Pose2d(24.0, -29.0, Math.toRadians(40)))
                 .build();
 
         Trajectory traj7 = drive.trajectoryBuilder(traj6.end())
-                .lineTo(new Vector2d(5.0, -56))
+                .lineToSplineHeading(new Pose2d(10.0, -25.0, Math.toRadians(0)))
                 .build();
 
-        setShooterPower(0.67, 0.0715);
+        setShooterPower(0.57, 0.034);
         drive.followTrajectory(traj1);
+        sleep(200);
         flicker();
-        drive.turn(Math.toRadians(8.3));
-        sleep(500);
+        rotateTurret(0.24);
+        sleep(200);
         flicker();
-        drive.turn(Math.toRadians(7.5));
-        sleep(500);
+        rotateTurret(0.26);
+        sleep(200);
         flicker();
-        setShooterPower(0, 0.025);
+        sleep(200);
+        setShooterPower(0, 0.034);
         drive.followTrajectory(traj2);
-//        placeWobbleGoal(490, 0.24);
-        returnWobbleArm();
-        // Porneste intake
+        placeWobbleGoal();
+        ungrabWobbleGoal();
         intakeRings(1);
         drive.followTrajectory(traj3);
         drive.followTrajectory(traj4);
-        // Oprim intake dupa ce am luat inelul. Dupa traj4 luam wobble
-//        pickWobbleGoal(100, 0.4);
-//        pickWobbleGoal(0, 0.2);
-        setShooterPower(1, 0.062);
-        drive.followTrajectory(traj5);
-        // Trage
-        intakeRings(0);
+        grabWobbleGoal();
         sleep(500);
-        sleep(700);
-        flicker();
-        sleep(100);
-        flicker();
-        setShooterPower(0, 0);
-        drive.followTrajectory(traj6);
-//        placeWobbleGoal(490, 0.24);
+        intakeRings(0);
         returnWobbleArm();
+        sleep(500);
+        rotateTurret(0.23);
+        setShooterPower(0.7, 0.045);
+        drive.followTrajectory(traj5);
+        sleep(200);
+        flicker();
+        sleep(400);
+        setShooterPower(0.0, 0.045);
+        drive.followTrajectory(traj6);
+        placeWobbleGoal();
+        ungrabWobbleGoal();
+        sleep(200);
+        map.wobbleServo.setPosition(0.0);
         drive.followTrajectory(traj7);
     }
 
@@ -286,68 +297,85 @@ public class AutoRedRightFullPS extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(-1.7, -18.0))
+                .lineTo(new Vector2d(-26, -38))
                 .build();
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .lineToSplineHeading(new Pose2d(52.5, -49.5, Math.toRadians(-75.0)))
+                .lineTo(new Vector2d(-25, -38),
+                new MinVelocityConstraint(
+                        Arrays.asList(
+                                new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
+                                new MecanumVelocityConstraint(35, DriveConstants.TRACK_WIDTH)
+                        )
+                ),
+                new ProfileAccelerationConstraint(35))
                 .build();
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineToSplineHeading(new Pose2d(-21.0, -32.0, Math.toRadians(-180)))
-                .addDisplacementMarker(15, () -> {
-                    // This marker runs 7 inch into the trajectory
-//                    placeWobbleGoal(450, 0.24);
-                })
+                .lineTo(new Vector2d(-5, -38),
+                        new MinVelocityConstraint(
+                                Arrays.asList(
+                                        new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
+                                        new MecanumVelocityConstraint(35, DriveConstants.TRACK_WIDTH)
+                                )
+                        ),
+                        new ProfileAccelerationConstraint(35))
                 .build();
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
-                .lineToSplineHeading(new Pose2d(-32.0, -50.0, Math.toRadians(-180)))
+                .lineTo(new Vector2d(-6.0, -22.0))
                 .build();
-
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
-                .lineToSplineHeading(new Pose2d(-3.5, -32.5))
+                .lineToSplineHeading(new Pose2d(56.0, -45.0, Math.toRadians(20)))
                 .build();
-
         Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
-                .lineToSplineHeading(new Pose2d(39.0, -51.5, Math.toRadians(-60.0)))
+                .lineToSplineHeading(new Pose2d(10.0, -25.0, Math.toRadians(0)))
                 .build();
+//        Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
+//                .lineToSplineHeading(new Pose2d(-28.0, -40.0, Math.toRadians(180)))
+//                .build();
+//
+//        Trajectory traj7 = drive.trajectoryBuilder(traj6.end())
+//                .lineToSplineHeading(new Pose2d(-38.0, -50.0, Math.toRadians(-90)))
+//                .build();
 
-        Trajectory traj7 = drive.trajectoryBuilder(traj6.end())
-                .lineToSplineHeading(new Pose2d(4.0, -51.5, Math.toRadians(0)))
-                .build();
-        setShooterPower(0.67, 0.0715);
+        setShooterPower(0.7, 0.028);
         drive.followTrajectory(traj1);
+        sleep(200);
         flicker();
-        drive.turn(Math.toRadians(8.3));
         sleep(100);
         flicker();
-        drive.turn(Math.toRadians(7.5));
         sleep(100);
         flicker();
-        setShooterPower(0, 0.025);
-        drive.followTrajectory(traj2);
-//        placeWobbleGoal(490, 0.24);
-        returnWobbleArm();
-        // Porneste intake
+        sleep(400);
         intakeRings(1);
+        drive.followTrajectory(traj2);
+        sleep(1500);
+        flicker();
+        flicker();
+        sleep(200);
+        setShooterPower(0.57, 0.034);
         drive.followTrajectory(traj3);
         drive.followTrajectory(traj4);
-        // Oprim intake dupa ce am luat inelul. Dupa traj4 luam wobble
-//        pickWobbleGoal(100, 0.4);
-//        pickWobbleGoal(0, 0.2);
-        setShooterPower(1, 0.064);
-        drive.followTrajectory(traj5);
-        // Trage
+        sleep(200);
+        flicker();
         intakeRings(0);
-        sleep(700);
+        rotateTurret(0.245);
+        sleep(200);
         flicker();
-        sleep(75);
+        rotateTurret(0.265);
+        sleep(200);
         flicker();
-        sleep(75);
-        flicker();
-        setShooterPower(0, 0);
+        sleep(200);
+        setShooterPower(0, 0.03);
+        drive.followTrajectory(traj5);
+        placeWobbleGoal();
+        ungrabWobbleGoal();
         drive.followTrajectory(traj6);
-//        placeWobbleGoal(490, 0.24);
+        map.wobbleServo.setPosition(0);
+//        drive.followTrajectory(traj6);
+//        drive.followTrajectory(traj7);
+//        grabWobbleGoal();
+//        sleep(200);
 //        returnWobbleArm();
-        drive.followTrajectory(traj7);
+
     }
 
     private void intakeRings(double power) {
@@ -355,11 +383,11 @@ public class AutoRedRightFullPS extends LinearOpMode {
     }
 
     private void returnWobbleArm() {
-        map.wobbleServo.setPosition(0.0);
+        map.wobbleServo.setPosition(0.22);
     }
 
     private void placeWobbleGoal() {
-        map.wobbleServo.setPosition(0.32);
+        map.wobbleServo.setPosition(0.28);
     }
 
     private void grabWobbleGoal(){
@@ -387,8 +415,12 @@ public class AutoRedRightFullPS extends LinearOpMode {
     }
 
     private void dropIntake() {
-        double intakeLatch = 0.0, intakeUnlatch = 0.16;
-        map.intakeServo.setPosition(intakeUnlatch);
+//        double intakeLatch = 0.0, intakeUnlatch = 0.16;
+        map.intakeServo.setPosition(0.6);
+    }
+
+    private void rotateTurret(double position) {
+        map.turretServo.setPosition(position);
     }
 
     private void resetServos() {
@@ -397,5 +429,6 @@ public class AutoRedRightFullPS extends LinearOpMode {
         map.feederServo.setPosition(0.0);
         map.intakeServo.setPosition(0.0);
         map.shooterServo.setPosition(0.0);
+        map.turretServo.setPosition(0.23);
     }
 }

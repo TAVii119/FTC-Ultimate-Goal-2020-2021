@@ -75,6 +75,7 @@ public class TeleOperated extends CommandOpMode {
     private InstantCommand setRampPositionCommand;
     private InstantCommand resetAlignmentCommand;
     private InstantCommand resetAndAlignCommand;
+    private InstantCommand turretToPowershots;
     private InstantCommand liftIntakeCommand;
     private TimedAction flickerAction;
 
@@ -83,7 +84,7 @@ public class TeleOperated extends CommandOpMode {
     private Button intakeButton, outtakeButton, resetFlickButton, fastFlickButton, flickButton, ringLiftButton,
             shootButton, slowShootButton, liftRampButton, lowerRampButton, normalModeButton, towerAlignButton,
             rightPsAlignButton, centerPsAlignButton, leftPsAlignButton, resetRightPoseButton, resetLeftPoseButton,
-            singleFlickButton, upperRampButton, flickOnceButton, resetAlignmentButton, liftIntakeButton;
+            singleFlickButton, upperRampButton, flickOnceButton, resetAlignmentButton, liftIntakeButton, powershotTurretButton;
     private Trigger towerAlignTrigger;
     private FtcDashboard dashboard;
     @Override
@@ -157,14 +158,12 @@ public class TeleOperated extends CommandOpMode {
         shooterSystem = new ShooterSubsystem(flywheel);
         shootCommand = new InstantCommand(()-> {
             if (!shooterSystem.isShooting()) {
-                shooterSystem.shoot();
-                turretSystem.setTurretPos(0.3);
                 rampSystem.topGoalPos();
+                shooterSystem.shoot();
             } else {
                 shooterSystem.stopShoot();
-                turretSystem.setTurretPos(0.0);
             }
-        }, shooterSystem, rampSystem, turretSystem);
+        }, shooterSystem, rampSystem);
 
         slowShootCommand = new InstantCommand(()-> {
             shooterSystem.slowShoot();
@@ -207,6 +206,14 @@ public class TeleOperated extends CommandOpMode {
             sleep(50);
         }, intakeSystem);
 
+        turretToPowershots = new InstantCommand(()-> {
+            if (turretSystem.getAlignedToPowershots() == false) {
+                turretSystem.setAlignedToPowershots(true);
+            } else {
+                turretSystem.setAlignedToPowershots(false);
+            }
+        }, turretSystem);
+
         intakeButton = new GamepadButton(driver1, GamepadKeys.Button.RIGHT_BUMPER).whenHeld(intakeCommand);
         outtakeButton = new GamepadButton(driver1, GamepadKeys.Button.LEFT_BUMPER).whenHeld(outtakeCommand);
         resetAlignmentButton = new GamepadButton(driver1, GamepadKeys.Button.B).whenPressed(resetAlignmentCommand);
@@ -219,6 +226,7 @@ public class TeleOperated extends CommandOpMode {
         liftRampButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_UP).whenPressed(liftRampCommand);
         lowerRampButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_DOWN).whenPressed(lowerRampCommand);
         upperRampButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_RIGHT).whenPressed(upperRampCommand);
+        powershotTurretButton = new GamepadButton(driver2, GamepadKeys.Button.Y).whenPressed(turretToPowershots);
 
         register(driveSystem, flickerSystem, intakeSystem, rampSystem, shooterSystem, turretSystem);
         driveSystem.setDefaultCommand(driveCommand);

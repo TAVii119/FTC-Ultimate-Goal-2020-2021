@@ -20,6 +20,10 @@ public class TurretCommand extends CommandBase {
 
     @Override
     public void execute() {
-        turretSubsystem.setTurretPos(driveSubsystem.setTurretPosition());
+        if(turretSubsystem.getAlignedToPowershots() == false) {
+            turretSubsystem.setTurretPos(driveSubsystem.setTurretPosition());
+        } else {
+            turretSubsystem.setTurretPos(0.23);
+        }
     }
 }

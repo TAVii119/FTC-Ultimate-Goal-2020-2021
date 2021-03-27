@@ -40,7 +40,8 @@ public class DriveSubsystem extends SubsystemBase {
     private PIDFController headingController = new PIDFController(SampleMecanumDrive.HEADING_PID);
 
     // The position of the robot at the start of the Tele-Operated period
-    private final Pose2d startPosition = new Pose2d(-0.5, -14.7);
+//    private final Pose2d startPosition = new Pose2d(-0.5, -14.7);
+    private final Pose2d startPosition = new Pose2d(10.0, -25.0);
     // A target vector we want the bot to align with
     private Vector2d towerPosition = new Vector2d(83.0, -36.2);
     private Vector2d rightPsPosition = new Vector2d(75.0, -18.5);
@@ -287,23 +288,38 @@ public class DriveSubsystem extends SubsystemBase {
         // 0.36 extremitate stanga, 0.23 mijloc, 0.0 dreapta
         LUT<Double, Double> positions = new LUT<Double, Double>()
         {{
-            add(-54.0, 0.292);
-            add(-51.0, 0.282);
-            add(-48.0, 0.272);
-            add(-45.0, 0.262);
-            add(-42.0, 0.252);
-            add(-39.0, 0.242);
-            add(-36.0, 0.23);
-            add(-32.0, 0.222);
-            add(-28.0, 0.212);
-            add(-24.0, 0.202);
-            add(-20.0, 0.192);
-            add(-16.0, 0.182);
-            add(-13.0, 0.172);
-            add(-10.0, 0.162);
-            add(-7.0, 0.152);
-            add(-4.0, 0.142);
-            add(-1.0, 0.132);
+            // Right of TowerGoal
+            add(-53.0, 0.27);
+            add(-51.0, 0.257);
+            add(-48.0, 0.25);
+            add(-47.0, 0.24);
+            add(-45.0, 0.239);
+            add(-42.0, 0.238);
+            add(-41.0, 0.237);
+            add(-39.0, 0.236);
+            add(-38.0, 0.226);
+
+            // Middle
+            add(-36.0, 0.2256);
+            // Middle
+
+            // Left of TowerGoal
+            add(-34.0, 0.22);
+            add(-30.0, 0.217);
+            add(-25.0, 0.215);
+            add(-20.0, 0.212);
+            add(-15.0, 0.18);
+            add(-13.0, 0.17);
+            add(-10.0, 0.168);
+            add(-8.0, 0.165);
+            add(-5.0, 0.16);
+            add(-3.0, 0.15);
+            add(-1.0, 0.147);
+            add(4.0, 0.132);
+            add(7.0, 0.127);
+            add(10.0, 0.12);
+            add(15.0, 0.115);
+
         }};
         double position = positions.getClosest(currentY);
 
