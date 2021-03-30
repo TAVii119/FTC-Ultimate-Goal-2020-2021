@@ -20,6 +20,8 @@ import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import java.util.List;
 
+import static java.lang.Math.atan2;
+
 public class DriveSubsystem extends SubsystemBase {
     private final SampleMecanumDrive drive;
     private final boolean fieldCentric;
@@ -49,7 +51,7 @@ public class DriveSubsystem extends SubsystemBase {
     private Vector2d leftPsPosition = new Vector2d(75.0, 4.5);
     Telemetry tele;
 
-    public double distanceToTowergoal, currentY;
+    public double distanceToTowergoal, currentY, currentX;
 
     public DriveSubsystem(SampleMecanumDrive drive, boolean isFieldCentric, Telemetry telemetry) {
         tele = telemetry;
@@ -253,16 +255,20 @@ public class DriveSubsystem extends SubsystemBase {
 
         // Update the heading controller with our current heading
         headingController.update(poseEstimate.getHeading());
-        distanceToTowergoal = towerPosition.getX() - poseEstimate.getX();
+        distanceToTowergoal = towerPosition.getX() + poseEstimate.getX();
         currentY = poseEstimate.getY();
+        currentX = poseEstimate.getX();
 
         // Update the localizer
         drive.getLocalizer().update();
-        tele.addData("Current Y: ", currentY);
-        tele.addData("Distance to Tower Goal", towerPosition.getX() - poseEstimate.getX());
-        tele.addData("x", poseEstimate.getX());
-        tele.addData("y", poseEstimate.getY());
-        tele.addData("heading", poseEstimate.getHeading());
+//        tele.addData("Distance to Tower Goal", towerPosition.getX() - poseEstimate.getX());
+//        tele.addData("x", poseEstimate.getX());
+//        tele.addData("y", poseEstimate.getY());
+//        tele.addData("Current heading: ", poseEstimate.getHeading());
+        tele.addData("Robot angle: ", getTurretAngle());
+        tele.addData("Turret angle:", getTurretAngle() + Math.toDegrees(poseEstimate.getHeading()));
+        // Unghiu la tureta creste in sensul acelor de ceasornic
+        // Unghiu la robot creste invers acelor de ceasornic
         tele.update();
     }
 
@@ -319,11 +325,23 @@ public class DriveSubsystem extends SubsystemBase {
             add(7.0, 0.127);
             add(10.0, 0.12);
             add(15.0, 0.115);
-
         }};
         double position = positions.getClosest(currentY);
 
         return position;
+    }
+
+    public double getTurretAngle() {
+        return Math.toDegrees(turretAngleFormula(towerPosition.getX(), towerPosition.getY(), currentX, currentY));
+    }
+
+    // 1 - towergoal
+    public double turretAngleFormula(double towerX, double towerY, double robotX, double robotY) {
+        double dX = towerX - robotX;
+        double dY = towerY - robotY;
+        double ang = atan2(dY, dX);
+
+        return ang;
     }
 
     public void setDrivePower(Pose2d drivePower) {
