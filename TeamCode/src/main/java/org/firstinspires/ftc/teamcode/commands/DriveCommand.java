@@ -26,12 +26,16 @@ public class DriveCommand extends CommandBase {
     @Override
     public void initialize() {
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        // Retrieve our pose from the PoseStorage.currentPose static field
-        // See AutoTransferPose.java for further details
+        drive.initialize();
     }
 
     @Override
     public void execute() {
+        drive.execute();
         drive.drive(leftY.getAsDouble(), leftX.getAsDouble(), rightX.getAsDouble());
+    }
+
+    @Override
+    public void end(boolean interrupted) {
     }
 }

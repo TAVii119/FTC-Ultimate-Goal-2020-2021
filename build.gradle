@@ -26,6 +26,7 @@ allprojects {
         mavenCentral()
         google()
         jcenter()
+
     }
 }
 
@@ -35,6 +36,7 @@ repositories {
     flatDir {
         dirs '../libs'
     }
+
 }
 
 dependencies {

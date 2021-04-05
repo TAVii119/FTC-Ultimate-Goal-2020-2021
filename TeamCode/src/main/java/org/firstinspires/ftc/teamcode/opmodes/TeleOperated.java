@@ -9,14 +9,18 @@ import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.command.button.Trigger;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+import com.arcrobotics.ftclib.geometry.Transform2d;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorGroup;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.spartronics4915.lib.T265Camera;
+
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.commands.FlickerCommand;
 import org.firstinspires.ftc.teamcode.commands.LiftRampCommand;
 import org.firstinspires.ftc.teamcode.commands.IntakeCommand;
+import org.firstinspires.ftc.teamcode.commands.LocalizationCommand;
 import org.firstinspires.ftc.teamcode.commands.LowerRampCommand;
 import org.firstinspires.ftc.teamcode.commands.OuttakeCommand;
 import org.firstinspires.ftc.teamcode.commands.TurretCommand;
@@ -25,6 +29,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.FlickerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
+import org.firstinspires.ftc.teamcode.subsystems.LocalizationSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RampSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem;
@@ -52,8 +57,10 @@ public class TeleOperated extends CommandOpMode {
     private IntakeSubsystem intakeSystem;
     private FlickerSubsystem flickerSystem;
     private RampSubsystem rampSystem;
+    private LocalizationSubsystem localizationSystem;
 
     // Commands
+    private LocalizationCommand localizationCommand;
     private TurretCommand turretCommand;
     private DriveCommand driveCommand;
     private IntakeCommand intakeCommand;
@@ -65,16 +72,8 @@ public class TeleOperated extends CommandOpMode {
     private UpperRampCommand upperRampCommand;
     private InstantCommand shootCommand;
     private InstantCommand slowShootCommand;
-    private InstantCommand normalModeCommand;
-    private InstantCommand towerAlignCommand;
-    private InstantCommand rightPsAlignCommand;
-    private InstantCommand centerPsAlignCommand;
-    private InstantCommand leftPsAlignCommand;
-    private InstantCommand resetRightPoseCommand;
-    private InstantCommand resetLeftPoseCommand;
     private InstantCommand setRampPositionCommand;
     private InstantCommand resetAlignmentCommand;
-    private InstantCommand resetAndAlignCommand;
     private InstantCommand turretToPowershots;
     private InstantCommand liftIntakeCommand;
     private TimedAction flickerAction;
@@ -86,9 +85,10 @@ public class TeleOperated extends CommandOpMode {
             rightPsAlignButton, centerPsAlignButton, leftPsAlignButton, resetRightPoseButton, resetLeftPoseButton,
             singleFlickButton, upperRampButton, flickOnceButton, resetAlignmentButton, liftIntakeButton, powershotTurretButton;
     private Trigger towerAlignTrigger;
-    private FtcDashboard dashboard;
+    private static T265Camera slamra = null;
     @Override
     public void initialize() {
+        slamra = new T265Camera(new Transform2d(), 0.1, hardwareMap.appContext);
 
         // MOTORS
         fL = new Motor(hardwareMap, "flMotor", Motor.GoBILDA.RPM_312);
@@ -116,40 +116,11 @@ public class TeleOperated extends CommandOpMode {
         // Controller
         driver1 = new GamepadEx(gamepad1);
         driver2 = new GamepadEx(gamepad2);
-        dashboard = FtcDashboard.getInstance();
 
         //Subsystems and Commands
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         driveSystem = new DriveSubsystem(drive, false, telemetry);
         driveCommand = new DriveCommand(driveSystem, driver1::getLeftY, driver1::getLeftX, driver1::getRightX);
-
-        normalModeCommand = new InstantCommand(()-> {
-            driveSystem.normalMode();
-        }, driveSystem);
-
-        towerAlignCommand = new InstantCommand(()-> {
-            driveSystem.alignToTower();
-        }, driveSystem);
-
-        rightPsAlignCommand = new InstantCommand(()-> {
-            driveSystem.alignToRightPs();
-        }, driveSystem);
-
-        centerPsAlignCommand = new InstantCommand(()-> {
-            driveSystem.alignToCenterPs();
-        }, driveSystem);
-
-        leftPsAlignCommand = new InstantCommand(()-> {
-            driveSystem.alignToLeftPs();
-        }, driveSystem);
-
-        resetRightPoseCommand = new InstantCommand(()-> {
-            driveSystem.setPoseEstimate(new Pose2d(-9, -63.0));
-        }, driveSystem);
-
-        resetLeftPoseCommand = new InstantCommand(()-> {
-            driveSystem.setPoseEstimate(new Pose2d(-9, 14.0));
-        }, driveSystem);
 
         setRampPositionCommand = new InstantCommand(()-> {
             rampSystem.rampPos(driveSystem.setRampPosition());
@@ -192,8 +163,10 @@ public class TeleOperated extends CommandOpMode {
         turretSystem = new TurretSubsystem(turretServo, telemetry);
         turretCommand = new TurretCommand(turretSystem, driveSystem);
 
+        localizationSystem = new LocalizationSubsystem(slamra, telemetry);
+        localizationCommand = new LocalizationCommand(localizationSystem);
+
         resetAlignmentCommand = new InstantCommand(()-> {
-            driveSystem.setPoseEstimate(new Pose2d(-0.5, -14.7));
             sleep(50);
         }, driveSystem);
 
@@ -217,7 +190,6 @@ public class TeleOperated extends CommandOpMode {
         intakeButton = new GamepadButton(driver1, GamepadKeys.Button.RIGHT_BUMPER).whenHeld(intakeCommand);
         outtakeButton = new GamepadButton(driver1, GamepadKeys.Button.LEFT_BUMPER).whenHeld(outtakeCommand);
         resetAlignmentButton = new GamepadButton(driver1, GamepadKeys.Button.B).whenPressed(resetAlignmentCommand);
-        normalModeButton = new GamepadButton(driver1, GamepadKeys.Button.Y).whenPressed(normalModeCommand);
         liftIntakeButton = new GamepadButton(driver1, GamepadKeys.Button.A).whenPressed(liftIntakeCommand);
 
         shootButton = new GamepadButton(driver2, GamepadKeys.Button.A).whenPressed(shootCommand);
@@ -228,8 +200,8 @@ public class TeleOperated extends CommandOpMode {
         upperRampButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_RIGHT).whenPressed(upperRampCommand);
         powershotTurretButton = new GamepadButton(driver2, GamepadKeys.Button.Y).whenPressed(turretToPowershots);
 
-        register(driveSystem, flickerSystem, intakeSystem, rampSystem, shooterSystem, turretSystem);
+        register(driveSystem, flickerSystem, intakeSystem, rampSystem, shooterSystem, turretSystem, localizationSystem);
         driveSystem.setDefaultCommand(driveCommand);
-        turretSystem.setDefaultCommand(turretCommand);
+        localizationSystem.setDefaultCommand(localizationCommand);
     }
 }

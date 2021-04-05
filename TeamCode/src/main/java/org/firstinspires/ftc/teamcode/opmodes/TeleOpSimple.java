@@ -119,10 +119,10 @@ public class TeleOpSimple extends LinearOpMode {
         }
 
         if (gamepad1.dpad_left) { // SHOOTER SERVO POSITION
-            if (turretServoPos <= 0.37) {
+            if (turretServoPos <= 0.46) {
                 turretServoPos += 0.01;
             } else {
-                turretServoPos = 0.37;
+                turretServoPos = 0.46;
             }
             gamepadRateLimit.reset();
         } else if (gamepad1.dpad_right && turretServoPos >= 0.01) {
@@ -147,11 +147,11 @@ public class TeleOpSimple extends LinearOpMode {
         }
 
         if (gamepad2.y) {
-            map.wobbleServo.setPosition(0.36);
+            map.wobbleServoLeft.setPosition(0.36);
         }
 
         if (gamepad2.b) {
-            map.wobbleServo.setPosition(0.0);
+            map.wobbleServoLeft.setPosition(0.0);
         }
     }
 
@@ -159,10 +159,12 @@ public class TeleOpSimple extends LinearOpMode {
         map.feederServo.setPosition(0.0);
         map.intakeServo.setPosition(0.0);
         map.shooterServo.setPosition(0.0);
-        map.ringBlockerLeft.setPosition(0.031);
-        map.ringBlockerRight.setPosition(0.031);
-        map.wobbleServo.setPosition(0.0);
-        map.wobbleServoGrabber.setPosition(0.0);
+        map.ringBlockerLeft.setPosition(0.0); // 0.031 era inainte
+        map.ringBlockerRight.setPosition(0.0);
+        map.wobbleServoLeft.setPosition(0.0);
+        map.wobbleServoGrabberLeft.setPosition(0.0);
+        map.wobbleServoRight.setPosition(0.0);
+        map.wobbleServoGrabberRight.setPosition(0.0);
         map.turretServo.setPosition(0.0);
     }
 }
