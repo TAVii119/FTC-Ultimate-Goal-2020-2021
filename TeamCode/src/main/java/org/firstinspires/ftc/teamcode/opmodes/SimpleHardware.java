@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 /**
  * HardwareTest for team Delta Force
  * Created on 21.11.2020 by Botosan Octavian
- */
+ **/
 
 public class SimpleHardware {
     // INSTANTIATE MOTORS
@@ -102,7 +102,7 @@ public class SimpleHardware {
         // SET SERVO DIRECTION
         feederServo.setDirection(Servo.Direction.REVERSE);
         intakeServo.setDirection(Servo.Direction.FORWARD);
-        shooterServo.setDirection(Servo.Direction.FORWARD);
+        shooterServo.setDirection(Servo.Direction.REVERSE);
         ringBlockerRight.setDirection(Servo.Direction.REVERSE);
         turretServo.setDirection(Servo.Direction.FORWARD);
         wobbleServoGrabberRight.setDirection(Servo.Direction.REVERSE);
@@ -111,15 +111,15 @@ public class SimpleHardware {
         wobbleServoLeft.setDirection(Servo.Direction.REVERSE);
 
         // SET SERVO POSITION
-        ringBlockerLeft.setPosition(0.0);
-        ringBlockerRight.setPosition(0.0);
-        wobbleServoRight.setPosition(0.0);
-        wobbleServoGrabberRight.setPosition(0.0);
-        wobbleServoLeft.setPosition(0.0);
-        wobbleServoGrabberLeft.setPosition(0.0);
-        feederServo.setPosition(0.0);
-        intakeServo.setPosition(0.0);
-        shooterServo.setPosition(0.0);
-        turretServo.setPosition(0.0);
+//        ringBlockerLeft.setPosition(0.0);
+//        ringBlockerRight.setPosition(0.0);
+//        wobbleServoRight.setPosition(0.0);
+//        wobbleServoGrabberRight.setPosition(0.0);
+//        wobbleServoLeft.setPosition(0.0);
+//        wobbleServoGrabberLeft.setPosition(0.0);
+//        feederServo.setPosition(0.0);
+//        intakeServo.setPosition(0.0);
+//        shooterServo.setPosition(0.0);
+//        turretServo.setPosition(0.0);
     }
 }

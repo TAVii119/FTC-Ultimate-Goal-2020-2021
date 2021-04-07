@@ -1,13 +1,7 @@
 package org.firstinspires.ftc.teamcode.commands;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.CommandBase;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.LocalizationSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.RampSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem;
 
 public class LocalizationCommand extends CommandBase {
 
@@ -24,9 +18,7 @@ public class LocalizationCommand extends CommandBase {
     }
 
     @Override
-    public void execute() {
-        localizationSystem.runLocalization();
-    }
+    public void execute() { localizationSystem.loop(); }
 
     @Override
     public void end(boolean interrupted){

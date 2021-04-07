@@ -19,12 +19,16 @@ public class RampSubsystem extends SubsystemBase {
         tele = telemetry;
     }
 
+    public void setRampPosition(double pos) {
+        shooterServo.setPosition(pos);
+    }
+
     public void topGoalPos () {
-        shooterServo.setPosition(0.045);
+        shooterServo.setPosition(0.12);
     }
 
     public void powershotPos () {
-        shooterServo.setPosition(0.03);
+        shooterServo.setPosition(0.08);
     }
 
     public void upperPos () {

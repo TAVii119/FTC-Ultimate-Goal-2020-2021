@@ -29,7 +29,7 @@ public class IntakeSubsystem extends SubsystemBase {
     public void outtake() {
         intakeMotor.set(-1);
     }
-    public void unLift() { intakeServo.setPosition(0.3); }
+    public void unLift() { intakeServo.setPosition(0.36); }
     public void lift() { intakeServo.setPosition(0.0); }
     public double getServoPosition() { return intakeServo.getPosition(); }
 

@@ -9,20 +9,20 @@ import org.firstinspires.ftc.teamcode.subsystems.LocalizationSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RampSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem;
 
-public class TurretCommand extends CommandBase {
+public class AutoRampCommand extends CommandBase {
 
-    private final TurretSubsystem turretSubsystem;
+    private final RampSubsystem rampSubsystem;
     private final LocalizationSubsystem localizationSubsystem;
     private Telemetry tele;
 
-    public TurretCommand(TurretSubsystem subsystem, LocalizationSubsystem lSubsystem) {
-        turretSubsystem = subsystem;
+    public AutoRampCommand(RampSubsystem subsystem, LocalizationSubsystem lSubsystem) {
+        rampSubsystem = subsystem;
         localizationSubsystem = lSubsystem;
-        addRequirements(turretSubsystem);
+        addRequirements(rampSubsystem);
     }
 
     @Override
     public void execute() {
-        turretSubsystem.setTurretPos(localizationSubsystem.getTurretPosition());
+        rampSubsystem.setRampPosition(localizationSubsystem.getRampPosition());
     }
 }

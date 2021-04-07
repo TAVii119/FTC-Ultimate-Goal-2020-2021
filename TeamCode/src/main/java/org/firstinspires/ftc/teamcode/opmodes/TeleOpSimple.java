@@ -77,9 +77,9 @@ public class TeleOpSimple extends LinearOpMode {
             //-// TELEMETRY & OTHER \\-\\
             //-//-------------------\\-\\
 
+            telemetry.addData("Ramp Position: ", map.shooterServo.getPosition());
             telemetry.addData("Intake Speed: ", map.intakeMotor.getPower());
             telemetry.addData("Shooter Speed: ", map.shooterFrontMotor.getPower());
-            telemetry.addData("Shooter Servo Position: ", shooterServoPos);
             telemetry.addData("Turret Position: ", turretServoPos);
             telemetry.update();
         }
@@ -100,9 +100,13 @@ public class TeleOpSimple extends LinearOpMode {
             return;
         }
 
+        if (gamepad2.a) {
+            map.intakeServo.setPosition(0.36);
+        }
+
         if (gamepad1.a && map.shooterFrontMotor.getPower() == 0) {
-            map.shooterFrontMotor.setPower(0.6);
-            map.shooterBackMotor.setPower(0.6);
+            map.shooterFrontMotor.setPower(0.7);
+            map.shooterBackMotor.setPower(0.7);
             gamepadRateLimit.reset();
         } else if (gamepad1.a && map.shooterFrontMotor.getPower() > 0.2) {
             map.shooterFrontMotor.setPower(0);
@@ -142,16 +146,16 @@ public class TeleOpSimple extends LinearOpMode {
             map.intakeServo.setPosition(0.6);
         }
 
-        if (gamepad1.x) {
-            map.intakeServo.setPosition(0.0);
-        }
-
         if (gamepad2.y) {
             map.wobbleServoLeft.setPosition(0.36);
         }
 
         if (gamepad2.b) {
             map.wobbleServoLeft.setPosition(0.0);
+        }
+
+        if (gamepad1.x) {
+
         }
     }
 

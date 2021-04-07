@@ -78,7 +78,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         FOLLOW_TRAJECTORY
     }
 
-    private FtcDashboard dashboard;
+//    private FtcDashboard dashboard;
     private NanoClock clock;
 
     private Mode mode;
@@ -244,7 +244,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
 //        TelemetryPacket packet = new TelemetryPacket();
 //        Canvas fieldOverlay = packet.fieldOverlay();
-
+//
 //        packet.put("mode", mode);
 //
 //        packet.put("x", currentPose.getX());

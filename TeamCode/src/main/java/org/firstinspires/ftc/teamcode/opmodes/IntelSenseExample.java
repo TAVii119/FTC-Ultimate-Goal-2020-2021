@@ -19,7 +19,7 @@ public class IntelSenseExample extends OpMode
 
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
-    Pose2d startingPose = new Pose2d(0, 0, new Rotation2d());
+    Pose2d startingPose = new Pose2d(20, -10, new Rotation2d());
 
     @Override
     public void init() {
@@ -65,5 +65,4 @@ public class IntelSenseExample extends OpMode
     public void stop() {
         slamra.stop();
     }
-
 }
