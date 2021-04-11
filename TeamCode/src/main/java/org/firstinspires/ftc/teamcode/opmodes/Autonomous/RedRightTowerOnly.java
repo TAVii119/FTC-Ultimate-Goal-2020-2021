@@ -228,7 +228,7 @@ public class RedRightTowerOnly extends LinearOpMode {
                 .lineToConstantHeading(new Vector2d(5, -10.0))
                 .build();
 
-        rotateTurret(0.267);
+        rotateTurret(0.32);
         setShooterPower(0.7, 0.12);
         drive.followTrajectory(traj1);
         sleep(300);
@@ -266,7 +266,7 @@ public class RedRightTowerOnly extends LinearOpMode {
                 .lineToSplineHeading(new Pose2d(5, -10.0, Math.toRadians(0.0)))
                 .build();
 
-        rotateTurret(0.267);
+        rotateTurret(0.32);
         setShooterPower(0.7, 0.12);
         drive.followTrajectory(traj1);
         sleep(300);
@@ -340,7 +340,7 @@ public class RedRightTowerOnly extends LinearOpMode {
         map.feederServo.setPosition(0.0);
         map.intakeServo.setPosition(0.0);
         map.shooterServo.setPosition(0.0);
-        map.turretServo.setPosition(0.23);
+        map.turretServo.setPosition(0.3);
         map.ringBlockerRight.setPosition(0.0);
         map.ringBlockerLeft.setPosition(0.0);
     }

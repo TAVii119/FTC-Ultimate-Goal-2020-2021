@@ -87,29 +87,25 @@ public class LocalizationSubsystem extends SubsystemBase {
         if (currentTarget == 3)
             target = rightPsPosition;
 
-        if (getTurretAngle(target.getX(), target.getY()) > 70) {
-            turretAngleOffset = 70;
+        if (getTurretAngle(target.getX(), target.getY()) > 72.5) {
+            turretAngleOffset = 72.5;
         } else {
             turretAngleOffset = getTurretAngle(target.getX(), target.getY());
         }
 
-        turretAngle = turretAngleOffset - currentHeading + 70;
+        turretAngle = turretAngleOffset - currentHeading + 72.5;
 
-        double turretServoPosition = 0.46 / 140 * turretAngle;
+        double turretServoPosition = 0.51 / 145 * turretAngle;
 
-        if (turretServoPosition > 0.46) {
-            turretServoPosition = 0.46;
+        if (turretServoPosition > 0.51) {
+            turretServoPosition = 0.51;
         }
 
         if (turretServoPosition < 0) {
             turretServoPosition = 0;
         }
 
-        if (turretServoPosition < 0.2) {
-            turretServoPosition -= 0.025;
-        }
         turretPosition = turretServoPosition;
-        // Aici vin verificari sa nu depaseasca servo-ul o anumita pozitie
 
         telemetry.addData("Robot angle: ", getTurretAngle(towerPosition.getX(), towerPosition.getY()));
         telemetry.addData("Turret angle:", getTurretAngle(towerPosition.getX(), towerPosition.getY()) - currentHeading);

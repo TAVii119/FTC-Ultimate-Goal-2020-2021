@@ -185,9 +185,18 @@ public class RedLeftFull extends LinearOpMode {
                 })
                 .build();
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .lineTo(new Vector2d(22.0, -46.0))
+                .lineTo(new Vector2d(22.0, -48.0))
                 .build();
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
+                .lineToSplineHeading(new Pose2d(-17.0, -30.0, Math.toRadians(-90)))
+                .build();
+        Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
+                .lineToSplineHeading(new Pose2d(-38.0, -60.0, Math.toRadians(-90)))
+                .build();
+        Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
+                .lineToSplineHeading(new Pose2d(10.0, -34.0, Math.toRadians(10)))
+                .build();
+        Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
                 .lineToConstantHeading(new Vector2d(5, -10.0))
                 .build();
 
@@ -195,10 +204,10 @@ public class RedLeftFull extends LinearOpMode {
         drive.followTrajectory(traj1);
         sleep(300);
         flicker();
-        rotateTurret(0.26);
+        rotateTurret(0.28);
         sleep(300);
         flicker();
-        rotateTurret(0.27);
+        rotateTurret(0.3);
         sleep(300);
         flicker();
         sleep(200);
@@ -209,8 +218,18 @@ public class RedLeftFull extends LinearOpMode {
         sleep(200);
         returnWobbleArm();
         sleep(200);
-        grabWobbleGoal();
         drive.followTrajectory(traj3);
+        placeWobbleGoal();
+        ungrabWobbleGoal();
+        drive.followTrajectory(traj4);
+        grabWobbleGoal();
+        drive.followTrajectory(traj5);
+        placeWobbleGoal();
+        ungrabWobbleGoal();
+        sleep(100);
+        returnWobbleArm();
+        sleep(500);
+        drive.followTrajectory(traj6);
     }
 
     private void caseB(SampleMecanumDrive drive) {
@@ -227,12 +246,18 @@ public class RedLeftFull extends LinearOpMode {
                 .lineTo(new Vector2d(42.5, -19.0))
                 .build();
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineToSplineHeading(new Pose2d(-19.0, -38.0, Math.toRadians(180)))
+                .lineToSplineHeading(new Pose2d(-28.0, -40.0, Math.toRadians(180)))
                 .build();
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
-                .lineToSplineHeading(new Pose2d(-6.5, -38.0, Math.toRadians(-10)))
+                .lineToSplineHeading(new Pose2d(-38.0, -50.0, Math.toRadians(-90)))
                 .build();
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
+                .lineToSplineHeading(new Pose2d(-6.5, -38.0, Math.toRadians(-10)))
+                .build();
+        Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
+                .lineToSplineHeading(new Pose2d(36, -27.0, Math.toRadians(10)))
+                .build();
+        Trajectory traj7 = drive.trajectoryBuilder(traj6.end())
                 .lineToConstantHeading(new Vector2d(5, -10.0))
                 .build(); // parcare
 
@@ -240,16 +265,16 @@ public class RedLeftFull extends LinearOpMode {
         drive.followTrajectory(traj1);
         sleep(300);
         flicker();
-        rotateTurret(0.26);
+        rotateTurret(0.28);
         sleep(300);
         flicker();
-        rotateTurret(0.27);
+        rotateTurret(0.30);
         sleep(300);
         flicker();
         sleep(200);
         setShooterPower(0, 0.14);
         drive.followTrajectory(traj2);
-        rotateTurret(0.24);
+        rotateTurret(0.27);
         placeWobbleGoal();
         ungrabWobbleGoal();
         sleep(200);
@@ -258,16 +283,24 @@ public class RedLeftFull extends LinearOpMode {
         grabWobbleGoal();
         intakeRings(1);
         drive.followTrajectory(traj3);
-        sleep(500);
-        intakeRings(0);
-        setShooterPower(0.7, 0.12);
+        placeWobbleGoal();
+        ungrabWobbleGoal();
         drive.followTrajectory(traj4);
+        intakeRings(0);
+        grabWobbleGoal();
+        sleep(500);
+        setShooterPower(0.7, 0.11);
+        drive.followTrajectory(traj5);
+        sleep(500);
         flicker();
         sleep(200);
         flicker();
         sleep(200);
         setShooterPower(0.0, 0.12);
-        drive.followTrajectory(traj5);
+        drive.followTrajectory(traj6);
+        ungrabWobbleGoal();
+        returnWobbleArm();
+        drive.followTrajectory(traj7);
     }
 
     private void caseC(SampleMecanumDrive drive) {
@@ -327,10 +360,10 @@ public class RedLeftFull extends LinearOpMode {
         sleep(200);
         flicker();
         intakeRings(0);
-        rotateTurret(0.26);
+        rotateTurret(0.3);
         sleep(200);
         flicker();
-        rotateTurret(0.27);
+        rotateTurret(0.31);
         sleep(200);
         flicker();
         sleep(200);
@@ -391,12 +424,12 @@ public class RedLeftFull extends LinearOpMode {
     }
 
     private void resetServos() {
-        map.wobbleServoRight.setPosition(0.0);
+        map.wobbleServoRight.setPosition(0.05);
         map.wobbleServoGrabberRight.setPosition(0.0);
         map.feederServo.setPosition(0.0);
         map.intakeServo.setPosition(0.0);
         map.shooterServo.setPosition(0.0);
-        map.turretServo.setPosition(0.23);
+        map.turretServo.setPosition(0.25);
         map.ringBlockerRight.setPosition(0.0);
         map.ringBlockerLeft.setPosition(0.0);
     }

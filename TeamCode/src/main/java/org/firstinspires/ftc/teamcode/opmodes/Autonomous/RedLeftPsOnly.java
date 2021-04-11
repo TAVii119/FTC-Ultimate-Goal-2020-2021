@@ -195,10 +195,10 @@ public class RedLeftPsOnly extends LinearOpMode {
         drive.followTrajectory(traj1);
         sleep(300);
         flicker();
-        rotateTurret(0.26);
+        rotateTurret(0.28);
         sleep(300);
         flicker();
-        rotateTurret(0.27);
+        rotateTurret(0.3);
         sleep(300);
         flicker();
         sleep(200);
@@ -234,10 +234,10 @@ public class RedLeftPsOnly extends LinearOpMode {
         drive.followTrajectory(traj1);
         sleep(300);
         flicker();
-        rotateTurret(0.26);
+        rotateTurret(0.28);
         sleep(300);
         flicker();
-        rotateTurret(0.27);
+        rotateTurret(0.3);
         sleep(300);
         flicker();
         sleep(200);
@@ -273,10 +273,10 @@ public class RedLeftPsOnly extends LinearOpMode {
         drive.followTrajectory(traj1);
         sleep(300);
         flicker();
-        rotateTurret(0.26);
+        rotateTurret(0.28);
         sleep(300);
         flicker();
-        rotateTurret(0.27);
+        rotateTurret(0.3);
         sleep(300);
         flicker();
         sleep(200);
@@ -344,7 +344,7 @@ public class RedLeftPsOnly extends LinearOpMode {
         map.feederServo.setPosition(0.0);
         map.intakeServo.setPosition(0.0);
         map.shooterServo.setPosition(0.0);
-        map.turretServo.setPosition(0.23);
+        map.turretServo.setPosition(0.28);
         map.ringBlockerRight.setPosition(0.0);
         map.ringBlockerLeft.setPosition(0.0);
     }

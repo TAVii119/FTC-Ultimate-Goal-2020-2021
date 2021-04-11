@@ -129,6 +129,11 @@ public class TeleOperated extends CommandOpMode {
         ringBlockerServoLeft = hardwareMap.get(Servo.class, "ringBlockerLeft");
         ringBlockerServoRight = hardwareMap.get(Servo.class, "ringBlockerRight");
 
+        turretServo.setPosition(0.3);
+        ringBlockerServoLeft.setPosition(0.1);
+        ringBlockerServoRight.setPosition(0.1);
+
+
         flickerServo.setDirection(Servo.Direction.REVERSE);
         ringBlockerServoRight.setDirection(Servo.Direction.REVERSE);
         shooterServo.setDirection(Servo.Direction.REVERSE);
