@@ -30,14 +30,12 @@ public class LinkedMotorTuner extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         // Change my id
         DcMotorEx myMotor1 = hardwareMap.get(DcMotorEx.class, "shooterFrontMotor");
-        DcMotorEx myMotor2 = hardwareMap.get(DcMotorEx.class, "shooterBackMotor");
 
         // Reverse as appropriate
         // myMotor1.setDirection(DcMotorSimple.Direction.REVERSE);
         // myMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
 
         myMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        myMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
@@ -80,7 +78,6 @@ public class LinkedMotorTuner extends LinearOpMode {
 
             double power = veloController.update(motorPos, motorVelo);
             myMotor1.setPower(power);
-            myMotor2.setPower(power);
 
             if(lastKv != kV || lastKa != kA || lastKstatic != kStatic) {
                 lastKv = kV;

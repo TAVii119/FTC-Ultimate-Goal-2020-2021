@@ -13,12 +13,14 @@ import static java.lang.Thread.sleep;
 
 public class FlickerSubsystem extends SubsystemBase {
 
-    private final Servo flickerServo;
+    private final Servo flickerServo, ringBlockerLeft, ringBlockerRight;
     private TimedAction timedAction;
 
-    public FlickerSubsystem(Servo flickerServo, TimedAction timedAction) {
+    public FlickerSubsystem(Servo flickerServo, TimedAction timedAction, Servo ringBlockerLeft, Servo ringBlockerRight) {
         this.flickerServo = flickerServo;
         this.timedAction = timedAction;
+        this.ringBlockerLeft = ringBlockerLeft;
+        this.ringBlockerRight = ringBlockerRight;
     }
 
     public boolean isRunning() {
@@ -26,10 +28,13 @@ public class FlickerSubsystem extends SubsystemBase {
     }
 
     public void flick() {
+//        ringBlockerLeft.setPosition(0.405);
+//        ringBlockerRight.setPosition(0.37);
+//        RingBlockerSubsystem.down = true;
         timedAction.run();
     }
     public void flickOnce() {
-        flickerServo.setPosition(0.165);
+        flickerServo.setPosition(0.15);
         flickerServo.setPosition(0);
     }
 

@@ -31,17 +31,17 @@ public class ShooterSubsystem extends SubsystemBase {
     public ShooterSubsystem(MotorGroup flywheel) {
         this.flywheel = flywheel;
         this.flywheel.setRunMode(Motor.RunMode.VelocityControl);
-        this.flywheel.setVeloCoefficients(0.003, 0, 0.00001);
-        this.flywheel.setFeedforwardCoefficients(0, 0.0006);
+        this.flywheel.setVeloCoefficients(0.001, 0, 0.00001);
+        this.flywheel.setFeedforwardCoefficients(0, 0.0008);
     }
 
     public void shoot() {
-        flywheel.set(0.7);
+        flywheel.set(1);
         isShooting = true;
     }
 
     public void slowShoot() {
-        flywheel.set(0.62);
+        flywheel.set(0.5);
         isShooting = true;
     }
 

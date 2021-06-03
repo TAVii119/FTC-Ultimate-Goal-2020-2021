@@ -8,6 +8,8 @@ import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.drive.opmode.PoseStorage;
+
 import com.arcrobotics.ftclib.geometry.Transform2d;
 import com.arcrobotics.ftclib.geometry.Translation2d;
 import com.arcrobotics.ftclib.util.LUT;
@@ -22,20 +24,25 @@ import static java.lang.Math.atan2;
 public class LocalizationSubsystem extends SubsystemBase {
 
     private Telemetry telemetry;
-    private Vector2d towerPosition = new Vector2d(83.0, -36.2);
-    private Vector2d rightPsPosition = new Vector2d(75.0, -18.5);
-    private Vector2d centerPsPosition = new Vector2d(75.0, -8.5);
-    private Vector2d leftPsPosition = new Vector2d(75.0, 4.5);
+    private Vector2d towerPosition = new Vector2d(83.0, -37.5);
+    private Vector2d rightPsPosition = new Vector2d(77.0, -46.6);
+    private Vector2d centerPsPosition = new Vector2d(77.0, -37.0);
+    private Vector2d leftPsPosition = new Vector2d(77.0, -25.0);
 
-    public double currentY, currentX, currentHeading, xOffset = -8.54, yOffset = 3.74;
+    private Vector2d startPose = new Vector2d(-63.0, -24.3);
 
-    public double turretPosition = 0;
+    public double currentY, currentX, currentHeading, xOffset = -8.54, yOffset = 0.0;
 
-    // 0 - Towergoal, 1 - Left PS, 2 - Center PS, 3 - Right PS
+    public double turretPosition = 0, previousTurretPosition = 0;
+
+    // -1 - Manual, 0 - Towergoal, 1 - Left PS, 2 - Center PS, 3 - Right PS
     public int currentTarget = 0;
+    public double manualTurretServoPos;
 
     public int getCurrentTarget() { return currentTarget; }
     public void setCurrentTarget(int target) { currentTarget = target; }
+
+    public void setManualTurretServoPos(double pos) { manualTurretServoPos = pos; }
 
     private static T265Camera slamra = null;
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
@@ -45,9 +52,17 @@ public class LocalizationSubsystem extends SubsystemBase {
         this.slamra = slm;
     }
 
+    boolean isPoseSet = false;
+
     public void initialize() {
         slamra.stop();
         slamra.start();
+
+//        if (!isPoseSet) {
+//            if (slamra.getLastReceivedCameraUpdate().confidence == T265Camera.PoseConfidence.High) {
+//                slamra.setPose(startPose);
+//            }
+//        }
     }
 
     public void loop() {
@@ -70,8 +85,8 @@ public class LocalizationSubsystem extends SubsystemBase {
         field.strokeLine(x1, y1, x2, y2);
 
         currentHeading = rotation.getDegrees();
-        currentX = translation.getX() + xOffset;
-        currentY = translation.getY() + yOffset;
+        currentX = translation.getX() + xOffset + startPose.getX();
+        currentY = translation.getY() + yOffset + startPose.getY();
 
         double turretAngle;
         double turretAngleOffset;
@@ -95,24 +110,55 @@ public class LocalizationSubsystem extends SubsystemBase {
 
         turretAngle = turretAngleOffset - currentHeading + 72.5;
 
-        double turretServoPosition = 0.51 / 145 * turretAngle;
+        double turretServoPosition = 0.42 / 145 * turretAngle;
 
-        if (turretServoPosition > 0.51) {
-            turretServoPosition = 0.51;
+        if (currentTarget == 0) {
+            turretServoPosition += 0.01;
+        }
+
+        if (currentTarget == 0 && translation.getY() + startPose.getY() <= -40) {
+            turretServoPosition -= 0.02;
+        }
+
+        if (currentTarget > 0)
+            turretServoPosition += 0.02;
+
+        if (turretServoPosition > 0.42) {
+            turretServoPosition = 0.42;
         }
 
         if (turretServoPosition < 0) {
             turretServoPosition = 0;
         }
 
-        turretPosition = turretServoPosition;
+        if (currentTarget == 0 && translation.getY() + startPose.getY() >= -20
+        && currentTarget == 0 && translation.getY() + startPose.getX() <= -10)
+            turretServoPosition -= 0.043;
+
+        if (currentTarget == 0 && translation.getY() + startPose.getY() >= -10)
+            turretServoPosition -= 0.02;
+
+        if (currentTarget == 0 && translation.getY() + startPose.getY() < -20)
+            turretServoPosition -= 0.035;
+
+        if (currentTarget == 0 && translation.getY() + startPose.getY() < -30)
+            turretServoPosition += 0.025;
+
+        if (currentTarget != -1) {
+            previousTurretPosition = turretServoPosition;
+            turretPosition = turretServoPosition;
+        }
+
+        if (currentTarget == -1) {
+            turretPosition = manualTurretServoPos;
+        }
 
         telemetry.addData("Robot angle: ", getTurretAngle(towerPosition.getX(), towerPosition.getY()));
         telemetry.addData("Turret angle:", getTurretAngle(towerPosition.getX(), towerPosition.getY()) - currentHeading);
         telemetry.addData("Calculated turret angle:", turretAngle);
         telemetry.addData("Turret servo position:", turretServoPosition);
-        telemetry.addData("Current X:", translation.getX());
-        telemetry.addData("Current Y:", translation.getY());
+        telemetry.addData("Current X:", translation.getX() + startPose.getX());
+        telemetry.addData("Current Y:", translation.getY() + startPose.getY());
         telemetry.addData("Current Heading:", currentHeading);
 
         telemetry.update();
@@ -128,13 +174,24 @@ public class LocalizationSubsystem extends SubsystemBase {
     }
 
     public double getRampPosition() {
-        LUT<Double, Double> positions = new LUT<Double, Double>()
-        {{
-            add(0.0 + xOffset, 0.12);
-            add(-12.2047 + xOffset, 0.115);
-            add(-40.9449 + xOffset, 0.13);
-        }};
-        double position = positions.getClosest(currentX);
+        double position;
+
+        if (currentTarget == 0) {
+            LUT<Double, Double> positions = new LUT<Double, Double>() {{
+                add(0.0 + xOffset, 0.29);
+                add(-12.2047 + xOffset, 0.28);
+                add(-40.9449 + xOffset, 0.27);
+            }};
+            position = positions.getClosest(currentX);
+        } else {
+            LUT<Double, Double> positions = new LUT<Double, Double>() {{
+                add(0.0 + xOffset, 0.27);
+                add(-6.0 + xOffset, 0.275);
+                add(-12.2047 + xOffset, 0.28);
+                add(-40.9449 + xOffset, 0.285);
+            }};
+            position = positions.getClosest(currentX);
+        }
 
         return position;
     }

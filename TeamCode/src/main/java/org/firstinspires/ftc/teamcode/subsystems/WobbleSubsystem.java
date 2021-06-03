@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.SimpleServo;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -15,26 +16,64 @@ import static org.firstinspires.ftc.teamcode.opmodes.TeleOpSimple.GAMEPAD_LOCKOU
 public class WobbleSubsystem extends SubsystemBase {
 
     private Motor arm;
-    private Servo grabber, grabber2;
-    private boolean grabbing = false;
+    private Servo grabberLeft, grabberRight;
+    private boolean grabbing = false, armDown = false;
+    private Telemetry t;
 
-    public WobbleSubsystem(Motor arm, Servo grabber, Servo grabber2){
+    public WobbleSubsystem(Motor arm, Servo grabberLeft, Servo grabberRight, Telemetry tele) {
+        this.t = tele;
         this.arm = arm;
-        this.grabber = grabber;
-        this.grabber2 = grabber2;
+        arm.setRunMode(Motor.RunMode.PositionControl);
+        arm.setPositionCoefficient(0.1);
+        arm.resetEncoder();
+        arm.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        double kP = arm.getPositionCoefficient();
+        this.grabberLeft = grabberLeft;
+        this.grabberRight = grabberRight;
     }
 
-    public void openGrabber(){
+    public void openGrabber() {
         grabbing = false;
-        grabber.setPosition(0.3);
-        grabber2.setPosition(0.3);
+        grabberLeft.setPosition(0.48);
+        grabberRight.setPosition(0.48);
     }
 
-    public void closeGrabber(){
+    public void closeGrabber() {
         grabbing = true;
-        grabber.setPosition(0);
-        grabber2.setPosition(0);
+        grabberLeft.setPosition(0);
+        grabberRight.setPosition(0);
     }
+
+    public void moveMotorArm() {
+        arm.setTargetPosition(118);
+        arm.set(0);
+        arm.setPositionTolerance(20);
+
+        while (!arm.atTargetPosition()) {
+//            t.addData("Motor pos", arm.getCurrentPosition());
+//            t.update();
+            arm.set(0.15);
+        }
+
+        arm.stopMotor();
+        armDown = true;
+    }
+
+    public void liftMotorArm() {
+        arm.setTargetPosition(75);
+        arm.set(0);
+        arm.setPositionTolerance(20);
+
+        while (!arm.atTargetPosition()) {
+            arm.set(0.25);
+        }
+
+        arm.stopMotor();
+        arm.set(-0.16);
+        armDown = false;
+    }
+
+    public boolean isArmDown() { return armDown; }
 
     public boolean isGrabbing(){
         return grabbing;
@@ -42,9 +81,5 @@ public class WobbleSubsystem extends SubsystemBase {
 
     public Motor getMotor(){
         return arm;
-    }
-
-    public void driveWobbleArm(double armSpeed) {
-        arm.set(armSpeed);
     }
 }

@@ -14,27 +14,26 @@ This is a subsystem for the ring intake that we use.
 
 public class IntakeSubsystem extends SubsystemBase {
 
-    private Motor intakeMotor;
-    private Servo intakeServo;
+    private Motor intakeMotor, intakeMotor2;
     private Telemetry telemetry;
 
-    public IntakeSubsystem(Motor IntakeMotor, Servo IntakeServo) {
+    public IntakeSubsystem(Motor IntakeMotor, Motor IntakeMotor2) {
         intakeMotor = IntakeMotor;
-        intakeServo = IntakeServo;
+        intakeMotor2 = IntakeMotor2;
     }
 
     public void intake() {
         intakeMotor.set(1);
+        intakeMotor2.set(1);
     }
     public void outtake() {
         intakeMotor.set(-1);
+        intakeMotor2.set(-1);
     }
-    public void unLift() { intakeServo.setPosition(0.36); }
-    public void lift() { intakeServo.setPosition(0.0); }
-    public double getServoPosition() { return intakeServo.getPosition(); }
 
     public void stop() {
         intakeMotor.stopMotor();
+        intakeMotor2.stopMotor();
     }
 
 }

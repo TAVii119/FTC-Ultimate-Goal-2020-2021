@@ -18,6 +18,6 @@ public class WobbleCommand extends CommandBase {
 
     @Override
     public void execute() {
-        wobbleSubsystem.driveWobbleArm(-armSpeed.getAsDouble() * .65);
+//        wobbleSubsystem.driveWobbleArm(-armSpeed.getAsDouble() * .65);
     }
 }

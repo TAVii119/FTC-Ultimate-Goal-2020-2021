@@ -76,7 +76,6 @@ public class RedLeftPsOnly extends LinearOpMode {
             sleep(50);
 
 //            blockersUp();
-            dropIntake();
             if (pipeline.position == RingsDeterminationPipeline.RingPosition.NONE) {
                 webcam.stopStreaming();
                 webcam.stopRecordingPipeline();
@@ -296,26 +295,25 @@ public class RedLeftPsOnly extends LinearOpMode {
     }
 
     private void returnWobbleArm() {
-        map.wobbleServoRight.setPosition(0.0);
+//        map.wobbleServoRight.setPosition(0.0);
     }
 
     private void placeWobbleGoal() {
-        map.wobbleServoRight.setPosition(0.28);
+//        map.wobbleServoRight.setPosition(0.28);
     }
 
     private void grabWobbleGoal(){
-        map.wobbleServoGrabberRight.setPosition(0.0);
+//        map.wobbleServoGrabberRight.setPosition(0.0);
         sleep(200);
     }
 
     private void ungrabWobbleGoal(){
-        map.wobbleServoGrabberRight.setPosition(0.49);
+//        map.wobbleServoGrabberRight.setPosition(0.49);
         sleep(200);
     }
 
     private void setShooterPower(double power, double servoPosition) {
         map.shooterFrontMotor.setPower(power);
-        map.shooterBackMotor.setPower(power);
         map.shooterServo.setPosition(servoPosition);
     }
 
@@ -327,8 +325,6 @@ public class RedLeftPsOnly extends LinearOpMode {
         sleep(200);
     }
 
-    private void dropIntake() { map.intakeServo.setPosition(0.36); }
-
     private void blockersUp() {
         map.ringBlockerLeft.setPosition(0.42);
         map.ringBlockerRight.setPosition(0.42);
@@ -339,10 +335,9 @@ public class RedLeftPsOnly extends LinearOpMode {
     }
 
     private void resetServos() {
-        map.wobbleServoRight.setPosition(0.0);
-        map.wobbleServoGrabberRight.setPosition(0.0);
+//        map.wobbleServoRight.setPosition(0.0);
+//        map.wobbleServoGrabberRight.setPosition(0.0);
         map.feederServo.setPosition(0.0);
-        map.intakeServo.setPosition(0.0);
         map.shooterServo.setPosition(0.0);
         map.turretServo.setPosition(0.28);
         map.ringBlockerRight.setPosition(0.0);
