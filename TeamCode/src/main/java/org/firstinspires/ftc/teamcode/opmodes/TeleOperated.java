@@ -34,7 +34,6 @@ import org.firstinspires.ftc.teamcode.subsystems.FlickerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.LocalizationSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.RampSubsystem;
-import org.firstinspires.ftc.teamcode.subsystems.RingBlockerSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.TurretSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.WobbleSubsystem;
@@ -51,11 +50,11 @@ public class TeleOperated extends CommandOpMode {
 
     // Servos and Motors
     private Motor fL, fR, bL, bR;
-    private Motor wobbleMotor;
+    private DcMotor wobbleMotor;
     private Motor intake, intake2;
     private MotorGroup flywheel;
-    private Servo flickerServo, shooterServo, turretServo, ringBlockerServoLeft, ringBlockerServoRight;
-    public Servo wobbleClawLeft, wobbleClawRight;
+    private Servo flickerServo, shooterServo, turretServo;
+    public Servo wobbleServo;
 
 
     // Subsystems
@@ -66,7 +65,6 @@ public class TeleOperated extends CommandOpMode {
     private IntakeSubsystem intakeSystem;
     private FlickerSubsystem flickerSystem;
     private RampSubsystem rampSystem;
-    private RingBlockerSubsystem ringBlockerSystem;
     private LocalizationSubsystem localizationSystem;
 
     // Commands
@@ -83,11 +81,11 @@ public class TeleOperated extends CommandOpMode {
     private UpperRampCommand upperRampCommand;
     private InstantCommand shootCommand;
     private InstantCommand slowShootCommand;
+    private InstantCommand slowShootCommand2;
     private InstantCommand setRampPositionCommand;
     private InstantCommand resetAlignmentCommand;
     private InstantCommand turretToPowershots;
     private InstantCommand liftIntakeCommand;
-    private InstantCommand ringBlockerCommand;
 
     private InstantCommand towergoalAlignCommand;
     private InstantCommand leftPsAlignCommand;
@@ -107,7 +105,8 @@ public class TeleOperated extends CommandOpMode {
             shootButton, slowShootButton, liftRampButton, lowerRampButton, normalModeButton, towerAlignButton,
             rightPsAlignButton, centerPsAlignButton, leftPsAlignButton, resetRightPoseButton, resetLeftPoseButton,
             singleFlickButton, upperRampButton, flickOnceButton, resetAlignmentButton, liftIntakeButton, powershotTurretButton,
-            ringBlockersButton, manualTurretButton, manualTurretLeftButton, manualTurretRightButton, wobbleArmButton, wobbleClawsStick;
+            manualTurretButton, manualTurretLeftButton, manualTurretRightButton, wobbleArmButton,
+            wobbleClawsStick, slowShootButton2;
     private Trigger towerAlignTrigger;
     private static T265Camera slamra = null;
 
@@ -132,27 +131,18 @@ public class TeleOperated extends CommandOpMode {
                 new Motor(hardwareMap, "shooterFrontMotor", Motor.GoBILDA.BARE)
         );
         flywheel.setInverted(true);
-        wobbleMotor = new Motor(hardwareMap, "wobbleMotor", Motor.GoBILDA.RPM_312);
+        wobbleMotor = hardwareMap.get(DcMotor.class, "wobbleMotor");
 
         // SERVOS
         shooterServo = hardwareMap.get(Servo.class, "shooterServo");
         flickerServo = hardwareMap.get(Servo.class, "feederServo");
         turretServo = hardwareMap.get(Servo.class, "turretServo");
-        ringBlockerServoLeft = hardwareMap.get(Servo.class, "ringBlockerLeft");
-        ringBlockerServoRight = hardwareMap.get(Servo.class, "ringBlockerRight");
-        wobbleClawLeft = hardwareMap.get(Servo.class, "wobbleClawLeft");
-        wobbleClawRight = hardwareMap.get(Servo.class, "wobbleClawRight");
+        wobbleServo = hardwareMap.get(Servo.class, "wobbleServo");
 
-        wobbleClawLeft.setDirection(Servo.Direction.REVERSE);
-
-        turretServo.setPosition(0.21);
-        ringBlockerServoLeft.setPosition(0.0);
-        ringBlockerServoRight.setPosition(0.0);
-        wobbleClawLeft.setPosition(0.0);
-        wobbleClawRight.setPosition(0.0);
+        turretServo.setPosition(0.22);
+        wobbleServo.setPosition(0);
 
         flickerServo.setDirection(Servo.Direction.REVERSE);
-        ringBlockerServoRight.setDirection(Servo.Direction.REVERSE);
         shooterServo.setDirection(Servo.Direction.REVERSE);
 
         // Controller
@@ -160,10 +150,6 @@ public class TeleOperated extends CommandOpMode {
         driver2 = new GamepadEx(gamepad2);
 
         //Subsystems and Commands
-
-        ringBlockerSystem = new RingBlockerSubsystem(ringBlockerServoLeft, ringBlockerServoRight);
-
-        ringBlockerSystem.init();
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         driveSystem = new DriveSubsystem(drive, false, telemetry);
@@ -199,7 +185,7 @@ public class TeleOperated extends CommandOpMode {
                 true
         );
 
-        flickerSystem = new FlickerSubsystem(flickerServo, flickerAction, ringBlockerServoLeft, ringBlockerServoRight);
+        flickerSystem = new FlickerSubsystem(flickerServo, flickerAction);
         flickerCommand = new FlickerCommand(flickerSystem);
 
         rampSystem = new RampSubsystem(shooterServo, telemetry);
@@ -216,14 +202,6 @@ public class TeleOperated extends CommandOpMode {
         resetAlignmentCommand = new InstantCommand(()-> {
             sleep(50);
         }, driveSystem);
-
-        ringBlockerCommand = new InstantCommand(()-> {
-            if (ringBlockerSystem.isBlockerDown()) {
-                ringBlockerSystem.unBlockRings();
-            } else {
-                ringBlockerSystem.blockRings();
-            }
-        }, ringBlockerSystem);
 
         towergoalAlignCommand = new InstantCommand(()-> {
             localizationSystem.setCurrentTarget(0);
@@ -264,7 +242,7 @@ public class TeleOperated extends CommandOpMode {
                 localizationSystem.setManualTurretServoPos(0);
         }, localizationSystem);
 
-        wobbleSubsystem = new WobbleSubsystem(wobbleMotor, wobbleClawLeft, wobbleClawRight, telemetry);
+        wobbleSubsystem = new WobbleSubsystem(wobbleMotor, wobbleServo, telemetry);
         wobbleGrabberCommand = new InstantCommand(()-> {
             if (wobbleSubsystem.isGrabbing()) {
                 wobbleSubsystem.openGrabber();
@@ -281,10 +259,16 @@ public class TeleOperated extends CommandOpMode {
             }
         }, wobbleSubsystem);
 
+        slowShootCommand2 = new InstantCommand(()-> {
+            shooterSystem.slowShoot2();
+            localizationSystem.setCurrentTarget(-2);
+        }, shooterSystem, rampSystem);
+
+
         intakeButton = new GamepadButton(driver1, GamepadKeys.Button.RIGHT_BUMPER).whenHeld(intakeCommand);
         outtakeButton = new GamepadButton(driver1, GamepadKeys.Button.LEFT_BUMPER).whenHeld(outtakeCommand);
-        ringBlockersButton = new GamepadButton(driver1, GamepadKeys.Button.B).whenPressed(ringBlockerCommand);
         wobbleArmButton = new GamepadButton(driver1, GamepadKeys.Button.X).whenPressed(wobbleArmCommand);
+        slowShootButton2 = new GamepadButton(driver1, GamepadKeys.Button.DPAD_UP).whenPressed(slowShootCommand2);
 
         towerAlignButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_DOWN).whenPressed(towergoalAlignCommand);
         leftPsAlignButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_LEFT).whenPressed(leftPsAlignCommand);
@@ -298,7 +282,7 @@ public class TeleOperated extends CommandOpMode {
         manualTurretRightButton = new GamepadButton(driver2, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(manualTurretRightCommand);
         wobbleClawsStick = new GamepadButton(driver2, GamepadKeys.Button.LEFT_STICK_BUTTON).whenPressed(wobbleGrabberCommand);
 
-        register(driveSystem, flickerSystem, intakeSystem, rampSystem, shooterSystem, turretSystem, localizationSystem, ringBlockerSystem, wobbleSubsystem);
+        register(driveSystem, flickerSystem, intakeSystem, rampSystem, shooterSystem, turretSystem, localizationSystem, wobbleSubsystem);
         driveSystem.setDefaultCommand(driveCommand);
         localizationSystem.setDefaultCommand(localizationCommand);
         turretSystem.setDefaultCommand(turretCommand);

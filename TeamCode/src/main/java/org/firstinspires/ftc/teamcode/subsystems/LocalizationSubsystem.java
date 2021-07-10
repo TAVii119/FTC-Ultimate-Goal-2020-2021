@@ -24,10 +24,12 @@ import static java.lang.Math.atan2;
 public class LocalizationSubsystem extends SubsystemBase {
 
     private Telemetry telemetry;
+
+    // Red Alliance
     private Vector2d towerPosition = new Vector2d(83.0, -37.5);
-    private Vector2d rightPsPosition = new Vector2d(77.0, -46.6);
-    private Vector2d centerPsPosition = new Vector2d(77.0, -37.0);
-    private Vector2d leftPsPosition = new Vector2d(77.0, -25.0);
+    private Vector2d rightPsPosition = new Vector2d(77.0, -42.6);
+    private Vector2d centerPsPosition = new Vector2d(77.0, -30.0);
+    private Vector2d leftPsPosition = new Vector2d(77.0, -16.0);
 
     private Vector2d startPose = new Vector2d(-63.0, -24.3);
 
@@ -101,6 +103,8 @@ public class LocalizationSubsystem extends SubsystemBase {
             target = centerPsPosition;
         if (currentTarget == 3)
             target = rightPsPosition;
+        if (currentTarget == -2)
+            target = new Vector2d(0.0, -24.3);
 
         if (getTurretAngle(target.getX(), target.getY()) > 72.5) {
             turretAngleOffset = 72.5;
@@ -110,39 +114,53 @@ public class LocalizationSubsystem extends SubsystemBase {
 
         turretAngle = turretAngleOffset - currentHeading + 72.5;
 
-        double turretServoPosition = 0.42 / 145 * turretAngle;
+        double turretServoPosition = 0.43 / 145 * turretAngle;
 
-        if (currentTarget == 0) {
-            turretServoPosition += 0.01;
-        }
+//        if (currentTarget == 0) {
+//            turretServoPosition += 0.01;
+//        }
+//
+//        if (currentTarget == 0 && translation.getY() + startPose.getY() <= -40) {
+//            turretServoPosition -= 0.02;
+//        }
+//
+//        if (currentTarget > 0)
+//            turretServoPosition += 0.02;
 
-        if (currentTarget == 0 && translation.getY() + startPose.getY() <= -40) {
+//        if (currentTarget == 0 && translation.getY() + startPose.getY() >= -20
+//        && currentTarget == 0 && translation.getY() + startPose.getX() <= -10)
+//            turretServoPosition -= 0.038;
+//
+//        if (currentTarget == 0 && translation.getY() + startPose.getY() >= -10)
+//            turretServoPosition -= 0.018;
+//
+//        if (currentTarget == 0 && translation.getY() + startPose.getY() < -20)
+//            turretServoPosition -= 0.036;
+//
+
+        if (currentTarget == 0 && translation.getY() + startPose.getY() > -25)
+            turretServoPosition -= 0.055;
+
+        if (currentTarget == 0 && translation.getY() + startPose.getY() > -16)
             turretServoPosition -= 0.02;
-        }
 
-        if (currentTarget > 0)
+        if (currentTarget == 0 && translation.getY() + startPose.getY()  <= -25)
             turretServoPosition += 0.02;
 
-        if (turretServoPosition > 0.42) {
-            turretServoPosition = 0.42;
+        if (currentTarget == 0 && translation.getY() + startPose.getY()  >= -45
+                && translation.getY() + startPose.getY()  <= -25
+        )
+            turretServoPosition -= 0.025;
+
+
+
+        if (turretServoPosition > 0.43) {
+            turretServoPosition = 0.43;
         }
 
         if (turretServoPosition < 0) {
             turretServoPosition = 0;
         }
-
-        if (currentTarget == 0 && translation.getY() + startPose.getY() >= -20
-        && currentTarget == 0 && translation.getY() + startPose.getX() <= -10)
-            turretServoPosition -= 0.043;
-
-        if (currentTarget == 0 && translation.getY() + startPose.getY() >= -10)
-            turretServoPosition -= 0.02;
-
-        if (currentTarget == 0 && translation.getY() + startPose.getY() < -20)
-            turretServoPosition -= 0.035;
-
-        if (currentTarget == 0 && translation.getY() + startPose.getY() < -30)
-            turretServoPosition += 0.025;
 
         if (currentTarget != -1) {
             previousTurretPosition = turretServoPosition;
@@ -176,19 +194,21 @@ public class LocalizationSubsystem extends SubsystemBase {
     public double getRampPosition() {
         double position;
 
+        if (currentTarget == -2)
+            return 0.32;
         if (currentTarget == 0) {
             LUT<Double, Double> positions = new LUT<Double, Double>() {{
-                add(0.0 + xOffset, 0.29);
-                add(-12.2047 + xOffset, 0.28);
-                add(-40.9449 + xOffset, 0.27);
+                add(0.0 + xOffset, 0.39);
+                add(-12.2047 + xOffset, 0.41);
+                add(-40.9449 + xOffset, 0.42);
             }};
             position = positions.getClosest(currentX);
         } else {
             LUT<Double, Double> positions = new LUT<Double, Double>() {{
-                add(0.0 + xOffset, 0.27);
-                add(-6.0 + xOffset, 0.275);
-                add(-12.2047 + xOffset, 0.28);
-                add(-40.9449 + xOffset, 0.285);
+                add(0.0 + xOffset, 0.35);
+                add(-6.0 + xOffset, 0.37);
+                add(-12.2047 + xOffset, 0.38);
+                add(-40.9449 + xOffset, 0.385);
             }};
             position = positions.getClosest(currentX);
         }

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,7 +13,6 @@ import java.util.concurrent.TimeUnit;
  * TeleOpTest for team Delta Force
  * Created on 21.11.2020 by Botosan Octavian
 */
-
 @TeleOp(name="TeleOpSimple")
 
 public class TeleOpSimple extends LinearOpMode {
@@ -34,7 +34,7 @@ public class TeleOpSimple extends LinearOpMode {
         map.init(hardwareMap);
         gamepadRateLimit = new Deadline(GAMEPAD_LOCKOUT, TimeUnit.MILLISECONDS);
         resetServoPosition();
-
+        map.wobbleMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         // Wait for the game to start
         waitForStart();
 
@@ -83,6 +83,7 @@ public class TeleOpSimple extends LinearOpMode {
             telemetry.addData("Intake Speed: ", map.intakeMotor.getPower());
             telemetry.addData("Shooter Speed: ", map.shooterFrontMotor.getPower());
             telemetry.addData("Turret Position: ", turretServoPos);
+            telemetry.addData("Wobble position", map.wobbleMotor.getCurrentPosition());
             telemetry.update();
         }
     }
@@ -103,7 +104,7 @@ public class TeleOpSimple extends LinearOpMode {
         }
 
         if (gamepad1.a && map.shooterFrontMotor.getPower() == 0) {
-            map.shooterFrontMotor.setPower(1);
+            map.shooterFrontMotor.setPower(0.65);
             gamepadRateLimit.reset();
         } else if (gamepad1.a && map.shooterFrontMotor.getPower() > 0.2) {
             map.shooterFrontMotor.setPower(0);
@@ -138,83 +139,43 @@ public class TeleOpSimple extends LinearOpMode {
             gamepadRateLimit.reset();
         }
 
-//        if (gamepad1.y) {
-//            if (!wobbleArmDown) {
-//                wobbleArmDown = true;
-//                map.wobbleMotor.setTargetPosition(450);
-//                map.wobbleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                map.wobbleMotor.setPower(0.3);
-//
-//                while (opModeIsActive() && (map.wobbleMotor.isBusy())) {
-//                    // Display it for the driver.
-//                    telemetry.addData("Moving wobble arm: ", map.wobbleMotor.getTargetPosition());
-//                    telemetry.update();
-//                }
-//
-//                map.wobbleMotor.setPower(0);
-//                map.wobbleMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//            }
-//            else {
-//                wobbleArmDown = false;
-//                map.wobbleMotor.setTargetPosition(100);
-//                map.wobbleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                map.wobbleMotor.setPower(0.3);
-//
-//                while (opModeIsActive() && (map.wobbleMotor.isBusy())) {
-//                    // Display it for the driver.
-//                    telemetry.addData("Moving wobble arm: ", map.wobbleMotor.getTargetPosition());
-//                    telemetry.update();
-//                }
-//
-//                map.wobbleMotor.setPower(0);
-//                map.wobbleMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//            }
-//            sleep(500);
-//        }
+        if (gamepad1.y) {
+            if (map.wobbleServo.getPosition() == 0)
+                map.wobbleServo.setPosition(0.6);
+            else
+                map.wobbleServo.setPosition(0);
+            sleep(150);
+        }
 
         if (gamepad1.x) {
-            if (map.wobbleClawLeft.getPosition() == 0.0) {
-                map.wobbleClawLeft.setPosition(0.48);
-                map.wobbleClawRight.setPosition(0.48);
+            if (map.wobbleMotor.getCurrentPosition() > -10) {
+                wobbleArmDown = true;
+                map.wobbleMotor.setTargetPosition(-158);
+                map.wobbleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                map.wobbleMotor.setPower(0.1);
             } else {
-                map.wobbleClawLeft.setPosition(0.0);
-                map.wobbleClawRight.setPosition(0.0);
-            }
-            sleep(500);
+                wobbleArmDown = false;
+                map.wobbleMotor.setTargetPosition(5);
+                map.wobbleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                map.wobbleMotor.setPower(0.17);
+                while (map.wobbleMotor.isBusy()) {
 
-        }
-
-        if (gamepad1.left_bumper) {
-            if (map.wobbleSideServo.getPosition() == 0)
-                map.wobbleSideServo.setPosition(0.26);
-            else
-                map.wobbleSideServo.setPosition(0.0);
-            sleep(500);
-        }
-
-        if (gamepad1.right_bumper) {
-            if (map.ringBlockerRight.getPosition() == 0) {
-                map.ringBlockerRight.setPosition(0.37);
-                map.ringBlockerLeft.setPosition(0.405);
-            } else {
-                map.ringBlockerRight.setPosition(0.0);
-                map.ringBlockerLeft.setPosition(0.0);
+                }
+//                map.wobbleMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//                map.wobbleMotor.setPower(0);
             }
             sleep(500);
         }
 
+        telemetry.addData("Motor pos", map.wobbleMotor.getCurrentPosition());
     }
 
     public void resetServoPosition() {
-        map.feederServo.setPosition(0.0);
+//        map.feederServo.setPosition(0.0);
         map.shooterServo.setPosition(0.24);
-        map.ringBlockerLeft.setPosition(0.0); // 0.031 era inainte
-        map.ringBlockerRight.setPosition(0.0);
-        map.wobbleClawRight.setPosition(0.0);
-        map.wobbleClawLeft.setPosition(0.0);
-        map.wobbleArmServo.setPosition(0.0);
-        map.wobbleArmServo2.setPosition(0.0);
         map.turretServo.setPosition(0.0);
-        map.wobbleSideServo.setPosition(0.0);
+        map.wobbleServo.setPosition(0.0);
+        map.wobbleServoLeft.setPosition(0.0);
+        map.wobbleServoRight.setPosition(0.0);
     }
 }

@@ -36,7 +36,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import java.util.Arrays;
 
 @Autonomous(name = "RedLeftFull", group = "Red Auto")
-public class RedLeftFull extends LinearOpMode {
+public class RedFull extends LinearOpMode {
     OpenCvCamera webcam;
     RingsDeterminationPipeline pipeline;
     SimpleHardware map = new SimpleHardware();
@@ -76,27 +76,27 @@ public class RedLeftFull extends LinearOpMode {
             // Don't burn CPU cycles busy-looping in this sample
             sleep(50);
 
-            if (pipeline.position == RingsDeterminationPipeline.RingPosition.NONE) {
-                webcam.stopStreaming();
-                webcam.stopRecordingPipeline();
-                caseA(drive);
-                sleep(30000);
-            } else if (pipeline.position == RingsDeterminationPipeline.RingPosition.ONE) {
-                webcam.stopStreaming();
-                webcam.stopRecordingPipeline();
-                caseB(drive);
-                sleep(30000);
-            } else if (pipeline.position == RingsDeterminationPipeline.RingPosition.FOUR) {
-                webcam.stopStreaming();
-                webcam.stopRecordingPipeline();
-                caseC(drive);
-                sleep(30000);
-            } else {
-                webcam.stopStreaming();
-                webcam.stopRecordingPipeline();
-                caseA(drive);
-                sleep(30000);
-            }
+//            if (pipeline.position == RingsDeterminationPipeline.RingPosition.NONE) {
+//                webcam.stopStreaming();
+//                webcam.stopRecordingPipeline();
+//                caseC(drive);
+//                sleep(30000);
+//            } else if (pipeline.position == RingsDeterminationPipeline.RingPosition.ONE) {
+//                webcam.stopStreaming();
+//                webcam.stopRecordingPipeline();
+//                caseC(drive);
+//                sleep(30000);
+//            } else if (pipeline.position == RingsDeterminationPipeline.RingPosition.FOUR) {
+//                webcam.stopStreaming();
+//                webcam.stopRecordingPipeline();
+//                caseC(drive);
+//                sleep(30000);
+//            } else {
+//                webcam.stopStreaming();
+//                webcam.stopRecordingPipeline();
+//                caseC(drive);
+//                sleep(30000);
+//            }
 
         }
     }
@@ -114,7 +114,7 @@ public class RedLeftFull extends LinearOpMode {
         static final Scalar BLUE = new Scalar(0, 0, 255);
         static final Scalar GREEN = new Scalar(0, 255, 0);
 
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(930,180);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(5,300);
 
         static final int REGION_WIDTH = 160;
         static final int REGION_HEIGHT = 170;
@@ -172,58 +172,42 @@ public class RedLeftFull extends LinearOpMode {
         }
     }
 
-    Pose2d startPose = new Pose2d(-63.0, -24.3, Math.toRadians(0.0));
+//    Pose2d startPose = new Pose2d(-63.0, -24.3, Math.toRadians(0.0)); // LEFT
+    Pose2d startPose = new Pose2d(-63.0, -48.0, Math.toRadians(0.0)); // RIGHT
     private void caseA(SampleMecanumDrive drive) {
         drive.setPoseEstimate(startPose);
 
         Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(-3.0, -18.0))
+                .lineTo(new Vector2d(-3.0, -56.0))
                 .addDisplacementMarker(7, () -> {
                     // This marker runs 7 inch into the trajectory
 //                    placeWobbleGoal();
                 })
                 .build();
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .lineTo(new Vector2d(12.0, -56.0))
+                .lineTo(new Vector2d(7.0, -53.0))
                 .build();
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineTo(new Vector2d(-36.0, -50.0))
-                .build();
-        Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
-                .lineTo(new Vector2d(24.0, -60.0))
-                .build();
-        Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
                 .lineTo(new Vector2d(10.0, -25.0))
                 .build();
 
-        rotateTurret(0.13);
-        setShooterPower(1, 0.28);
+        rotateTurret(0.25);
+        setShooterPower(0.6, 0.39);
         drive.followTrajectory(traj1);
         sleep(3300);
         flicker();
         sleep(500);
         flicker();
-        sleep(500);
+        sleep(700);
         flicker();
         sleep(300);
-        setShooterPower(0, 0.28);
+        setShooterPower(0, 0.39);
         drive.followTrajectory(traj2);
-        leaveFirstWobble();
         placeWobbleGoal();
         sleep(200);
-        ungrabWobbleGoal();
         drive.followTrajectory(traj3);
-        grabWobbleGoal();
-        sleep(500);
-        drive.followTrajectory(traj4);
-        ungrabWobbleGoal();
-        sleep(500);
-        drive.followTrajectory(traj5);
 
-        sleep(500);
-//        intakeRings(0);
-
-        map.wobbleSideServo.setPosition(0.0);
+        map.wobbleServoRight.setPosition(0.0);
 
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
@@ -232,39 +216,27 @@ public class RedLeftFull extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(-3.0, -18.0))
+                .lineTo(new Vector2d(-3.0, -56.0))
                 .addDisplacementMarker(7, () -> {
                     // This marker runs 7 inch into the trajectory
 //                    placeWobbleGoal();
                 })
                 .build();
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .lineTo(new Vector2d(36.0, -26.5))
+                .lineTo(new Vector2d(36.0, -21.5))
                 .build();
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineToSplineHeading(new Pose2d(-23.0, -36.0, Math.toRadians(180.0)))
+                .lineToSplineHeading(new Pose2d(-27.0, -36.0, Math.toRadians(180.0)))
                 .build();
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
-                .lineToSplineHeading(new Pose2d(-27.0, -36.0, Math.toRadians(0.0)))
+                .lineToSplineHeading(new Pose2d(-1.0, -36.0, Math.toRadians(0.0)))
                 .build();
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
-                .lineTo(new Vector2d(-39.0, -47.0))
-                .build();
-        Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
-                .lineTo(new Vector2d(-1.0, -36.0))
-                .build();
-        Trajectory traj7 = drive.trajectoryBuilder(traj6.end())
-                .lineToSplineHeading(new Pose2d(28.0, -23.5, Math.toRadians(90)))
-                .build();
-        Trajectory traj8 = drive.trajectoryBuilder(traj7.end())
-                .lineToSplineHeading(new Pose2d(28.0, -14.0, Math.toRadians(0)))
-                .build();
-        Trajectory traj9 = drive.trajectoryBuilder(traj8.end())
-                .lineToSplineHeading(new Pose2d(5.0, -14.0, Math.toRadians(0)))
+                .lineTo(new Vector2d(10.0, -25.0))
                 .build();
 
-        rotateTurret(0.13);
-        setShooterPower(1, 0.28);
+        rotateTurret(0.25);
+        setShooterPower(0.6, 0.39);
         drive.followTrajectory(traj1);
         sleep(3200);
         flicker();
@@ -273,34 +245,24 @@ public class RedLeftFull extends LinearOpMode {
         sleep(500);
         flicker();
         sleep(300);
-        setShooterPower(0, 0.28);
+        setShooterPower(0, 0.39);
         drive.followTrajectory(traj2);
-        leaveFirstWobble();
         placeWobbleGoal();
         sleep(200);
-        ungrabWobbleGoal();
         intakeRings(1);
         drive.followTrajectory(traj3);
+        sleep(200);
+        setShooterPower(0.7, 0.395);
         drive.followTrajectory(traj4);
-        drive.followTrajectory(traj5);
-        grabWobbleGoal();
-        sleep(200);
-        rotateTurret(0.17);
-        setShooterPower(1, 0.286);
-        drive.followTrajectory(traj6);
+        rotateTurret(0.175);
+        sleep(1000);
         intakeRings(0);
-        sleep(1000);
         flicker();
-        sleep(200);
-        setShooterPower(0, 0.28);
-        drive.followTrajectory(traj7);
-        sleep(500);
-        ungrabWobbleGoal();
-        sleep(1000);
-        drive.followTrajectory(traj8);
-        drive.followTrajectory(traj9);
+        sleep(800);
+        setShooterPower(0, 0.39);
+        drive.followTrajectory(traj5);
 
-        map.wobbleSideServo.setPosition(0.0);
+        map.wobbleServoRight.setPosition(0.0);
 
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
@@ -309,43 +271,50 @@ public class RedLeftFull extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(-22.0, -41))
-                .build();
-        Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .lineTo(new Vector2d(-18.0, -41),
+                .lineTo(new Vector2d(-19.0, -33),
                 new MinVelocityConstraint(
                         Arrays.asList(
                                 new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-                                new MecanumVelocityConstraint(20, DriveConstants.TRACK_WIDTH)
+                                new MecanumVelocityConstraint(30, DriveConstants.TRACK_WIDTH)
                         )
                 ),
-                new ProfileAccelerationConstraint(20))
+                new ProfileAccelerationConstraint(30))
+                .build();
+        Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
+                .lineTo(new Vector2d(-15.0, -30),
+                new MinVelocityConstraint(
+                        Arrays.asList(
+                                new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
+                                new MecanumVelocityConstraint(10, DriveConstants.TRACK_WIDTH)
+                        )
+                ),
+                new ProfileAccelerationConstraint(10))
                 .build();
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
                 .lineTo(new Vector2d(-5, -41),
                         new MinVelocityConstraint(
                                 Arrays.asList(
                                         new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-                                        new MecanumVelocityConstraint(20, DriveConstants.TRACK_WIDTH)
+                                        new MecanumVelocityConstraint(10, DriveConstants.TRACK_WIDTH)
                                 )
                         ),
-                        new ProfileAccelerationConstraint(20))
+                        new ProfileAccelerationConstraint(10))
                 .build();
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
-                .lineToSplineHeading(new Pose2d(48.0, -45.0, Math.toRadians(30)))
-                .build(); //duce wobble
+                .lineTo(new Vector2d(48.0, -50.0))
+                .build(); // duce wobble
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
-                .lineToSplineHeading(new Pose2d(5, -35.0, Math.toRadians(0)))
+                .lineToSplineHeading(new Pose2d(10, -25.0, Math.toRadians(0)))
                 .build();
 
-        rotateTurret(0.194);
-        setShooterPower(1, 0.27);
+        rotateTurret(0.17);
+        setShooterPower(0.7, 0.383);
         drive.followTrajectory(traj1);
         sleep(1500);
         flicker();
         sleep(700);
         flicker();
-        sleep(700);
+        sleep(800);
         flicker();
         sleep(400);
         intakeRings(1);
@@ -353,11 +322,11 @@ public class RedLeftFull extends LinearOpMode {
         sleep(4000);
         flicker();
         sleep(200);
-        setShooterPower(1, 0.28);
+        setShooterPower(0.7, 0.38);
         drive.followTrajectory(traj3);
         sleep(1000);
         intakeRings(0);
-        rotateTurret(0.2);
+        rotateTurret(0.19);
         sleep(400);
         flicker();
         sleep(500);
@@ -365,11 +334,13 @@ public class RedLeftFull extends LinearOpMode {
         sleep(500);
         flicker();
         sleep(200);
-        setShooterPower(0, 0.28);
+        setShooterPower(0, 0.39);
         drive.followTrajectory(traj4);
-        leaveFirstWobble();
+        placeWobbleGoal();
         sleep(200);
         drive.followTrajectory(traj5);
+
+        map.wobbleServoRight.setPosition(0.0);
 
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
@@ -379,42 +350,8 @@ public class RedLeftFull extends LinearOpMode {
         map.intakeMotor2.setPower(power);
     }
 
-    private void returnWobbleArm() {
-        map.wobbleMotor.setTargetPosition(75);
-        map.wobbleMotor.set(0);
-        map.wobbleMotor.setPositionTolerance(20);
-
-        while (!map.wobbleMotor.atTargetPosition()) {
-            map.wobbleMotor.set(0.25);
-        }
-
-        map.wobbleMotor.stopMotor();
-        map.wobbleMotor.set(-0.16);
-    }
-
-    private void placeWobbleGoal() {
-        map.wobbleMotor.setTargetPosition(118);
-        map.wobbleMotor.set(0);
-        map.wobbleMotor.setPositionTolerance(20);
-
-        while (!map.wobbleMotor.atTargetPosition()) {
-//            t.addData("Motor pos", arm.getCurrentPosition());
-//            t.update();
-            map.wobbleMotor.set(0.15);
-        }
-
-        map.wobbleMotor.stopMotor();
-    }
-
-    private void grabWobbleGoal(){
-        map.wobbleClawLeft.setPosition(0.48);
-        map.wobbleClawRight.setPosition(0.48);
-        sleep(200);
-    }
-
-    private void ungrabWobbleGoal(){
-        map.wobbleClawLeft.setPosition(0.0);
-        map.wobbleClawRight.setPosition(0.0);
+    private void placeWobbleGoal(){
+        map.wobbleServoRight.setPosition(0.3);
         sleep(200);
     }
 
@@ -431,27 +368,16 @@ public class RedLeftFull extends LinearOpMode {
         sleep(200);
     }
 
-    private void blockersUp() {
-        map.ringBlockerLeft.setPosition(0.42);
-        map.ringBlockerRight.setPosition(0.42);
-    }
-
-    private void leaveFirstWobble() {
-        map.wobbleSideServo.setPosition(0.32);
-    }
-
     private void rotateTurret(double position) {
         map.turretServo.setPosition(position);
     }
 
     private void resetServos() {
+        map.wobbleServoRight.setPosition(0.0);
         map.feederServo.setPosition(0.0);
         map.shooterServo.setPosition(0.0);
         map.turretServo.setPosition(0.21);
-        map.ringBlockerRight.setPosition(0.00);
-        map.ringBlockerLeft.setPosition(0.0);
-        map.wobbleSideServo.setPosition(0.0);
-        map.wobbleClawLeft.setPosition(0.0);
-        map.wobbleClawRight.setPosition(0.0);
+
+
     }
 }

@@ -20,7 +20,7 @@ public class SimpleHardware {
     public DcMotor shooterFrontMotor = null; // SHOOTER FRONT MOTOR
     public DcMotor intakeMotor = null; // INTAKE MOTOR
     public DcMotor intakeMotor2 = null; // INTAKE MOTOR
-    public Motor wobbleMotor = null;
+    public DcMotor wobbleMotor = null;
     // INSTANTIATE SERVOS
 //    public Servo loaderFrontServo = null;
 //    public Servo loaderBackServo = null;
@@ -29,12 +29,9 @@ public class SimpleHardware {
     public Servo ringBlockerLeft = null;
     public Servo ringBlockerRight = null;
     public Servo turretServo = null;
-    public Servo wobbleArmServo = null;
-    public Servo wobbleArmServo2 = null;
-    public Servo wobbleClawLeft = null;
-    public Servo wobbleClawRight = null;
-    public Servo wobbleSideServo = null;
-
+    public Servo wobbleServo = null;
+    public Servo wobbleServoLeft = null;
+    public Servo wobbleServoRight = null;
     // CREATE NEW HardwareMap
     HardwareMap robotMap;
 
@@ -48,7 +45,7 @@ public class SimpleHardware {
         shooterFrontMotor = robotMap.get(DcMotor.class, "shooterFrontMotor");
         intakeMotor = robotMap.get(DcMotor.class, "intakeMotor");
         intakeMotor2 = robotMap.get(DcMotor.class, "intakeMotor2");
-        wobbleMotor = new Motor(robotMap, "wobbleMotor", Motor.GoBILDA.RPM_312);
+        wobbleMotor = robotMap.get(DcMotor.class, "wobbleMotor");
 
 
 
@@ -69,7 +66,7 @@ public class SimpleHardware {
         shooterFrontMotor.setPower(0);
         intakeMotor.setPower(0);
         intakeMotor2.setPower(0);
-        wobbleMotor.stopMotor();
+        wobbleMotor.setPower(0);
 
         // SET MOTOR MODE
         flMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER); // ODOMETRY LEFT
@@ -80,10 +77,8 @@ public class SimpleHardware {
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         intakeMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        wobbleMotor.setRunMode(Motor.RunMode.PositionControl);
-        wobbleMotor.setPositionCoefficient(0.1);
-        wobbleMotor.resetEncoder();
-        wobbleMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+//        wobbleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        wobbleMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // SET MOTOR ZeroPowerBehavior
         flMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -100,22 +95,16 @@ public class SimpleHardware {
         ringBlockerLeft = robotMap.get(Servo.class, "ringBlockerLeft");
         ringBlockerRight = robotMap.get(Servo.class, "ringBlockerRight");
         turretServo = robotMap.get(Servo.class, "turretServo");
-
-        wobbleArmServo = robotMap.get(Servo.class, "wobbleArmServo");
-        wobbleArmServo2 = robotMap.get(Servo.class, "wobbleArmServo2");
-        wobbleClawLeft = robotMap.get(Servo.class, "wobbleClawLeft");
-        wobbleClawRight = robotMap.get(Servo.class, "wobbleClawRight");
-
-        wobbleSideServo = robotMap.get(Servo.class, "wobbleSideServo");
+        wobbleServo = robotMap.get(Servo.class, "wobbleServo");
+        wobbleServoLeft = robotMap.get(Servo.class, "wobbleServoLeft");
+        wobbleServoRight = robotMap.get(Servo.class, "wobbleServoRight");
 
         // SET SERVO DIRECTION
         feederServo.setDirection(Servo.Direction.REVERSE);
         shooterServo.setDirection(Servo.Direction.REVERSE);
         ringBlockerRight.setDirection(Servo.Direction.REVERSE);
         turretServo.setDirection(Servo.Direction.FORWARD);
-        wobbleClawLeft.setDirection(Servo.Direction.REVERSE);
-        wobbleArmServo.setDirection(Servo.Direction.REVERSE);
-//        wobbleArmServo2.setDirection(Servo.Direction.REVERSE);
+        wobbleServoLeft.setDirection(Servo.Direction.REVERSE);
 
         // SET SERVO POSITION
 //        ringBlockerLeft.setPosition(0.0);

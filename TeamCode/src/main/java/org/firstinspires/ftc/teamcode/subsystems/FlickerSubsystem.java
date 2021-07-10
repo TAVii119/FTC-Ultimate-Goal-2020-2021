@@ -13,14 +13,12 @@ import static java.lang.Thread.sleep;
 
 public class FlickerSubsystem extends SubsystemBase {
 
-    private final Servo flickerServo, ringBlockerLeft, ringBlockerRight;
+    private final Servo flickerServo;
     private TimedAction timedAction;
 
-    public FlickerSubsystem(Servo flickerServo, TimedAction timedAction, Servo ringBlockerLeft, Servo ringBlockerRight) {
+    public FlickerSubsystem(Servo flickerServo, TimedAction timedAction) {
         this.flickerServo = flickerServo;
         this.timedAction = timedAction;
-        this.ringBlockerLeft = ringBlockerLeft;
-        this.ringBlockerRight = ringBlockerRight;
     }
 
     public boolean isRunning() {
