@@ -78,7 +78,7 @@ public class SimpleHardware {
         intakeMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 //        wobbleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        wobbleMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        wobbleMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         // SET MOTOR ZeroPowerBehavior
         flMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

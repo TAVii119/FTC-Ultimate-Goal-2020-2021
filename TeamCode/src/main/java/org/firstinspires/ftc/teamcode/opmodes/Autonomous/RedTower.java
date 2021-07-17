@@ -35,8 +35,8 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.Arrays;
 
-@Autonomous(name = "RedFullTower", group = "Red Auto")
-public class RedFullTower extends LinearOpMode {
+@Autonomous(name = "RedTower", group = "Red Auto")
+public class RedTower extends LinearOpMode {
     OpenCvCamera webcam;
     RingsDeterminationPipeline pipeline;
     SimpleHardware map = new SimpleHardware();
@@ -79,12 +79,12 @@ public class RedFullTower extends LinearOpMode {
             if (pipeline.position == RingsDeterminationPipeline.RingPosition.NONE) {
                 webcam.stopStreaming();
                 webcam.stopRecordingPipeline();
-                caseC(drive);
+                caseA(drive);
                 sleep(30000);
             } else if (pipeline.position == RingsDeterminationPipeline.RingPosition.ONE) {
                 webcam.stopStreaming();
                 webcam.stopRecordingPipeline();
-                caseC(drive);
+                caseB(drive);
                 sleep(30000);
             } else if (pipeline.position == RingsDeterminationPipeline.RingPosition.FOUR) {
                 webcam.stopStreaming();
@@ -94,7 +94,7 @@ public class RedFullTower extends LinearOpMode {
             } else {
                 webcam.stopStreaming();
                 webcam.stopRecordingPipeline();
-                caseC(drive);
+                caseA(drive);
                 sleep(30000);
             }
 
@@ -178,7 +178,7 @@ public class RedFullTower extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(-30.0, -56.0))
+                .lineTo(new Vector2d(-30.0, -52.0))
                 .addDisplacementMarker(7, () -> {
                     // This marker runs 7 inch into the trajectory
 //                    placeWobbleGoal();
@@ -191,17 +191,17 @@ public class RedFullTower extends LinearOpMode {
                 .lineTo(new Vector2d(10.0, -38.0))
                 .build();
 
-        rotateTurret(0.25);
-        setShooterPower(0.47, 0.31);
+        rotateTurret(0.29);
+        setShooterPower(0.7, 0.53);
         drive.followTrajectory(traj1);
-        sleep(3300);
+        sleep(1300);
         flicker();
         sleep(900);
         flicker();
-        sleep(1800);
+        sleep(2800);
         flicker();
         sleep(800);
-        setShooterPower(0, 0.31);
+        setShooterPower(0, 0.273);
         sleep(10000);
         drive.followTrajectory(traj2);
         placeWobbleGoal();
@@ -227,15 +227,15 @@ public class RedFullTower extends LinearOpMode {
                 .lineTo(new Vector2d(-19.0, -33.0))
                 .build();
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineToSplineHeading(new Pose2d(16.0, -46.5, Math.toRadians(90)))
+                .lineToSplineHeading(new Pose2d(14.0, -43.0, Math.toRadians(90)))
                 .build();
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
                 .lineTo(new Vector2d(10.0, -38.0))
                 .build();
 
         sleep(5000);
-        rotateTurret(0.18);
-        setShooterPower(0.47, 0.31);
+        rotateTurret(0.23);
+        setShooterPower(0.7, 0.53);
         drive.followTrajectory(traj1);
         sleep(3300);
         flicker();
@@ -244,9 +244,9 @@ public class RedFullTower extends LinearOpMode {
         sleep(1800);
         flicker();
         sleep(800);
-        setShooterPower(0, 0.31);
+        setShooterPower(0, 0.53);
         intakeRings(1);
-        setShooterPower(0.53, 0.31);
+        setShooterPower(0.7, 0.535);
         sleep(1000);
         drive.followTrajectory(traj2);
         sleep(1200);
@@ -255,7 +255,7 @@ public class RedFullTower extends LinearOpMode {
         sleep(500);
         flicker();
         sleep(800);
-        setShooterPower(0, 0.31);
+        setShooterPower(0, 0.535);
         drive.followTrajectory(traj3);
         sleep(200);
         placeWobbleGoal();
@@ -270,7 +270,7 @@ public class RedFullTower extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(-19.0, -33),
+                .lineTo(new Vector2d(-17.0, -33),
                 new MinVelocityConstraint(
                         Arrays.asList(
                                 new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
@@ -280,7 +280,7 @@ public class RedFullTower extends LinearOpMode {
                 new ProfileAccelerationConstraint(30))
                 .build();
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .lineTo(new Vector2d(-15.0, -30),
+                .lineTo(new Vector2d(-15.0, -33),
                 new MinVelocityConstraint(
                         Arrays.asList(
                                 new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
@@ -290,7 +290,7 @@ public class RedFullTower extends LinearOpMode {
                 new ProfileAccelerationConstraint(10))
                 .build();
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineTo(new Vector2d(-5, -41),
+                .lineTo(new Vector2d(-5, -34),
                         new MinVelocityConstraint(
                                 Arrays.asList(
                                         new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
@@ -300,14 +300,14 @@ public class RedFullTower extends LinearOpMode {
                         new ProfileAccelerationConstraint(10))
                 .build();
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
-                .lineTo(new Vector2d(47.5, -52.0))
+                .lineTo(new Vector2d(50.5, -52.0))
                 .build(); // duce wobble
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
-                .lineTo(new Vector2d(10, -38.0))
+                .lineTo(new Vector2d(13, -38.0))
                 .build();
 
-        rotateTurret(0.17);
-        setShooterPower(0.55, 0.383);
+        rotateTurret(0.23);
+        setShooterPower(0.7, 0.53);
         drive.followTrajectory(traj1);
         sleep(1500);
         flicker();
@@ -318,29 +318,30 @@ public class RedFullTower extends LinearOpMode {
         sleep(400);
         intakeRings(1);
         drive.followTrajectory(traj2);
-        setShooterPower(0.52, 0.383);
-        sleep(4000);
+        setShooterPower(0.7, 0.54);
+        sleep(3200);
         flicker();
         sleep(200);
-        setShooterPower(0.55, 0.38);
+        setShooterPower(0.7, 0.545);
         drive.followTrajectory(traj3);
         sleep(1000);
         intakeRings(0);
-        rotateTurret(0.19);
+        rotateTurret(0.25);
         sleep(400);
         flicker();
         sleep(800);
         flicker();
-        sleep(1300);
+        sleep(1600);
         flicker();
         sleep(700);
-        setShooterPower(0, 0.39);
+        setShooterPower(0, 0.545);
         drive.followTrajectory(traj4);
         placeWobbleGoal();
         sleep(200);
+        map.wobbleServoRight.setPosition(0.0);
         drive.followTrajectory(traj5);
 
-        map.wobbleServoRight.setPosition(0.0);
+
 
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
@@ -351,7 +352,7 @@ public class RedFullTower extends LinearOpMode {
     }
 
     private void placeWobbleGoal(){
-        map.wobbleServoRight.setPosition(0.3);
+        map.wobbleServoRight.setPosition(0.34);
         sleep(200);
     }
 
@@ -375,9 +376,8 @@ public class RedFullTower extends LinearOpMode {
     private void resetServos() {
         map.wobbleServoRight.setPosition(0.0);
         map.feederServo.setPosition(0.0);
-        map.shooterServo.setPosition(0.0);
+        map.shooterServo.setPosition(0.3);
         map.turretServo.setPosition(0.21);
-
 
     }
 }

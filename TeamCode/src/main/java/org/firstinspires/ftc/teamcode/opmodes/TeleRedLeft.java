@@ -45,8 +45,8 @@ This class is for the 2 minutes Tele-Operated period.
 The robot is controlled by two robot operated using Playstation DualShock 4 controller.
 */
 
-@TeleOp(name="TeleOperated")
-public class TeleOperated extends CommandOpMode {
+@TeleOp(name="RedLeft")
+public class TeleRedLeft extends CommandOpMode {
 
     // Servos and Motors
     private Motor fL, fR, bL, bR;
@@ -55,7 +55,6 @@ public class TeleOperated extends CommandOpMode {
     private MotorGroup flywheel;
     private Servo flickerServo, shooterServo, turretServo;
     public Servo wobbleServo;
-
 
     // Subsystems
     private WobbleSubsystem wobbleSubsystem;
@@ -81,7 +80,6 @@ public class TeleOperated extends CommandOpMode {
     private UpperRampCommand upperRampCommand;
     private InstantCommand shootCommand;
     private InstantCommand slowShootCommand;
-    private InstantCommand slowShootCommand2;
     private InstantCommand setRampPositionCommand;
     private InstantCommand resetAlignmentCommand;
     private InstantCommand turretToPowershots;
@@ -91,7 +89,8 @@ public class TeleOperated extends CommandOpMode {
     private InstantCommand leftPsAlignCommand;
     private InstantCommand centerPsAlignCommand;
     private InstantCommand rightPsAlignCommand;
-    private InstantCommand manualTurretCommand;
+    private InstantCommand manualTurretCommandTower;
+    private InstantCommand manualTurretCommandPs;
     private InstantCommand manualTurretLeftCommand;
     private InstantCommand manualTurretRightCommand;
     private InstantCommand wobbleArmCommand;
@@ -105,8 +104,8 @@ public class TeleOperated extends CommandOpMode {
             shootButton, slowShootButton, liftRampButton, lowerRampButton, normalModeButton, towerAlignButton,
             rightPsAlignButton, centerPsAlignButton, leftPsAlignButton, resetRightPoseButton, resetLeftPoseButton,
             singleFlickButton, upperRampButton, flickOnceButton, resetAlignmentButton, liftIntakeButton, powershotTurretButton,
-            manualTurretButton, manualTurretLeftButton, manualTurretRightButton, wobbleArmButton,
-            wobbleClawsStick, slowShootButton2;
+            manualTurretButtonTower, manualTurretLeftButton, manualTurretRightButton, wobbleArmButton,
+            wobbleClawsStick, manualTurretButtonPs;
     private Trigger towerAlignTrigger;
     private static T265Camera slamra = null;
 
@@ -181,7 +180,7 @@ public class TeleOperated extends CommandOpMode {
         flickerAction = new TimedAction(
                 ()->flickerServo.setPosition(0.15),
                 ()->flickerServo.setPosition(0),
-                200,
+                220,
                 true
         );
 
@@ -193,7 +192,7 @@ public class TeleOperated extends CommandOpMode {
         lowerRampCommand = new LowerRampCommand(rampSystem);
         upperRampCommand = new UpperRampCommand(rampSystem);
 
-        localizationSystem = new LocalizationSubsystem(slamra, telemetry);
+        localizationSystem = new LocalizationSubsystem(slamra, telemetry, -63.0, -23.3, 0);
         localizationCommand = new LocalizationCommand(localizationSystem);
         turretSystem = new TurretSubsystem(turretServo, telemetry);
         turretCommand = new TurretCommand(turretSystem, localizationSystem);
@@ -219,9 +218,18 @@ public class TeleOperated extends CommandOpMode {
             localizationSystem.setCurrentTarget(3);
         }, localizationSystem);
 
-        manualTurretCommand = new InstantCommand(()-> {
+        manualTurretCommandTower = new InstantCommand(()-> {
             if (localizationSystem.getCurrentTarget() != -1) {
                 localizationSystem.setCurrentTarget(-1);
+                localizationSystem.setManualTurretServoPos(turretServo.getPosition());
+            }
+            else
+                localizationSystem.setCurrentTarget(0);
+        }, localizationSystem);
+
+        manualTurretCommandPs = new InstantCommand(()-> {
+            if (localizationSystem.getCurrentTarget() != -2) {
+                localizationSystem.setCurrentTarget(-2);
                 localizationSystem.setManualTurretServoPos(turretServo.getPosition());
             }
             else
@@ -259,16 +267,10 @@ public class TeleOperated extends CommandOpMode {
             }
         }, wobbleSubsystem);
 
-        slowShootCommand2 = new InstantCommand(()-> {
-            shooterSystem.slowShoot2();
-            localizationSystem.setCurrentTarget(-2);
-        }, shooterSystem, rampSystem);
-
 
         intakeButton = new GamepadButton(driver1, GamepadKeys.Button.RIGHT_BUMPER).whenHeld(intakeCommand);
         outtakeButton = new GamepadButton(driver1, GamepadKeys.Button.LEFT_BUMPER).whenHeld(outtakeCommand);
         wobbleArmButton = new GamepadButton(driver1, GamepadKeys.Button.X).whenPressed(wobbleArmCommand);
-        slowShootButton2 = new GamepadButton(driver1, GamepadKeys.Button.DPAD_UP).whenPressed(slowShootCommand2);
 
         towerAlignButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_DOWN).whenPressed(towergoalAlignCommand);
         leftPsAlignButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_LEFT).whenPressed(leftPsAlignCommand);
@@ -277,10 +279,11 @@ public class TeleOperated extends CommandOpMode {
         shootButton = new GamepadButton(driver2, GamepadKeys.Button.A).whenPressed(shootCommand);
         slowShootButton = new GamepadButton(driver2, GamepadKeys.Button.B).whenPressed(slowShootCommand);
         flickButton = new GamepadButton(driver2, GamepadKeys.Button.X).whenHeld(flickerCommand);
-        manualTurretButton = new GamepadButton(driver2, GamepadKeys.Button.Y).whenPressed(manualTurretCommand);
+        manualTurretButtonTower = new GamepadButton(driver2, GamepadKeys.Button.RIGHT_STICK_BUTTON).whenPressed(manualTurretCommandTower);
+        manualTurretButtonPs = new GamepadButton(driver2, GamepadKeys.Button.LEFT_STICK_BUTTON).whenPressed(manualTurretCommandPs);
         manualTurretLeftButton = new GamepadButton(driver2, GamepadKeys.Button.LEFT_BUMPER).whenPressed(manualTurretLeftCommand);
         manualTurretRightButton = new GamepadButton(driver2, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(manualTurretRightCommand);
-        wobbleClawsStick = new GamepadButton(driver2, GamepadKeys.Button.LEFT_STICK_BUTTON).whenPressed(wobbleGrabberCommand);
+        wobbleClawsStick = new GamepadButton(driver2, GamepadKeys.Button.Y).whenPressed(wobbleGrabberCommand);
 
         register(driveSystem, flickerSystem, intakeSystem, rampSystem, shooterSystem, turretSystem, localizationSystem, wobbleSubsystem);
         driveSystem.setDefaultCommand(driveCommand);

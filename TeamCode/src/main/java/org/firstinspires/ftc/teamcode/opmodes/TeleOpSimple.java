@@ -104,7 +104,7 @@ public class TeleOpSimple extends LinearOpMode {
         }
 
         if (gamepad1.a && map.shooterFrontMotor.getPower() == 0) {
-            map.shooterFrontMotor.setPower(0.65);
+            map.shooterFrontMotor.setPower(0.7);
             gamepadRateLimit.reset();
         } else if (gamepad1.a && map.shooterFrontMotor.getPower() > 0.2) {
             map.shooterFrontMotor.setPower(0);
@@ -153,21 +153,24 @@ public class TeleOpSimple extends LinearOpMode {
                 map.wobbleMotor.setTargetPosition(-158);
                 map.wobbleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 map.wobbleMotor.setPower(0.1);
+
+//                map.wobbleMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                sleep(1000);
+                map.wobbleMotor.setPower(0);
             } else {
                 wobbleArmDown = false;
                 map.wobbleMotor.setTargetPosition(5);
                 map.wobbleMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 map.wobbleMotor.setPower(0.17);
-                while (map.wobbleMotor.isBusy()) {
-
-                }
+                sleep(1000);
 //                map.wobbleMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-//                map.wobbleMotor.setPower(0);
+                map.wobbleMotor.setPower(0);
             }
             sleep(500);
         }
 
         telemetry.addData("Motor pos", map.wobbleMotor.getCurrentPosition());
+        telemetry.addData("Wobble Motor Power", map.wobbleMotor.getPower());
     }
 
     public void resetServoPosition() {

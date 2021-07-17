@@ -28,8 +28,8 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.Arrays;
 
-@Autonomous(name = "BlueFullTower", group = "Blue Auto")
-public class BlueFullTower extends LinearOpMode {
+@Autonomous(name = "BlueTower", group = "Blue Auto")
+public class BlueTower extends LinearOpMode {
     OpenCvCamera webcam;
     RingsDeterminationPipeline pipeline;
     SimpleHardware map = new SimpleHardware();
@@ -72,12 +72,12 @@ public class BlueFullTower extends LinearOpMode {
             if (pipeline.position == RingsDeterminationPipeline.RingPosition.NONE) {
                 webcam.stopStreaming();
                 webcam.stopRecordingPipeline();
-                caseC(drive);
+                caseA(drive);
                 sleep(30000);
             } else if (pipeline.position == RingsDeterminationPipeline.RingPosition.ONE) {
                 webcam.stopStreaming();
                 webcam.stopRecordingPipeline();
-                caseC(drive);
+                caseB(drive);
                 sleep(30000);
             } else if (pipeline.position == RingsDeterminationPipeline.RingPosition.FOUR) {
                 webcam.stopStreaming();
@@ -87,7 +87,7 @@ public class BlueFullTower extends LinearOpMode {
             } else {
                 webcam.stopStreaming();
                 webcam.stopRecordingPipeline();
-                caseC(drive);
+                caseA(drive);
                 sleep(30000);
             }
 
@@ -107,7 +107,7 @@ public class BlueFullTower extends LinearOpMode {
         static final Scalar BLUE = new Scalar(0, 0, 255);
         static final Scalar GREEN = new Scalar(0, 255, 0);
 
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(5,300);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(1120,300);
 
         static final int REGION_WIDTH = 160;
         static final int REGION_HEIGHT = 170;
@@ -166,12 +166,12 @@ public class BlueFullTower extends LinearOpMode {
     }
 
 //    Pose2d startPose = new Pose2d(-63.0, 27.3, Math.toRadians(0.0)); // RIGHT
-    Pose2d startPose = new Pose2d(-63.0, 51.0, Math.toRadians(0.0)); // LEFT
+    Pose2d startPose = new Pose2d(-63.0, 50.0, Math.toRadians(0.0)); // LEFT
     private void caseA(SampleMecanumDrive drive) {
         drive.setPoseEstimate(startPose);
 
         Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(-30.0, 56.0))
+                .lineTo(new Vector2d(-30.0, 52.0))
                 .addDisplacementMarker(7, () -> {
                     // This marker runs 7 inch into the trajectory
 //                    placeWobbleGoal();
@@ -184,24 +184,24 @@ public class BlueFullTower extends LinearOpMode {
                 .lineTo(new Vector2d(10.0, 38.0))
                 .build();
 
-        rotateTurret(0.15);
-        setShooterPower(0.47, 0.31);
+        rotateTurret(0.2);
+        setShooterPower(0.7, 0.53);
         drive.followTrajectory(traj1);
         sleep(3300);
         flicker();
         sleep(1100);
         flicker();
-        sleep(1800);
+        sleep(2800);
         flicker();
         sleep(800);
-        setShooterPower(0, 0.31);
+        setShooterPower(0, 0.53);
         sleep(10000);
         drive.followTrajectory(traj2);
         placeWobbleGoal();
         sleep(200);
         drive.followTrajectory(traj3);
 
-        map.wobbleServoRight.setPosition(0.0);
+        map.wobbleServoLeft.setPosition(0.0);
 
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
@@ -220,15 +220,15 @@ public class BlueFullTower extends LinearOpMode {
                 .lineTo(new Vector2d(-19.0, 33.0))
                 .build();
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineToSplineHeading(new Pose2d(21.0, 42.0, Math.toRadians(-90)))
+                .lineToSplineHeading(new Pose2d(14.0, 43.0, Math.toRadians(-90)))
                 .build();
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
                 .lineTo(new Vector2d(10.0, 38.0))
                 .build();
 
         sleep(5000);
-        rotateTurret(0.21);
-        setShooterPower(0.47, 0.31);
+        rotateTurret(0.245);
+        setShooterPower(0.7, 0.53);
         drive.followTrajectory(traj1);
         sleep(3300);
         flicker();
@@ -237,9 +237,9 @@ public class BlueFullTower extends LinearOpMode {
         sleep(1800);
         flicker();
         sleep(800);
-        setShooterPower(0, 0.31);
+        setShooterPower(0, 0.53);
         intakeRings(1);
-        setShooterPower(0.53, 0.31);
+        setShooterPower(0.7, 0.535);
         sleep(1000);
         drive.followTrajectory(traj2);
         sleep(1200);
@@ -248,13 +248,13 @@ public class BlueFullTower extends LinearOpMode {
         sleep(500);
         flicker();
         sleep(800);
-        setShooterPower(0, 0.31);
+        setShooterPower(0, 0.535);
         drive.followTrajectory(traj3);
         sleep(200);
         placeWobbleGoal();
         drive.followTrajectory(traj4);
 
-        map.wobbleServoRight.setPosition(0.0);
+        map.wobbleServoLeft.setPosition(0.0);
 
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
@@ -263,7 +263,7 @@ public class BlueFullTower extends LinearOpMode {
         drive.setPoseEstimate(startPose);
 
         Trajectory traj1 = drive.trajectoryBuilder(startPose)
-                .lineTo(new Vector2d(-19.0, 33),
+                .lineTo(new Vector2d(-17.0, 33),
                 new MinVelocityConstraint(
                         Arrays.asList(
                                 new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
@@ -273,7 +273,7 @@ public class BlueFullTower extends LinearOpMode {
                 new ProfileAccelerationConstraint(30))
                 .build();
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .lineTo(new Vector2d(-15.0, 30),
+                .lineTo(new Vector2d(-15.0, 33),
                 new MinVelocityConstraint(
                         Arrays.asList(
                                 new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
@@ -283,7 +283,7 @@ public class BlueFullTower extends LinearOpMode {
                 new ProfileAccelerationConstraint(10))
                 .build();
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineTo(new Vector2d(-5, 41),
+                .lineTo(new Vector2d(-5, 34),
                         new MinVelocityConstraint(
                                 Arrays.asList(
                                         new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
@@ -296,11 +296,11 @@ public class BlueFullTower extends LinearOpMode {
                 .lineTo(new Vector2d(47.5, 52.0))
                 .build(); // duce wobble
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
-                .lineTo(new Vector2d(10, 38.0))
+                .lineTo(new Vector2d(13, 38.0))
                 .build();
 
-        rotateTurret(0.22);
-        setShooterPower(0.55, 0.383);
+        rotateTurret(0.26);
+        setShooterPower(0.7, 0.53);
         drive.followTrajectory(traj1);
         sleep(1500);
         flicker();
@@ -311,15 +311,15 @@ public class BlueFullTower extends LinearOpMode {
         sleep(400);
         intakeRings(1);
         drive.followTrajectory(traj2);
-        setShooterPower(0.52, 0.383);
+        setShooterPower(0.7, 0.54);
         sleep(4000);
         flicker();
         sleep(200);
-        setShooterPower(0.55, 0.38);
+        setShooterPower(0.7, 0.545);
         drive.followTrajectory(traj3);
         sleep(1000);
         intakeRings(0);
-        rotateTurret(0.21);
+        rotateTurret(0.25);
         sleep(400);
         flicker();
         sleep(800);
@@ -327,13 +327,13 @@ public class BlueFullTower extends LinearOpMode {
         sleep(1300);
         flicker();
         sleep(700);
-        setShooterPower(0, 0.39);
+        setShooterPower(0, 0.545);
         drive.followTrajectory(traj4);
         placeWobbleGoal();
         sleep(200);
         drive.followTrajectory(traj5);
 
-        map.wobbleServoRight.setPosition(0.0);
+        map.wobbleServoLeft.setPosition(0.0);
 
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
@@ -343,7 +343,7 @@ public class BlueFullTower extends LinearOpMode {
         map.intakeMotor2.setPower(power);
     }
 
-    private void placeWobbleGoal(){
+    private void placeWobbleGoal() {
         map.wobbleServoLeft.setPosition(0.3);
         sleep(200);
     }
@@ -368,7 +368,7 @@ public class BlueFullTower extends LinearOpMode {
     private void resetServos() {
         map.wobbleServoLeft.setPosition(0.0);
         map.feederServo.setPosition(0.0);
-        map.shooterServo.setPosition(0.0);
+        map.shooterServo.setPosition(0.3);
         map.turretServo.setPosition(0.21);
     }
 }
