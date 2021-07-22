@@ -25,6 +25,7 @@ import org.firstinspires.ftc.teamcode.commands.LowerRampCommand;
 import org.firstinspires.ftc.teamcode.commands.OuttakeCommand;
 import org.firstinspires.ftc.teamcode.commands.TurretCommand;
 import org.firstinspires.ftc.teamcode.commands.UpperRampCommand;
+import org.firstinspires.ftc.teamcode.commands.WobbleCommand;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.FlickerSubsystem;
@@ -47,7 +48,7 @@ public class TeleBlueLeft extends CommandOpMode {
 
     // Servos and Motors
     private Motor fL, fR, bL, bR;
-    private DcMotor wobbleMotor;
+    private Motor wobbleMotor;
     private Motor intake, intake2;
     private MotorGroup flywheel;
     private Servo flickerServo, shooterServo, turretServo;
@@ -62,8 +63,10 @@ public class TeleBlueLeft extends CommandOpMode {
     private FlickerSubsystem flickerSystem;
     private RampSubsystem rampSystem;
     private LocalizationSubsystem localizationSystem;
+    private WobbleSubsystem wobbleSystem;
 
     // Commands
+    private WobbleCommand wobbleCommand;
     private AutoRampCommand autoRampCommand;
     private LocalizationCommand localizationCommand;
     private TurretCommand turretCommand;
@@ -127,7 +130,7 @@ public class TeleBlueLeft extends CommandOpMode {
                 new Motor(hardwareMap, "shooterFrontMotor", Motor.GoBILDA.BARE)
         );
         flywheel.setInverted(true);
-        wobbleMotor = hardwareMap.get(DcMotor.class, "wobbleMotor");
+        wobbleMotor = new Motor(hardwareMap, "wobbleMotor", Motor.GoBILDA.RPM_312);
 
         // SERVOS
         shooterServo = hardwareMap.get(Servo.class, "shooterServo");
@@ -150,10 +153,12 @@ public class TeleBlueLeft extends CommandOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         driveSystem = new DriveSubsystem(drive, false, telemetry);
         driveCommand = new DriveCommand(driveSystem, driver1::getLeftY, driver1::getLeftX, driver1::getRightX);
-
         setRampPositionCommand = new InstantCommand(()-> {
             rampSystem.rampPos(driveSystem.setRampPosition());
         }, rampSystem, driveSystem);
+
+        wobbleSystem = new WobbleSubsystem(wobbleMotor, wobbleServo, telemetry);
+        wobbleCommand = new WobbleCommand(wobbleSystem, driver2::getLeftY);
 
         shooterSystem = new ShooterSubsystem(flywheel);
         shootCommand = new InstantCommand(()-> {
@@ -177,7 +182,7 @@ public class TeleBlueLeft extends CommandOpMode {
         flickerAction = new TimedAction(
                 ()->flickerServo.setPosition(0.15),
                 ()->flickerServo.setPosition(0),
-                220,
+                300,
                 true
         );
 
@@ -218,7 +223,8 @@ public class TeleBlueLeft extends CommandOpMode {
         manualTurretCommandTower = new InstantCommand(()-> {
             if (localizationSystem.getCurrentTarget() != -1) {
                 localizationSystem.setCurrentTarget(-1);
-                localizationSystem.setManualTurretServoPos(turretServo.getPosition());
+//                localizationSystem.setManualTurretServoPos(turretServo.getPosition());
+                localizationSystem.setManualTurretServoPos(0.26);
             }
             else
                 localizationSystem.setCurrentTarget(0);
@@ -227,7 +233,8 @@ public class TeleBlueLeft extends CommandOpMode {
         manualTurretCommandPs = new InstantCommand(()-> {
             if (localizationSystem.getCurrentTarget() != -2) {
                 localizationSystem.setCurrentTarget(-2);
-                localizationSystem.setManualTurretServoPos(turretServo.getPosition());
+//                localizationSystem.setManualTurretServoPos(turretServo.getPosition());
+                localizationSystem.setManualTurretServoPos(0.26);
             }
             else
                 localizationSystem.setCurrentTarget(0);
@@ -256,18 +263,10 @@ public class TeleBlueLeft extends CommandOpMode {
             }
         }, wobbleSubsystem);
 
-        wobbleArmCommand = new InstantCommand(()-> {
-            if (wobbleSubsystem.isArmDown()) {
-                wobbleSubsystem.liftMotorArm();
-            } else {
-                wobbleSubsystem.moveMotorArm();
-            }
-        }, wobbleSubsystem);
-
 
         intakeButton = new GamepadButton(driver1, GamepadKeys.Button.RIGHT_BUMPER).whenHeld(intakeCommand);
         outtakeButton = new GamepadButton(driver1, GamepadKeys.Button.LEFT_BUMPER).whenHeld(outtakeCommand);
-        wobbleArmButton = new GamepadButton(driver1, GamepadKeys.Button.X).whenPressed(wobbleArmCommand);
+        wobbleArmButton = new GamepadButton(driver1, GamepadKeys.Button.X).whenPressed(wobbleGrabberCommand);
 
         towerAlignButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_DOWN).whenPressed(towergoalAlignCommand);
         leftPsAlignButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_LEFT).whenPressed(leftPsAlignCommand);
@@ -280,10 +279,10 @@ public class TeleBlueLeft extends CommandOpMode {
         manualTurretButtonPs = new GamepadButton(driver2, GamepadKeys.Button.LEFT_STICK_BUTTON).whenPressed(manualTurretCommandPs);
         manualTurretLeftButton = new GamepadButton(driver2, GamepadKeys.Button.LEFT_BUMPER).whenPressed(manualTurretLeftCommand);
         manualTurretRightButton = new GamepadButton(driver2, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(manualTurretRightCommand);
-        wobbleClawsStick = new GamepadButton(driver2, GamepadKeys.Button.Y).whenPressed(wobbleGrabberCommand);
 
-        register(driveSystem, flickerSystem, intakeSystem, rampSystem, shooterSystem, turretSystem, localizationSystem, wobbleSubsystem);
+        register(driveSystem, flickerSystem, intakeSystem, rampSystem, shooterSystem, turretSystem, localizationSystem, wobbleSystem);
         driveSystem.setDefaultCommand(driveCommand);
+        wobbleSystem.setDefaultCommand(wobbleCommand);
         localizationSystem.setDefaultCommand(localizationCommand);
         turretSystem.setDefaultCommand(turretCommand);
         rampSystem.setDefaultCommand(autoRampCommand);

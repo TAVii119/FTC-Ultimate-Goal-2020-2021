@@ -163,20 +163,28 @@ public class LocalizationSubsystem extends SubsystemBase {
 //                turretServoPosition -= 0.025;
         } else if (this.alliance == 1) {
             // BLUE
-            if (currentTarget == 0 && positionY > 47)
-                turretServoPosition -= 0.02;
+            if (currentTarget == 0 && positionY > 45)
+                turretServoPosition -= 0.035;
 
             if (currentTarget == 0 && positionY < 38)
-                turretServoPosition += 0.025;
+                turretServoPosition += 0.012;
+
+            if (currentTarget == 0 && positionY < 33)
+                turretServoPosition += 0.018;
 
             if (currentTarget == 0 && positionY < 21)
-                turretServoPosition += 0.025;
+                turretServoPosition += 0.018;
 
             if (currentTarget == 0 && positionY < 15)
-                turretServoPosition += 0.035;
+                turretServoPosition += 0.024;
+
+            if (currentTarget == 0 && positionY < 12)
+                turretServoPosition += 0.026;
 
             if (currentTarget == 0 && positionY < 8)
-                turretServoPosition += 0.015;
+                turretServoPosition += 0.01;
+
+            turretServoPosition += 0.01;
         }
         if (turretServoPosition > 0.48) {
             turretServoPosition = 0.48;
@@ -223,8 +231,9 @@ public class LocalizationSubsystem extends SubsystemBase {
             LUT<Double, Double> positions = new LUT<Double, Double>() {{
                 add(0.0 + xOffset, 0.55);
                 add(-12.2047 + xOffset, 0.54);
-                add(-40.9449 + xOffset, 0.53);
-                add(-47.9449 + xOffset, 0.52);
+                add(-15.2047 + xOffset, 0.528);
+                add(-40.9449 + xOffset, 0.51);
+                add(-47.9449 + xOffset, 0.5);
             }};
             position = positions.getClosest(currentX);
         } else {

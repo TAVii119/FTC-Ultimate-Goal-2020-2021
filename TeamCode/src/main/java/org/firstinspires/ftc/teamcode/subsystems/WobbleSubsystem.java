@@ -15,15 +15,14 @@ import static org.firstinspires.ftc.teamcode.opmodes.TeleOpSimple.GAMEPAD_LOCKOU
 
 public class WobbleSubsystem extends SubsystemBase {
 
-    private DcMotor arm;
+    private Motor arm;
     private Servo servo;
     private boolean grabbing = false, armDown = false;
     private Telemetry t;
 
-    public WobbleSubsystem(DcMotor arm, Servo wobbleServo, Telemetry tele) {
+    public WobbleSubsystem(Motor arm, Servo wobbleServo, Telemetry tele) {
         this.t = tele;
         this.arm = arm;
-        this.arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
        this.servo = wobbleServo;
     }
 
@@ -37,27 +36,17 @@ public class WobbleSubsystem extends SubsystemBase {
         servo.setPosition(0.0);
     }
 
-    public void moveMotorArm() {
-        armDown = true;
-        this.arm.setTargetPosition(-158);
-        this.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.arm.setPower(0.1);
-    }
-
-    public void liftMotorArm() {
-        armDown = false;
-        this.arm.setTargetPosition(5);
-        this.arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.arm.setPower(0.17);
-    }
-
     public boolean isArmDown() { return armDown; }
 
     public boolean isGrabbing(){
         return grabbing;
     }
 
-    public DcMotor getMotor(){
+    public void driveWobbleArm(double armSpeed) {
+        this.arm.set(armSpeed);
+    }
+
+    public Motor getMotor(){
         return arm;
     }
 }

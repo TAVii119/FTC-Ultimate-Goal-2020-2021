@@ -120,10 +120,10 @@ public class TeleOpSimple extends LinearOpMode {
         }
 
         if (gamepad1.dpad_left) { // SHOOTER SERVO POSITION
-            if (turretServoPos <= 0.51) {
+            if (turretServoPos <= 0.69) {
                 turretServoPos += 0.01;
             } else {
-                turretServoPos = 0.51;
+                turretServoPos = 0.69;
             }
             gamepadRateLimit.reset();
         } else if (gamepad1.dpad_right && turretServoPos >= 0.01) {

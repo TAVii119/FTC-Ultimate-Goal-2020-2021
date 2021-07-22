@@ -227,7 +227,7 @@ public class BlueTower extends LinearOpMode {
                 .build();
 
         sleep(5000);
-        rotateTurret(0.245);
+        rotateTurret(0.255);
         setShooterPower(0.7, 0.53);
         drive.followTrajectory(traj1);
         sleep(3300);
@@ -369,6 +369,6 @@ public class BlueTower extends LinearOpMode {
         map.wobbleServoLeft.setPosition(0.0);
         map.feederServo.setPosition(0.0);
         map.shooterServo.setPosition(0.3);
-        map.turretServo.setPosition(0.21);
+        map.turretServo.setPosition(0.26);
     }
 }

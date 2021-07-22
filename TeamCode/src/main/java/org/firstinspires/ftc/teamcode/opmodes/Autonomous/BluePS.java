@@ -281,7 +281,7 @@ public class BluePS extends LinearOpMode {
         placeWobbleGoal();
         sleep(100);
         setShooterPower(0.6, 0.53);
-        rotateTurret(0.22);
+        rotateTurret(0.23);
         drive.followTrajectory(traj3);
         sleep(1700);
         flicker();
@@ -333,6 +333,6 @@ public class BluePS extends LinearOpMode {
         map.wobbleServoLeft.setPosition(0.0);
         map.feederServo.setPosition(0.0);
         map.shooterServo.setPosition(0.3);
-        map.turretServo.setPosition(0.21);
+        map.turretServo.setPosition(0.26);
     }
 }

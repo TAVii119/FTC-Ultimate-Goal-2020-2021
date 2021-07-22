@@ -377,7 +377,7 @@ public class RedTower extends LinearOpMode {
         map.wobbleServoRight.setPosition(0.0);
         map.feederServo.setPosition(0.0);
         map.shooterServo.setPosition(0.3);
-        map.turretServo.setPosition(0.21);
+        map.turretServo.setPosition(0.26);
 
     }
 }
