@@ -193,7 +193,7 @@ public class BluePS extends LinearOpMode {
         flicker();
         sleep(200);
         rotateTurret(0.26);
-        sleep(200);
+        sleep(1000);
         flicker();
         sleep(1000);
         rotateTurret(0.3);
@@ -202,8 +202,6 @@ public class BluePS extends LinearOpMode {
         sleep(800);
         setShooterPower(0, 0.53);
         drive.followTrajectory(traj4);
-
-        map.wobbleServoLeft.setPosition(0.0);
 
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
@@ -240,7 +238,7 @@ public class BluePS extends LinearOpMode {
         flicker();
         sleep(200);
         rotateTurret(0.26);
-        sleep(200);
+        sleep(1000);
         flicker();
         sleep(1000);
         rotateTurret(0.3);
@@ -249,8 +247,6 @@ public class BluePS extends LinearOpMode {
         sleep(800);
         setShooterPower(0, 0.53);
         drive.followTrajectory(traj4);
-
-        map.wobbleServoLeft.setPosition(0.0);
 
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
@@ -287,7 +283,7 @@ public class BluePS extends LinearOpMode {
         flicker();
         sleep(200);
         rotateTurret(0.26);
-        sleep(200);
+        sleep(1000);
         flicker();
         sleep(1000);
         rotateTurret(0.3);
@@ -296,8 +292,6 @@ public class BluePS extends LinearOpMode {
         sleep(800);
         setShooterPower(0, 0.53);
         drive.followTrajectory(traj4);
-
-        map.wobbleServoLeft.setPosition(0.0);
 
         PoseStorage.currentPose = drive.getPoseEstimate();
     }

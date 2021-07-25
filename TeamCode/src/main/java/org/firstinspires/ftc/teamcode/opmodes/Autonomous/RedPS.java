@@ -206,7 +206,7 @@ public class RedPS extends LinearOpMode {
         flicker();
         sleep(200);
         rotateTurret(0.23);
-        sleep(200);
+        sleep(1000);
         flicker();
         sleep(1000);
         rotateTurret(0.2);
@@ -216,7 +216,6 @@ public class RedPS extends LinearOpMode {
         setShooterPower(0, 0.53);
         drive.followTrajectory(traj4);
 
-        map.wobbleServoRight.setPosition(0.0);
 
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
@@ -253,7 +252,7 @@ public class RedPS extends LinearOpMode {
         flicker();
         sleep(200);
         rotateTurret(0.23);
-        sleep(200);
+        sleep(1000);
         flicker();
         sleep(1000);
         rotateTurret(0.2);
@@ -262,8 +261,6 @@ public class RedPS extends LinearOpMode {
         sleep(800);
         setShooterPower(0, 0.53);
         drive.followTrajectory(traj4);
-
-        map.wobbleServoRight.setPosition(0.0);
 
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
@@ -300,7 +297,7 @@ public class RedPS extends LinearOpMode {
         flicker();
         sleep(200);
         rotateTurret(0.23);
-        sleep(200);
+        sleep(1000);
         flicker();
         sleep(1000);
         rotateTurret(0.2);
@@ -309,8 +306,6 @@ public class RedPS extends LinearOpMode {
         sleep(800);
         setShooterPower(0, 0.53);
         drive.followTrajectory(traj4);
-
-        map.wobbleServoRight.setPosition(0.0);
 
         PoseStorage.currentPose = drive.getPoseEstimate();
     }

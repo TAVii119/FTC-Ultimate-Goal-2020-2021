@@ -84,7 +84,7 @@ public class TeleBlueRight extends CommandOpMode {
     private InstantCommand resetAlignmentCommand;
     private InstantCommand turretToPowershots;
     private InstantCommand liftIntakeCommand;
-
+    private InstantCommand driverShooterCommand;
     private InstantCommand towergoalAlignCommand;
     private InstantCommand leftPsAlignCommand;
     private InstantCommand centerPsAlignCommand;
@@ -105,7 +105,7 @@ public class TeleBlueRight extends CommandOpMode {
             rightPsAlignButton, centerPsAlignButton, leftPsAlignButton, resetRightPoseButton, resetLeftPoseButton,
             singleFlickButton, upperRampButton, flickOnceButton, resetAlignmentButton, liftIntakeButton, powershotTurretButton,
             manualTurretButtonTower, manualTurretLeftButton, manualTurretRightButton, wobbleArmButton,
-            wobbleClawsStick, manualTurretButtonPs;
+            wobbleClawsStick, manualTurretButtonPs, driverShooterButton;
     private Trigger towerAlignTrigger;
     private static T265Camera slamra = null;
 
@@ -175,6 +175,17 @@ public class TeleBlueRight extends CommandOpMode {
             rampSystem.powershotPos();
         }, shooterSystem, rampSystem);
 
+        driverShooterCommand = new InstantCommand(()-> {
+            if (localizationSystem.rampAuto) {
+                localizationSystem.rampAuto = false;
+                shooterSystem.driverShoot();
+            }
+            else {
+                localizationSystem.rampAuto = true;
+                shooterSystem.stopShoot();
+            }
+        }, shooterSystem, rampSystem);
+
         intakeSystem = new IntakeSubsystem(intake, intake2);
         intakeCommand = new IntakeCommand(intakeSystem);
         outtakeCommand = new OuttakeCommand(intakeSystem);
@@ -224,7 +235,7 @@ public class TeleBlueRight extends CommandOpMode {
             if (localizationSystem.getCurrentTarget() != -1) {
                 localizationSystem.setCurrentTarget(-1);
 //                localizationSystem.setManualTurretServoPos(turretServo.getPosition());
-                localizationSystem.setManualTurretServoPos(0.26);
+                localizationSystem.setManualTurretServoPos(0.38);
             }
             else
                 localizationSystem.setCurrentTarget(0);
@@ -267,6 +278,7 @@ public class TeleBlueRight extends CommandOpMode {
         intakeButton = new GamepadButton(driver1, GamepadKeys.Button.RIGHT_BUMPER).whenHeld(intakeCommand);
         outtakeButton = new GamepadButton(driver1, GamepadKeys.Button.LEFT_BUMPER).whenHeld(outtakeCommand);
         wobbleArmButton = new GamepadButton(driver1, GamepadKeys.Button.X).whenPressed(wobbleGrabberCommand);
+        driverShooterButton = new GamepadButton(driver1, GamepadKeys.Button.Y).whenPressed(driverShooterCommand);
 
         towerAlignButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_DOWN).whenPressed(towergoalAlignCommand);
         leftPsAlignButton = new GamepadButton(driver2, GamepadKeys.Button.DPAD_LEFT).whenPressed(leftPsAlignCommand);

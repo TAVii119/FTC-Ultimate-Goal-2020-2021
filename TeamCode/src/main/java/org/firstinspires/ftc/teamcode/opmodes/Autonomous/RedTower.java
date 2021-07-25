@@ -194,7 +194,7 @@ public class RedTower extends LinearOpMode {
         rotateTurret(0.29);
         setShooterPower(0.7, 0.53);
         drive.followTrajectory(traj1);
-        sleep(1300);
+        sleep(5300);
         flicker();
         sleep(900);
         flicker();
@@ -202,13 +202,11 @@ public class RedTower extends LinearOpMode {
         flicker();
         sleep(800);
         setShooterPower(0, 0.273);
-        sleep(10000);
+        sleep(7000);
         drive.followTrajectory(traj2);
         placeWobbleGoal();
         sleep(200);
         drive.followTrajectory(traj3);
-
-        map.wobbleServoRight.setPosition(0.0);
 
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
@@ -261,7 +259,6 @@ public class RedTower extends LinearOpMode {
         placeWobbleGoal();
         drive.followTrajectory(traj4);
 
-        map.wobbleServoRight.setPosition(0.0);
 
         PoseStorage.currentPose = drive.getPoseEstimate();
     }
@@ -307,7 +304,7 @@ public class RedTower extends LinearOpMode {
                 .build();
 
         rotateTurret(0.23);
-        setShooterPower(0.7, 0.53);
+        setShooterPower(0.7, 0.545);
         drive.followTrajectory(traj1);
         sleep(1500);
         flicker();
@@ -331,14 +328,13 @@ public class RedTower extends LinearOpMode {
         flicker();
         sleep(800);
         flicker();
-        sleep(1600);
+        sleep(1200);
         flicker();
         sleep(700);
         setShooterPower(0, 0.545);
         drive.followTrajectory(traj4);
         placeWobbleGoal();
-        sleep(200);
-        map.wobbleServoRight.setPosition(0.0);
+        sleep(1000);
         drive.followTrajectory(traj5);
 
 
@@ -352,7 +348,7 @@ public class RedTower extends LinearOpMode {
     }
 
     private void placeWobbleGoal(){
-        map.wobbleServoRight.setPosition(0.34);
+        map.wobbleServoRight.setPosition(0.4);
         sleep(200);
     }
 

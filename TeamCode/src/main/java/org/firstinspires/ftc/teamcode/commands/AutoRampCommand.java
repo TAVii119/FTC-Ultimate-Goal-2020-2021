@@ -23,6 +23,9 @@ public class AutoRampCommand extends CommandBase {
 
     @Override
     public void execute() {
-        rampSubsystem.setRampPosition(localizationSubsystem.getRampPosition());
+        if (localizationSubsystem.rampAuto)
+            rampSubsystem.setRampPosition(localizationSubsystem.getRampPosition());
+        else
+            rampSubsystem.setRampPosition(0.6);
     }
 }

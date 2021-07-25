@@ -51,6 +51,7 @@ public class LocalizationSubsystem extends SubsystemBase {
     private final FtcDashboard dashboard = FtcDashboard.getInstance();
 
     private double startX, startY;
+    public boolean rampAuto = true;
 
     public LocalizationSubsystem(T265Camera slm, Telemetry tele, double startX, double startY, int alliance) {
         this.telemetry = tele;
@@ -155,7 +156,7 @@ public class LocalizationSubsystem extends SubsystemBase {
                 turretServoPosition -= 0.025;
 
             if (currentTarget == 0 && positionY > -11)
-                turretServoPosition -= 0.025;
+                turretServoPosition -= 0.018;
 
 //            if (currentTarget == 0 && positionY >= -45
 //                    && positionY <= -25
@@ -184,7 +185,7 @@ public class LocalizationSubsystem extends SubsystemBase {
             if (currentTarget == 0 && positionY < 8)
                 turretServoPosition += 0.01;
 
-            turretServoPosition += 0.01;
+            turretServoPosition -= 0.008;
         }
         if (turretServoPosition > 0.48) {
             turretServoPosition = 0.48;
@@ -230,10 +231,10 @@ public class LocalizationSubsystem extends SubsystemBase {
         if (currentTarget == 0 || currentTarget == -1) {
             LUT<Double, Double> positions = new LUT<Double, Double>() {{
                 add(0.0 + xOffset, 0.55);
-                add(-12.2047 + xOffset, 0.54);
-                add(-15.2047 + xOffset, 0.528);
-                add(-40.9449 + xOffset, 0.51);
-                add(-47.9449 + xOffset, 0.5);
+                add(-12.2047 + xOffset, 0.543);
+                add(-15.2047 + xOffset, 0.534);
+                add(-40.9449 + xOffset, 0.528);
+                add(-47.9449 + xOffset, 0.525);
             }};
             position = positions.getClosest(currentX);
         } else {
@@ -248,6 +249,10 @@ public class LocalizationSubsystem extends SubsystemBase {
 
         return position;
     }
+
+
+
+    public int getAlliance() { return this.alliance; }
 
     public double targetAngleFormula(double targetX, double targetY, double robotX, double robotY) {
         double dX = targetX - robotX;
