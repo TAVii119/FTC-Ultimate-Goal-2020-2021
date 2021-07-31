@@ -230,19 +230,19 @@ public class LocalizationSubsystem extends SubsystemBase {
 
         if (currentTarget == 0 || currentTarget == -1) {
             LUT<Double, Double> positions = new LUT<Double, Double>() {{
-                add(0.0 + xOffset, 0.55);
-                add(-12.2047 + xOffset, 0.543);
-                add(-15.2047 + xOffset, 0.534);
-                add(-40.9449 + xOffset, 0.528);
-                add(-47.9449 + xOffset, 0.525);
+                add(0.0 + xOffset, 0.56);
+                add(-12.2047 + xOffset, 0.55);
+                add(-15.2047 + xOffset, 0.545);
+                add(-40.9449 + xOffset, 0.535);
+                add(-47.9449 + xOffset, 0.53);
             }};
             position = positions.getClosest(currentX);
         } else {
             LUT<Double, Double> positions = new LUT<Double, Double>() {{
-                add(0.0 + xOffset, 0.52);
-                add(-12.2047 + xOffset, 0.51);
-                add(-40.9449 + xOffset, 0.5);
-                add(-47.9449 + xOffset, 0.49);
+                add(0.0 + xOffset, 0.535);
+                add(-12.2047 + xOffset, 0.525);
+                add(-40.9449 + xOffset, 0.515);
+                add(-47.9449 + xOffset, 0.505);
             }};
             position = positions.getClosest(currentX);
         }

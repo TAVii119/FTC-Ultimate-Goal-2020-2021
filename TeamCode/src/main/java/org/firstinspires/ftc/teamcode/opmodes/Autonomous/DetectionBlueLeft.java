@@ -107,7 +107,7 @@ public class DetectionBlueLeft extends LinearOpMode {
         static final Scalar BLUE = new Scalar(0, 0, 255);
         static final Scalar GREEN = new Scalar(0, 255, 0);
 
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(1120,300);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(1100,340);
 
         static final int REGION_WIDTH = 160;
         static final int REGION_HEIGHT = 170;
@@ -166,7 +166,7 @@ public class DetectionBlueLeft extends LinearOpMode {
     }
 
 //    Pose2d startPose = new Pose2d(-63.0, 27.3, Math.toRadians(0.0)); // RIGHT
-    Pose2d startPose = new Pose2d(-63.0, 51.0, Math.toRadians(0.0)); // LEFT
+    Pose2d startPose = new Pose2d(-63.0, 49.0, Math.toRadians(0.0)); // LEFT
     private void caseA(SampleMecanumDrive drive) {
         drive.setPoseEstimate(startPose);
 

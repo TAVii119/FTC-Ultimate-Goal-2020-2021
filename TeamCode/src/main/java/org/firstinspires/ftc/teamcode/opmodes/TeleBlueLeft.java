@@ -206,7 +206,7 @@ public class TeleBlueLeft extends CommandOpMode {
         lowerRampCommand = new LowerRampCommand(rampSystem);
         upperRampCommand = new UpperRampCommand(rampSystem);
 
-        localizationSystem = new LocalizationSubsystem(slamra, telemetry, -63.0, 50.0, 1);
+        localizationSystem = new LocalizationSubsystem(slamra, telemetry, -63.0, 49.0, 1);
         localizationCommand = new LocalizationCommand(localizationSystem);
         turretSystem = new TurretSubsystem(turretServo, telemetry);
         turretCommand = new TurretCommand(turretSystem, localizationSystem);

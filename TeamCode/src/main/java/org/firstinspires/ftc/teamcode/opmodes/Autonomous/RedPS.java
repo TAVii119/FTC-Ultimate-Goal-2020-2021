@@ -114,7 +114,7 @@ public class RedPS extends LinearOpMode {
         static final Scalar BLUE = new Scalar(0, 0, 255);
         static final Scalar GREEN = new Scalar(0, 255, 0);
 
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(1000,300);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(850,320);
 
         static final int REGION_WIDTH = 160;
         static final int REGION_HEIGHT = 170;
@@ -172,7 +172,7 @@ public class RedPS extends LinearOpMode {
         }
     }
 
-    Pose2d startPose = new Pose2d(-63.0, -23.3, Math.toRadians(0.0)); // LEFT
+    Pose2d startPose = new Pose2d(-63.0, -25.3, Math.toRadians(0.0)); // LEFT
 //    Pose2d startPose = new Pose2d(-63.0, -48.0, Math.toRadians(0.0)); // RIGHT
     private void caseA(SampleMecanumDrive drive) {
         drive.setPoseEstimate(startPose);

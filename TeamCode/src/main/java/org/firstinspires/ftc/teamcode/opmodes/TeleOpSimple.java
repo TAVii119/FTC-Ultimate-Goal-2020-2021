@@ -104,7 +104,7 @@ public class TeleOpSimple extends LinearOpMode {
         }
 
         if (gamepad1.a && map.shooterFrontMotor.getPower() == 0) {
-            map.shooterFrontMotor.setPower(0.7);
+            map.shooterFrontMotor.setPower(0.6); // 0.57
             gamepadRateLimit.reset();
         } else if (gamepad1.a && map.shooterFrontMotor.getPower() > 0.2) {
             map.shooterFrontMotor.setPower(0);

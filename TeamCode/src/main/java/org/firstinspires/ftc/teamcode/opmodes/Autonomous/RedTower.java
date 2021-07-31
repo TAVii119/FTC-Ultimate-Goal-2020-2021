@@ -173,7 +173,7 @@ public class RedTower extends LinearOpMode {
     }
 
 //    Pose2d startPose = new Pose2d(-63.0, -24.3, Math.toRadians(0.0)); // LEFT
-    Pose2d startPose = new Pose2d(-63.0, -48.0, Math.toRadians(0.0)); // RIGHT
+    Pose2d startPose = new Pose2d(-63.0, -46.0, Math.toRadians(0.0)); // RIGHT
     private void caseA(SampleMecanumDrive drive) {
         drive.setPoseEstimate(startPose);
 
