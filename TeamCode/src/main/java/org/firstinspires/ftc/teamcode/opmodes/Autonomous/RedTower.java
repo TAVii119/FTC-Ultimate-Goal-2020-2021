@@ -114,7 +114,7 @@ public class RedTower extends LinearOpMode {
         static final Scalar BLUE = new Scalar(0, 0, 255);
         static final Scalar GREEN = new Scalar(0, 255, 0);
 
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(5,300);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(85,300);
 
         static final int REGION_WIDTH = 160;
         static final int REGION_HEIGHT = 170;
@@ -191,8 +191,8 @@ public class RedTower extends LinearOpMode {
                 .lineTo(new Vector2d(10.0, -38.0))
                 .build();
 
-        rotateTurret(0.29);
-        setShooterPower(0.7, 0.53);
+        rotateTurret(0.298);
+        setShooterPower(0.7, 0.528);
         drive.followTrajectory(traj1);
         sleep(5300);
         flicker();
@@ -233,13 +233,13 @@ public class RedTower extends LinearOpMode {
 
         sleep(5000);
         rotateTurret(0.23);
-        setShooterPower(0.7, 0.53);
+        setShooterPower(0.7, 0.535);
         drive.followTrajectory(traj1);
         sleep(3300);
         flicker();
-        sleep(900);
-        flicker();
         sleep(1800);
+        flicker();
+        sleep(2000);
         flicker();
         sleep(800);
         setShooterPower(0, 0.53);
@@ -287,7 +287,7 @@ public class RedTower extends LinearOpMode {
                 new ProfileAccelerationConstraint(10))
                 .build();
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineTo(new Vector2d(-5, -34),
+                .lineTo(new Vector2d(-10, -34),
                         new MinVelocityConstraint(
                                 Arrays.asList(
                                         new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
@@ -304,7 +304,7 @@ public class RedTower extends LinearOpMode {
                 .build();
 
         rotateTurret(0.23);
-        setShooterPower(0.7, 0.545);
+        setShooterPower(0.7, 0.54);
         drive.followTrajectory(traj1);
         sleep(1500);
         flicker();
@@ -315,13 +315,13 @@ public class RedTower extends LinearOpMode {
         sleep(400);
         intakeRings(1);
         drive.followTrajectory(traj2);
-        setShooterPower(0.7, 0.54);
+        setShooterPower(0.7, 0.537);
         sleep(3200);
         flicker();
         sleep(200);
         setShooterPower(0.7, 0.545);
         drive.followTrajectory(traj3);
-        sleep(1000);
+        sleep(1400);
         intakeRings(0);
         rotateTurret(0.25);
         sleep(400);

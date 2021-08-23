@@ -107,7 +107,7 @@ public class BlueTower extends LinearOpMode {
         static final Scalar BLUE = new Scalar(0, 0, 255);
         static final Scalar GREEN = new Scalar(0, 255, 0);
 
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(1100,340);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(965,330);
 
         static final int REGION_WIDTH = 160;
         static final int REGION_HEIGHT = 170;
@@ -226,16 +226,16 @@ public class BlueTower extends LinearOpMode {
 
         sleep(5000);
         rotateTurret(0.255);
-        setShooterPower(0.7, 0.53);
+        setShooterPower(0.7, 0.535);
         drive.followTrajectory(traj1);
         sleep(3300);
         flicker();
-        sleep(900);
+        sleep(1200);
         flicker();
-        sleep(1800);
+        sleep(2000);
         flicker();
         sleep(800);
-        setShooterPower(0, 0.53);
+        setShooterPower(0, 0.535);
         intakeRings(1);
         setShooterPower(0.7, 0.535);
         sleep(1000);
@@ -280,7 +280,7 @@ public class BlueTower extends LinearOpMode {
                 new ProfileAccelerationConstraint(10))
                 .build();
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineTo(new Vector2d(-5, 34),
+                .lineTo(new Vector2d(-10, 34),
                         new MinVelocityConstraint(
                                 Arrays.asList(
                                         new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
@@ -296,7 +296,7 @@ public class BlueTower extends LinearOpMode {
                 .lineTo(new Vector2d(13, 38.0))
                 .build();
 
-        rotateTurret(0.26);
+        rotateTurret(0.27);
         setShooterPower(0.7, 0.545);
         drive.followTrajectory(traj1);
         sleep(1500);
@@ -314,9 +314,9 @@ public class BlueTower extends LinearOpMode {
         sleep(200);
         setShooterPower(0.7, 0.545);
         drive.followTrajectory(traj3);
-        sleep(1000);
+        sleep(1400);
         intakeRings(0);
-        rotateTurret(0.25);
+        rotateTurret(0.26);
         sleep(400);
         flicker();
         sleep(800);

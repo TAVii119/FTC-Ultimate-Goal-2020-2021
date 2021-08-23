@@ -100,7 +100,7 @@ public class BluePS extends LinearOpMode {
         static final Scalar BLUE = new Scalar(0, 0, 255);
         static final Scalar GREEN = new Scalar(0, 255, 0);
 
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(180,350);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(140,325);
 
         static final int REGION_WIDTH = 160;
         static final int REGION_HEIGHT = 170;
@@ -175,7 +175,7 @@ public class BluePS extends LinearOpMode {
                 .lineTo(new Vector2d(9.5, 42.0))
                 .build();
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineTo(new Vector2d(-5.0, 8.0))
+                .lineTo(new Vector2d(-13.0, 8.0))
                 .build();
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
                 .lineTo(new Vector2d(10.0, 8.0))
@@ -187,12 +187,12 @@ public class BluePS extends LinearOpMode {
         placeWobbleGoal();
         sleep(100);
         setShooterPower(0.6, 0.53);
-        rotateTurret(0.22);
+        rotateTurret(0.232);
         drive.followTrajectory(traj3);
         sleep(1700);
         flicker();
         sleep(200);
-        rotateTurret(0.26);
+        rotateTurret(0.272);
         sleep(1000);
         flicker();
         sleep(1000);
@@ -220,7 +220,7 @@ public class BluePS extends LinearOpMode {
                 .lineTo(new Vector2d(36.0, 18.0))
                 .build();
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineTo(new Vector2d(-5.0, 8.0))
+                .lineTo(new Vector2d(-13.0, 8.0))
                 .build();
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
                 .lineTo(new Vector2d(10.0, 8.0))
@@ -232,12 +232,12 @@ public class BluePS extends LinearOpMode {
         placeWobbleGoal();
         sleep(100);
         setShooterPower(0.6, 0.53);
-        rotateTurret(0.22);
+        rotateTurret(0.24);
         drive.followTrajectory(traj3);
         sleep(1700);
         flicker();
         sleep(200);
-        rotateTurret(0.26);
+        rotateTurret(0.28);
         sleep(1000);
         flicker();
         sleep(1000);
@@ -265,7 +265,7 @@ public class BluePS extends LinearOpMode {
                 .lineTo(new Vector2d(56.0, 42.0))
                 .build();
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineTo(new Vector2d(-5.0, 8.0))
+                .lineTo(new Vector2d(-13.0, 8.0))
                 .build();
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
                 .lineTo(new Vector2d(10.0, 8.0))
@@ -277,12 +277,12 @@ public class BluePS extends LinearOpMode {
         placeWobbleGoal();
         sleep(100);
         setShooterPower(0.6, 0.53);
-        rotateTurret(0.23);
+        rotateTurret(0.24);
         drive.followTrajectory(traj3);
         sleep(1700);
         flicker();
         sleep(200);
-        rotateTurret(0.26);
+        rotateTurret(0.272);
         sleep(1000);
         flicker();
         sleep(1000);

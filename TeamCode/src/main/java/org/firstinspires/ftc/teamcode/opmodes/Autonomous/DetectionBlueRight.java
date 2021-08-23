@@ -107,7 +107,7 @@ public class DetectionBlueRight extends LinearOpMode {
         static final Scalar BLUE = new Scalar(0, 0, 255);
         static final Scalar GREEN = new Scalar(0, 255, 0);
 
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(180,350);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(140,325);
 
         static final int REGION_WIDTH = 160;
         static final int REGION_HEIGHT = 170;

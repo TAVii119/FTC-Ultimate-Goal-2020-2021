@@ -114,7 +114,7 @@ public class RedPS extends LinearOpMode {
         static final Scalar BLUE = new Scalar(0, 0, 255);
         static final Scalar GREEN = new Scalar(0, 255, 0);
 
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(850,320);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(885,320);
 
         static final int REGION_WIDTH = 160;
         static final int REGION_HEIGHT = 170;
@@ -188,7 +188,7 @@ public class RedPS extends LinearOpMode {
                 .lineTo(new Vector2d(9.5, -42.0))
                 .build();
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineTo(new Vector2d(-5.0, -8.0))
+                .lineTo(new Vector2d(-13.0, -8.0))
                 .build();
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
                 .lineTo(new Vector2d(10.0, -8.0))
@@ -205,11 +205,11 @@ public class RedPS extends LinearOpMode {
         sleep(1700);
         flicker();
         sleep(200);
-        rotateTurret(0.23);
+        rotateTurret(0.22);
         sleep(1000);
         flicker();
         sleep(1000);
-        rotateTurret(0.2);
+        rotateTurret(0.19);
         sleep(1600);
         flicker();
         sleep(800);
@@ -234,7 +234,7 @@ public class RedPS extends LinearOpMode {
                 .lineTo(new Vector2d(36.0, -18.0))
                 .build();
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineTo(new Vector2d(-5.0, -8.0))
+                .lineTo(new Vector2d(-13.0, -8.0))
                 .build();
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
                 .lineTo(new Vector2d(10.0, -8.0))
@@ -251,11 +251,11 @@ public class RedPS extends LinearOpMode {
         sleep(1700);
         flicker();
         sleep(200);
-        rotateTurret(0.23);
+        rotateTurret(0.22);
         sleep(1000);
         flicker();
         sleep(1000);
-        rotateTurret(0.2);
+        rotateTurret(0.19);
         sleep(1600);
         flicker();
         sleep(800);
@@ -279,7 +279,7 @@ public class RedPS extends LinearOpMode {
                 .lineTo(new Vector2d(56.0, -47.5))
                 .build();
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineTo(new Vector2d(-5.0, -8.0))
+                .lineTo(new Vector2d(-13.0, -8.0))
                 .build();
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
                 .lineTo(new Vector2d(10.0, -8.0))
@@ -296,11 +296,11 @@ public class RedPS extends LinearOpMode {
         sleep(1700);
         flicker();
         sleep(200);
-        rotateTurret(0.23);
+        rotateTurret(0.22);
         sleep(1000);
         flicker();
         sleep(1000);
-        rotateTurret(0.2);
+        rotateTurret(0.19);
         sleep(1600);
         flicker();
         sleep(800);

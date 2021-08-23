@@ -194,7 +194,7 @@ public class TeleRedLeft extends CommandOpMode {
         flickerAction = new TimedAction(
                 ()->flickerServo.setPosition(0.15),
                 ()->flickerServo.setPosition(0),
-                300,
+                600,
                 true
         );
 
